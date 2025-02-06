@@ -26,7 +26,7 @@ tasks.withType(JavaCompile) {
 
 application {
     mainModule = 'it.unibo.smartcrossroads'
-    mainClass = 'it.unibo.smartcrossroads.HelloApplication'
+    mainClass = 'it.unibo.smartcrossroads.TrafficApplication'
 }
 
 javafx {
