@@ -1,5 +1,7 @@
 package it.unibo.smartcrossroads;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -11,17 +13,24 @@ import javafx.scene.control.TextArea;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Stop;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 public class TrafficApplication extends Application {
     private static final int ROAD_WIDTH = 100;
     private static final int DASH_LENGTH = 10;
     private static final int DASH_GAP = 10;
+    private static final double CAR_RADIUS = 10;
+
+    private double carX = 0;
+    private boolean movingRight = true;
+    private Image carImage = new Image("file:src/main/resources/it/unibo/smartcrossroads/car.png");
 
     @Override
     public void start(Stage primaryStage) {
@@ -39,26 +48,29 @@ public class TrafficApplication extends Application {
         drawIntersections(gc, GRAPHIC_WIDTH, APP_HEIGHT);
         drawDashedLines(gc, GRAPHIC_WIDTH, APP_HEIGHT);
 
+        Timeline timeline = new Timeline(
+                new KeyFrame(Duration.millis(50), _ -> moveCar(gc, GRAPHIC_WIDTH, APP_HEIGHT)));
+        timeline.setCycleCount(Timeline.INDEFINITE);
+        timeline.play();
+
         StackPane canvasContainer = new StackPane(canvas);
 
-        // Create the sidebar with a title and a logging zone
         VBox sidebar = new VBox();
         sidebar.setMinWidth(SIDEBAR_WIDTH);
         sidebar.setStyle("-fx-background-color: lightgray;");
 
         Label titleLabel = new Label("Monitoring");
         titleLabel.setStyle("-fx-font-size: 18px; -fx-font-weight: bold;");
-        VBox.setMargin(titleLabel, new Insets(10, 0, 10, 0)); // Padding top and bottom
-        sidebar.setAlignment(Pos.TOP_CENTER); // Center the title horizontally
+        VBox.setMargin(titleLabel, new Insets(10, 0, 10, 0));
+        sidebar.setAlignment(Pos.TOP_CENTER);
         sidebar.getChildren().add(titleLabel);
 
-        // Add a logging zone (TextArea) with padding and extended to the bottom
         TextArea logArea = new TextArea();
         logArea.setEditable(false);
         logArea.setWrapText(true);
         logArea.setStyle("-fx-font-family: monospace; -fx-font-size: 12px;");
-        VBox.setMargin(logArea, new Insets(10)); // Padding on all sides
-        VBox.setVgrow(logArea, javafx.scene.layout.Priority.ALWAYS); // Extend to the bottom
+        VBox.setMargin(logArea, new Insets(10));
+        VBox.setVgrow(logArea, javafx.scene.layout.Priority.ALWAYS);
         sidebar.getChildren().add(logArea);
 
         HBox root = new HBox(canvasContainer, sidebar);
@@ -69,7 +81,6 @@ public class TrafficApplication extends Application {
     }
 
     private void drawBackground(GraphicsContext gc, int WIDTH, int HEIGHT) {
-        // Gradient background for buildings (changed to dark red)
         LinearGradient gradient = new LinearGradient(0, 0, 0, HEIGHT, false, CycleMethod.NO_CYCLE,
                 new Stop(0, Color.DARKRED), new Stop(1, Color.DARKRED.darker()));
         gc.setFill(gradient);
@@ -77,16 +88,13 @@ public class TrafficApplication extends Application {
     }
 
     private void drawIntersections(GraphicsContext gc, int WIDTH, int HEIGHT) {
-        // Gradient for roads
         LinearGradient roadGradient = new LinearGradient(0, 0, 0, ROAD_WIDTH, false, CycleMethod.NO_CYCLE,
                 new Stop(0, Color.GRAY), new Stop(1, Color.DARKGRAY));
         gc.setFill(roadGradient);
 
-        // Draw two horizontal roads
         gc.fillRect(0, HEIGHT / 3 - ROAD_WIDTH / 2, WIDTH, ROAD_WIDTH);
         gc.fillRect(0, 2 * HEIGHT / 3 - ROAD_WIDTH / 2, WIDTH, ROAD_WIDTH);
 
-        // Draw two vertical roads
         gc.fillRect(WIDTH / 3 - ROAD_WIDTH / 2, 0, ROAD_WIDTH, HEIGHT);
         gc.fillRect(2 * WIDTH / 3 - ROAD_WIDTH / 2, 0, ROAD_WIDTH, HEIGHT);
     }
@@ -95,7 +103,6 @@ public class TrafficApplication extends Application {
         gc.setStroke(Color.WHITE);
         gc.setLineWidth(2);
 
-        // Draw horizontal dashed lines
         for (int x = 0; x < WIDTH; x += DASH_LENGTH + DASH_GAP) {
             if ((x + DASH_LENGTH) < WIDTH / 3 - ROAD_WIDTH / 2
                     || (x > WIDTH / 3 + ROAD_WIDTH / 2 && x + DASH_LENGTH < 2 * WIDTH / 3 - ROAD_WIDTH / 2)
@@ -105,7 +112,6 @@ public class TrafficApplication extends Application {
             }
         }
 
-        // Draw vertical dashed lines
         for (int y = 0; y < HEIGHT; y += DASH_LENGTH + DASH_GAP) {
             if ((y + DASH_LENGTH) < HEIGHT / 3 - ROAD_WIDTH / 2
                     || (y > HEIGHT / 3 + ROAD_WIDTH / 2 && y + DASH_LENGTH < 2 * HEIGHT / 3 - ROAD_WIDTH / 2)
@@ -114,6 +120,44 @@ public class TrafficApplication extends Application {
                 gc.strokeLine(2 * WIDTH / 3, y, 2 * WIDTH / 3, y + DASH_LENGTH);
             }
         }
+    }
+
+    private void drawCar(GraphicsContext gc, int WIDTH, int HEIGHT) {
+        double carXPos = carX;
+        double carYPos = HEIGHT / 3 + ROAD_WIDTH / 4 - CAR_RADIUS;
+
+        double originalWidth = carImage.getWidth();
+        double originalHeight = carImage.getHeight();
+
+        double scaleFactor = 0.05;
+
+        double carWidth = originalWidth * scaleFactor;
+        double carHeight = originalHeight * scaleFactor;
+
+        // Disegna l'immagine ingrandita mantenendo le proporzioni
+        gc.drawImage(carImage, carXPos, carYPos, carWidth, carHeight);
+    }
+
+    private void moveCar(GraphicsContext gc, int WIDTH, int HEIGHT) {
+        gc.clearRect(0, 0, WIDTH, HEIGHT);
+
+        drawBackground(gc, WIDTH, HEIGHT);
+        drawIntersections(gc, WIDTH, HEIGHT);
+        drawDashedLines(gc, WIDTH, HEIGHT);
+
+        if (movingRight) {
+            carX += 2;
+            if (carX > WIDTH - CAR_RADIUS * 2) {
+                movingRight = false;
+            }
+        } else {
+            carX -= 2;
+            if (carX < 0) {
+                movingRight = true;
+            }
+        }
+
+        drawCar(gc, WIDTH, HEIGHT);
     }
 
     public static void main(String[] args) {
