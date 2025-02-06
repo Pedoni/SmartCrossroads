@@ -46,7 +46,6 @@ public class TrafficApplication extends Application {
         sidebar.setMinWidth(SIDEBAR_WIDTH);
         sidebar.setStyle("-fx-background-color: lightgray;");
 
-        // Add the title "Monitoring" (centered horizontally)
         Label titleLabel = new Label("Monitoring");
         titleLabel.setStyle("-fx-font-size: 18px; -fx-font-weight: bold;");
         VBox.setMargin(titleLabel, new Insets(10, 0, 10, 0)); // Padding top and bottom
