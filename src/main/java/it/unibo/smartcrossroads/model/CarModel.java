@@ -7,11 +7,12 @@ public class CarModel {
     private double x;
     private double y;
     private boolean movingRight = true;
-    private final Image carImage = new Image("file:src/main/resources/it/unibo/smartcrossroads/car.png");
+    private final Image carImage;
 
-    public CarModel(double x, double y) {
+    public CarModel(double x, double y, int type) {
         this.x = x;
         this.y = y;
+        this.carImage = new Image("file:src/main/resources/it/unibo/smartcrossroads/car" + type + ".png");
     }
 
     public void move(int WIDTH) {

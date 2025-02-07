@@ -45,7 +45,7 @@ public class TrafficApplication extends Application {
         drawIntersections(gc, GRAPHIC_WIDTH, APP_HEIGHT);
         drawDashedLines(gc, GRAPHIC_WIDTH, APP_HEIGHT);
 
-        car = new CarModel(0, APP_HEIGHT / 3 + ROAD_WIDTH / 4 - 10);
+        car = new CarModel(0, APP_HEIGHT / 3 + ROAD_WIDTH / 4 - 10, 3);
 
         Timeline timeline = new Timeline(
                 new KeyFrame(Duration.millis(40), _ -> moveCar(gc, GRAPHIC_WIDTH, APP_HEIGHT)));
