@@ -13,7 +13,6 @@ import javafx.scene.control.TextArea;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.LinearGradient;
@@ -21,16 +20,14 @@ import javafx.scene.paint.Stop;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import it.unibo.smartcrossroads.model.*;
 
 public class TrafficApplication extends Application {
     private static final int ROAD_WIDTH = 100;
     private static final int DASH_LENGTH = 10;
     private static final int DASH_GAP = 10;
-    private static final double CAR_RADIUS = 10;
 
-    private double carX = 0;
-    private boolean movingRight = true;
-    private Image carImage = new Image("file:src/main/resources/it/unibo/smartcrossroads/car.png");
+    private CarModel car;
 
     @Override
     public void start(Stage primaryStage) {
@@ -48,8 +45,10 @@ public class TrafficApplication extends Application {
         drawIntersections(gc, GRAPHIC_WIDTH, APP_HEIGHT);
         drawDashedLines(gc, GRAPHIC_WIDTH, APP_HEIGHT);
 
+        car = new CarModel(0, APP_HEIGHT / 3 + ROAD_WIDTH / 4 - 10);
+
         Timeline timeline = new Timeline(
-                new KeyFrame(Duration.millis(50), _ -> moveCar(gc, GRAPHIC_WIDTH, APP_HEIGHT)));
+                new KeyFrame(Duration.millis(40), _ -> moveCar(gc, GRAPHIC_WIDTH, APP_HEIGHT)));
         timeline.setCycleCount(Timeline.INDEFINITE);
         timeline.play();
 
@@ -122,22 +121,6 @@ public class TrafficApplication extends Application {
         }
     }
 
-    private void drawCar(GraphicsContext gc, int WIDTH, int HEIGHT) {
-        double carXPos = carX;
-        double carYPos = HEIGHT / 3 + ROAD_WIDTH / 4 - CAR_RADIUS;
-
-        double originalWidth = carImage.getWidth();
-        double originalHeight = carImage.getHeight();
-
-        double scaleFactor = 0.05;
-
-        double carWidth = originalWidth * scaleFactor;
-        double carHeight = originalHeight * scaleFactor;
-
-        // Disegna l'immagine ingrandita mantenendo le proporzioni
-        gc.drawImage(carImage, carXPos, carYPos, carWidth, carHeight);
-    }
-
     private void moveCar(GraphicsContext gc, int WIDTH, int HEIGHT) {
         gc.clearRect(0, 0, WIDTH, HEIGHT);
 
@@ -145,19 +128,8 @@ public class TrafficApplication extends Application {
         drawIntersections(gc, WIDTH, HEIGHT);
         drawDashedLines(gc, WIDTH, HEIGHT);
 
-        if (movingRight) {
-            carX += 2;
-            if (carX > WIDTH - CAR_RADIUS * 2) {
-                movingRight = false;
-            }
-        } else {
-            carX -= 2;
-            if (carX < 0) {
-                movingRight = true;
-            }
-        }
-
-        drawCar(gc, WIDTH, HEIGHT);
+        car.move(WIDTH);
+        car.draw(gc);
     }
 
     public static void main(String[] args) {
