@@ -21,11 +21,9 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import it.unibo.smartcrossroads.model.*;
+import it.unibo.smartcrossroads.utils.*;
 
 public class TrafficApplication extends Application {
-    private static final int ROAD_WIDTH = 100;
-    private static final int DASH_LENGTH = 10;
-    private static final int DASH_GAP = 10;
 
     private CarModel car;
 
@@ -45,7 +43,7 @@ public class TrafficApplication extends Application {
         drawIntersections(gc, GRAPHIC_WIDTH, APP_HEIGHT);
         drawDashedLines(gc, GRAPHIC_WIDTH, APP_HEIGHT);
 
-        car = new CarModel(0, APP_HEIGHT / 3 + ROAD_WIDTH / 4 - 10, 3);
+        car = new CarModel(0, APP_HEIGHT / 3 + Constants.ROAD_WIDTH / 4 - 10, 3);
 
         Timeline timeline = new Timeline(
                 new KeyFrame(Duration.millis(40), _ -> moveCar(gc, GRAPHIC_WIDTH, APP_HEIGHT)));
@@ -87,36 +85,38 @@ public class TrafficApplication extends Application {
     }
 
     private void drawIntersections(GraphicsContext gc, int WIDTH, int HEIGHT) {
-        LinearGradient roadGradient = new LinearGradient(0, 0, 0, ROAD_WIDTH, false, CycleMethod.NO_CYCLE,
+        LinearGradient roadGradient = new LinearGradient(0, 0, 0, Constants.ROAD_WIDTH, false, CycleMethod.NO_CYCLE,
                 new Stop(0, Color.GRAY), new Stop(1, Color.DARKGRAY));
         gc.setFill(roadGradient);
 
-        gc.fillRect(0, HEIGHT / 3 - ROAD_WIDTH / 2, WIDTH, ROAD_WIDTH);
-        gc.fillRect(0, 2 * HEIGHT / 3 - ROAD_WIDTH / 2, WIDTH, ROAD_WIDTH);
+        gc.fillRect(0, HEIGHT / 3 - Constants.ROAD_WIDTH / 2, WIDTH, Constants.ROAD_WIDTH);
+        gc.fillRect(0, 2 * HEIGHT / 3 - Constants.ROAD_WIDTH / 2, WIDTH, Constants.ROAD_WIDTH);
 
-        gc.fillRect(WIDTH / 3 - ROAD_WIDTH / 2, 0, ROAD_WIDTH, HEIGHT);
-        gc.fillRect(2 * WIDTH / 3 - ROAD_WIDTH / 2, 0, ROAD_WIDTH, HEIGHT);
+        gc.fillRect(WIDTH / 3 - Constants.ROAD_WIDTH / 2, 0, Constants.ROAD_WIDTH, HEIGHT);
+        gc.fillRect(2 * WIDTH / 3 - Constants.ROAD_WIDTH / 2, 0, Constants.ROAD_WIDTH, HEIGHT);
     }
 
     private void drawDashedLines(GraphicsContext gc, int WIDTH, int HEIGHT) {
         gc.setStroke(Color.WHITE);
         gc.setLineWidth(2);
 
-        for (int x = 0; x < WIDTH; x += DASH_LENGTH + DASH_GAP) {
-            if ((x + DASH_LENGTH) < WIDTH / 3 - ROAD_WIDTH / 2
-                    || (x > WIDTH / 3 + ROAD_WIDTH / 2 && x + DASH_LENGTH < 2 * WIDTH / 3 - ROAD_WIDTH / 2)
-                    || x > 2 * WIDTH / 3 + ROAD_WIDTH / 2) {
-                gc.strokeLine(x, HEIGHT / 3, x + DASH_LENGTH, HEIGHT / 3);
-                gc.strokeLine(x, 2 * HEIGHT / 3, x + DASH_LENGTH, 2 * HEIGHT / 3);
+        for (int x = 0; x < WIDTH; x += Constants.DASH_LENGTH + Constants.DASH_GAP) {
+            if ((x + Constants.DASH_LENGTH) < WIDTH / 3 - Constants.ROAD_WIDTH / 2
+                    || (x > WIDTH / 3 + Constants.ROAD_WIDTH / 2
+                            && x + Constants.DASH_LENGTH < 2 * WIDTH / 3 - Constants.ROAD_WIDTH / 2)
+                    || x > 2 * WIDTH / 3 + Constants.ROAD_WIDTH / 2) {
+                gc.strokeLine(x, HEIGHT / 3, x + Constants.DASH_LENGTH, HEIGHT / 3);
+                gc.strokeLine(x, 2 * HEIGHT / 3, x + Constants.DASH_LENGTH, 2 * HEIGHT / 3);
             }
         }
 
-        for (int y = 0; y < HEIGHT; y += DASH_LENGTH + DASH_GAP) {
-            if ((y + DASH_LENGTH) < HEIGHT / 3 - ROAD_WIDTH / 2
-                    || (y > HEIGHT / 3 + ROAD_WIDTH / 2 && y + DASH_LENGTH < 2 * HEIGHT / 3 - ROAD_WIDTH / 2)
-                    || y > 2 * HEIGHT / 3 + ROAD_WIDTH / 2) {
-                gc.strokeLine(WIDTH / 3, y, WIDTH / 3, y + DASH_LENGTH);
-                gc.strokeLine(2 * WIDTH / 3, y, 2 * WIDTH / 3, y + DASH_LENGTH);
+        for (int y = 0; y < HEIGHT; y += Constants.DASH_LENGTH + Constants.DASH_GAP) {
+            if ((y + Constants.DASH_LENGTH) < HEIGHT / 3 - Constants.ROAD_WIDTH / 2
+                    || (y > HEIGHT / 3 + Constants.ROAD_WIDTH / 2
+                            && y + Constants.DASH_LENGTH < 2 * HEIGHT / 3 - Constants.ROAD_WIDTH / 2)
+                    || y > 2 * HEIGHT / 3 + Constants.ROAD_WIDTH / 2) {
+                gc.strokeLine(WIDTH / 3, y, WIDTH / 3, y + Constants.DASH_LENGTH);
+                gc.strokeLine(2 * WIDTH / 3, y, 2 * WIDTH / 3, y + Constants.DASH_LENGTH);
             }
         }
     }
