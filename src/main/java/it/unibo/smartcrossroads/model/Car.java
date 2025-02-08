@@ -3,13 +3,13 @@ package it.unibo.smartcrossroads.model;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 
-public class CarModel {
+public class Car {
     private double x;
     private double y;
     private boolean movingRight = true;
     private final Image carImage;
 
-    public CarModel(double x, double y, int type) {
+    public Car(double x, double y, int type) {
         this.x = x;
         this.y = y;
         this.carImage = new Image("file:src/main/resources/it/unibo/smartcrossroads/car" + type + ".png");

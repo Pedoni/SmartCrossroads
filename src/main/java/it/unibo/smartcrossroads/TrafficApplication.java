@@ -20,12 +20,16 @@ import javafx.scene.paint.Stop;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+
+import java.util.LinkedList;
+import java.util.List;
+
 import it.unibo.smartcrossroads.model.*;
 import it.unibo.smartcrossroads.utils.*;
 
 public class TrafficApplication extends Application {
 
-    private CarModel car;
+    private List<Car> cars;
 
     @Override
     public void start(Stage primaryStage) {
@@ -43,7 +47,10 @@ public class TrafficApplication extends Application {
         drawIntersections(gc, GRAPHIC_WIDTH, APP_HEIGHT);
         drawDashedLines(gc, GRAPHIC_WIDTH, APP_HEIGHT);
 
-        car = new CarModel(0, APP_HEIGHT / 3 + Constants.ROAD_WIDTH / 4 - 10, 3);
+        cars = new LinkedList<>();
+        cars.add(new Car(0, APP_HEIGHT / 3 + Constants.ROAD_WIDTH / 4 - 10, 1));
+        cars.add(new Car(0, APP_HEIGHT / 3 - Constants.ROAD_WIDTH / 4 - 10, 2));
+        cars.add(new Car(0, 2 * APP_HEIGHT / 3 - Constants.ROAD_WIDTH / 2, 3));
 
         Timeline timeline = new Timeline(
                 new KeyFrame(Duration.millis(40), _ -> moveCar(gc, GRAPHIC_WIDTH, APP_HEIGHT)));
@@ -128,8 +135,11 @@ public class TrafficApplication extends Application {
         drawIntersections(gc, WIDTH, HEIGHT);
         drawDashedLines(gc, WIDTH, HEIGHT);
 
-        car.move(WIDTH);
-        car.draw(gc);
+        for (var car : cars) {
+            car.move(WIDTH);
+            car.draw(gc);
+        }
+
     }
 
     public static void main(String[] args) {
