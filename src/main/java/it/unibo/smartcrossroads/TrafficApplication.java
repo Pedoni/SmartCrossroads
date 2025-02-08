@@ -21,8 +21,11 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import it.unibo.smartcrossroads.model.*;
 import it.unibo.smartcrossroads.utils.*;
@@ -47,13 +50,32 @@ public class TrafficApplication extends Application {
         drawIntersections(gc, GRAPHIC_WIDTH, APP_HEIGHT);
         drawDashedLines(gc, GRAPHIC_WIDTH, APP_HEIGHT);
 
+        Utils.calculatePoints(APP_HEIGHT, GRAPHIC_WIDTH);
+
+        List<Path> paths = Utils.getAllPaths();
+
+        // Nel metodo start() di TrafficApplication:
+        List<Point> path = new ArrayList<>();
+
+        // Punto di partenza
+        Point p0 = new Point(0, APP_HEIGHT * 2 / 3 + Constants.ROAD_WIDTH / 4 - 10);
+        path.add(p0);
+        Point p1 = new Point(GRAPHIC_WIDTH / 3 - Constants.ROAD_WIDTH / 2 - 10,
+                APP_HEIGHT * 2 / 3 + Constants.ROAD_WIDTH / 4 - 10);
+        path.add(p1);
+
+        // Prosegui con gli altri segmenti (lineari oppure curvi)
+        path.add(new Point(GRAPHIC_WIDTH / 3, APP_HEIGHT / 2));
+        path.add(new Point(GRAPHIC_WIDTH / 2, APP_HEIGHT / 2));
+        path.add(new Point(GRAPHIC_WIDTH / 2, 2 * APP_HEIGHT / 3));
+        path.add(new Point(GRAPHIC_WIDTH, 2 * APP_HEIGHT / 3));
+
         cars = new LinkedList<>();
-        cars.add(new Car(0, APP_HEIGHT / 3 + Constants.ROAD_WIDTH / 4 - 10, 1));
-        cars.add(new Car(0, APP_HEIGHT / 3 - Constants.ROAD_WIDTH / 4 - 10, 2));
-        cars.add(new Car(0, 2 * APP_HEIGHT / 3 - Constants.ROAD_WIDTH / 2, 3));
+        cars.add(new Car(1, paths.get(0).points()));
+        cars.add(new Car(2, paths.get(1).points()));
 
         Timeline timeline = new Timeline(
-                new KeyFrame(Duration.millis(40), _ -> moveCar(gc, GRAPHIC_WIDTH, APP_HEIGHT)));
+                new KeyFrame(Duration.millis(20), _ -> moveCar(gc, GRAPHIC_WIDTH, APP_HEIGHT)));
         timeline.setCycleCount(Timeline.INDEFINITE);
         timeline.play();
 
@@ -136,7 +158,7 @@ public class TrafficApplication extends Application {
         drawDashedLines(gc, WIDTH, HEIGHT);
 
         for (var car : cars) {
-            car.move(WIDTH);
+            car.move();
             car.draw(gc);
         }
 
