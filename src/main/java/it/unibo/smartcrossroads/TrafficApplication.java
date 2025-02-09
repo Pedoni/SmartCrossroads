@@ -22,10 +22,8 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
+import java.util.Random;
 
 import it.unibo.smartcrossroads.model.*;
 import it.unibo.smartcrossroads.utils.*;
@@ -33,6 +31,7 @@ import it.unibo.smartcrossroads.utils.*;
 public class TrafficApplication extends Application {
 
     private List<Car> cars;
+    private Random random;
 
     @Override
     public void start(Stage primaryStage) {
@@ -52,14 +51,18 @@ public class TrafficApplication extends Application {
 
         Utils.calculatePoints(APP_HEIGHT, GRAPHIC_WIDTH);
 
-        cars = new LinkedList<>();
-        cars.add(new Car(1, Utils.map.get("s1a")));
-        cars.add(new Car(2, Utils.map.get("s7a")));
+        cars = new ArrayList<>();
+        random = new Random();
 
-        Timeline timeline = new Timeline(
+        Timeline carMovementTimeline = new Timeline(
                 new KeyFrame(Duration.millis(20), _ -> moveCar(gc, GRAPHIC_WIDTH, APP_HEIGHT)));
-        timeline.setCycleCount(Timeline.INDEFINITE);
-        timeline.play();
+        carMovementTimeline.setCycleCount(Timeline.INDEFINITE);
+        carMovementTimeline.play();
+
+        Timeline carSpawnTimeline = new Timeline(
+                new KeyFrame(Duration.seconds(1), _ -> spawnNewCar()));
+        carSpawnTimeline.setCycleCount(Timeline.INDEFINITE);
+        carSpawnTimeline.play();
 
         StackPane canvasContainer = new StackPane(canvas);
 
@@ -134,16 +137,23 @@ public class TrafficApplication extends Application {
 
     private void moveCar(GraphicsContext gc, int WIDTH, int HEIGHT) {
         gc.clearRect(0, 0, WIDTH, HEIGHT);
-
         drawBackground(gc, WIDTH, HEIGHT);
         drawIntersections(gc, WIDTH, HEIGHT);
         drawDashedLines(gc, WIDTH, HEIGHT);
+
+        cars.removeIf(car -> car.hasReachedFinalDestination());
 
         for (var car : cars) {
             car.move();
             car.draw(gc);
         }
+    }
 
+    private void spawnNewCar() {
+        List<String> startPoints = Utils.getStartPoints();
+        String randomStart = startPoints.get(random.nextInt(startPoints.size()));
+        int randomType = random.nextInt(3) + 1; // Genera 1, 2 o 3
+        cars.add(new Car(randomType, Utils.map.get(randomStart)));
     }
 
     public static void main(String[] args) {

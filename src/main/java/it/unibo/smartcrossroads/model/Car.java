@@ -34,6 +34,10 @@ public class Car {
         }
     }
 
+    public boolean hasReachedFinalDestination() {
+        return currentPoint.getDestinations().isEmpty();
+    }
+
     public void move() {
         if (targetPoint == null)
             return;
