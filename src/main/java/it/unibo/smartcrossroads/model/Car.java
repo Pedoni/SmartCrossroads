@@ -2,8 +2,7 @@ package it.unibo.smartcrossroads.model;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
-
-import java.util.List;
+import it.unibo.smartcrossroads.utils.Utils;
 
 public class Car {
     private double x;
@@ -12,64 +11,54 @@ public class Car {
     private double height;
     private double angle = 0;
     private final Image carImage;
-    private final List<Point> path;
-    private int currentPointIndex = 0;
-    private static final double SPEED = 2;
+    private LinkedPoint currentPoint;
+    private LinkedPoint targetPoint;
+    private static final double MAX_SPEED = 2;
+    private double speed = MAX_SPEED;
     private static final double SCALE_FACTOR = 0.05;
 
-    public Car(int type, List<Point> path) {
-        this.x = path.get(0).x();
-        this.y = path.get(0).y();
+    public Car(int type, LinkedPoint initialPoint) {
+        this.x = initialPoint.getX();
+        this.y = initialPoint.getY();
         this.carImage = new Image("file:src/main/resources/it/unibo/smartcrossroads/car" + type + ".png");
         this.width = carImage.getWidth() * SCALE_FACTOR;
         this.height = carImage.getHeight() * SCALE_FACTOR;
-        this.path = path;
-        // this.path = generateAlignedPath(path, getHeight());
+        this.currentPoint = initialPoint;
+        selectNewTarget();
     }
 
-    public double getHeight() {
-        return height;
-    }
-
-    public double getWidth() {
-        return width;
+    private void selectNewTarget() {
+        if (!currentPoint.getDestinations().isEmpty()) {
+            String destination = currentPoint.getRandomDestination();
+            targetPoint = Utils.map.get(destination);
+        }
     }
 
     public void move() {
-        if (currentPointIndex < path.size()) {
-            Point targetPoint = path.get(currentPointIndex);
-            double dx = targetPoint.x() - x;
-            double dy = targetPoint.y() - y;
-            double distance = Math.sqrt(dx * dx + dy * dy);
+        if (targetPoint == null)
+            return;
 
-            if (distance > SPEED) {
-                double moveX = (dx / distance) * SPEED;
-                double moveY = (dy / distance) * SPEED;
-                x += moveX;
-                y += moveY;
-                angle = Math.toDegrees(Math.atan2(dy, dx));
-            } else {
-                x = targetPoint.x();
-                y = targetPoint.y();
-                currentPointIndex++;
-                if (currentPointIndex < path.size()) {
-                    Point nextTarget = path.get(currentPointIndex);
-                    double nextDx = nextTarget.x() - x;
-                    double nextDy = nextTarget.y() - y;
-                    angle = Math.toDegrees(Math.atan2(nextDy, nextDx));
-                }
-            }
+        double dx = targetPoint.getX() - x;
+        double dy = targetPoint.getY() - y;
+        double distance = Math.sqrt(dx * dx + dy * dy);
+
+        if (distance > speed) {
+            x += (dx / distance) * speed;
+            y += (dy / distance) * speed;
+            angle = Math.toDegrees(Math.atan2(dy, dx));
+        } else {
+            x = targetPoint.getX();
+            y = targetPoint.getY();
+            currentPoint = targetPoint;
+            selectNewTarget();
         }
     }
 
     public void draw(GraphicsContext gc) {
-        double carWidth = getWidth();
-        double carHeight = getHeight();
-
         gc.save();
-        gc.translate(x + carWidth / 2, y + carHeight / 2);
+        gc.translate(x + width / 2, y + height / 2);
         gc.rotate(angle);
-        gc.drawImage(carImage, -carWidth / 2, -carHeight / 2, carWidth, carHeight);
+        gc.drawImage(carImage, -width / 2, -height / 2, width, height);
         gc.restore();
     }
 }
