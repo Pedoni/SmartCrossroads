@@ -52,27 +52,9 @@ public class TrafficApplication extends Application {
 
         Utils.calculatePoints(APP_HEIGHT, GRAPHIC_WIDTH);
 
-        List<Path> paths = Utils.getAllPaths();
-
-        // Nel metodo start() di TrafficApplication:
-        List<Point> path = new ArrayList<>();
-
-        // Punto di partenza
-        Point p0 = new Point(0, APP_HEIGHT * 2 / 3 + Constants.ROAD_WIDTH / 4 - 10);
-        path.add(p0);
-        Point p1 = new Point(GRAPHIC_WIDTH / 3 - Constants.ROAD_WIDTH / 2 - 10,
-                APP_HEIGHT * 2 / 3 + Constants.ROAD_WIDTH / 4 - 10);
-        path.add(p1);
-
-        // Prosegui con gli altri segmenti (lineari oppure curvi)
-        path.add(new Point(GRAPHIC_WIDTH / 3, APP_HEIGHT / 2));
-        path.add(new Point(GRAPHIC_WIDTH / 2, APP_HEIGHT / 2));
-        path.add(new Point(GRAPHIC_WIDTH / 2, 2 * APP_HEIGHT / 3));
-        path.add(new Point(GRAPHIC_WIDTH, 2 * APP_HEIGHT / 3));
-
         cars = new LinkedList<>();
-        cars.add(new Car(1, paths.get(0).points()));
-        cars.add(new Car(2, paths.get(1).points()));
+        cars.add(new Car(1, Utils.map.get("s1a")));
+        cars.add(new Car(2, Utils.map.get("s7a")));
 
         Timeline timeline = new Timeline(
                 new KeyFrame(Duration.millis(20), _ -> moveCar(gc, GRAPHIC_WIDTH, APP_HEIGHT)));
