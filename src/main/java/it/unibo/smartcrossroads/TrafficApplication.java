@@ -169,7 +169,11 @@ public class TrafficApplication extends Application {
             car.draw(gc);
         }
 
-        drawTrafficLights(gc, WIDTH, HEIGHT);
+        for (var tl : Utils.trafficLights) {
+            tl.draw(gc);
+        }
+
+        // drawTrafficLights(gc, WIDTH, HEIGHT);
     }
 
     private void updateTrafficLights() {
