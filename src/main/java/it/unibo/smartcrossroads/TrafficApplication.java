@@ -38,7 +38,7 @@ public class TrafficApplication extends Application {
         double screenWidth = Screen.getPrimary().getBounds().getWidth();
         double screenHeight = Screen.getPrimary().getBounds().getHeight();
         int APP_WIDTH = (int) (screenWidth * 3 / 4);
-        int APP_HEIGHT = (int) (screenHeight * 2 / 3);
+        int APP_HEIGHT = (int) (screenHeight * 3 / 4);
         int GRAPHIC_WIDTH = (int) (APP_WIDTH * 3 / 4);
         int SIDEBAR_WIDTH = (int) (APP_WIDTH / 4);
 
@@ -50,14 +50,21 @@ public class TrafficApplication extends Application {
         drawDashedLines(gc, GRAPHIC_WIDTH, APP_HEIGHT);
 
         Utils.calculatePoints(APP_HEIGHT, GRAPHIC_WIDTH);
+        Utils.initializeTrafficLights(APP_HEIGHT, GRAPHIC_WIDTH);
 
         cars = new ArrayList<>();
+
         random = new Random();
 
         Timeline carMovementTimeline = new Timeline(
-                new KeyFrame(Duration.millis(20), _ -> moveCar(gc, GRAPHIC_WIDTH, APP_HEIGHT)));
+                new KeyFrame(Duration.millis(30), _ -> moveCar(gc, GRAPHIC_WIDTH, APP_HEIGHT)));
         carMovementTimeline.setCycleCount(Timeline.INDEFINITE);
         carMovementTimeline.play();
+
+        Timeline trafficLightTimeline = new Timeline(
+                new KeyFrame(Duration.seconds(1), _ -> updateTrafficLights()));
+        trafficLightTimeline.setCycleCount(Timeline.INDEFINITE);
+        trafficLightTimeline.play();
 
         Timeline carSpawnTimeline = new Timeline(
                 new KeyFrame(Duration.seconds(1), _ -> spawnNewCar()));
@@ -93,7 +100,7 @@ public class TrafficApplication extends Application {
 
     private void drawBackground(GraphicsContext gc, int WIDTH, int HEIGHT) {
         LinearGradient gradient = new LinearGradient(0, 0, 0, HEIGHT, false, CycleMethod.NO_CYCLE,
-                new Stop(0, Color.DARKRED), new Stop(1, Color.DARKRED.darker()));
+                new Stop(0, Color.DARKRED.darker().darker()), new Stop(1, Color.DARKRED.darker().darker()));
         gc.setFill(gradient);
         gc.fillRect(0, 0, WIDTH, HEIGHT);
     }
@@ -135,6 +142,20 @@ public class TrafficApplication extends Application {
         }
     }
 
+    private void drawTrafficLights(GraphicsContext gc, int WIDTH, int HEIGHT) {
+        for (var tl : Utils.trafficLights) {
+            TrafficLight.LightColor color = tl.getColor();
+
+            gc.setFill(switch (color) {
+                case GREEN -> Color.GREEN;
+                case YELLOW -> Color.YELLOW;
+                case RED -> Color.RED;
+            });
+
+            gc.fillOval(tl.getX(), tl.getY(), 10, 10);
+        }
+    }
+
     private void moveCar(GraphicsContext gc, int WIDTH, int HEIGHT) {
         gc.clearRect(0, 0, WIDTH, HEIGHT);
         drawBackground(gc, WIDTH, HEIGHT);
@@ -146,6 +167,14 @@ public class TrafficApplication extends Application {
         for (var car : cars) {
             car.move();
             car.draw(gc);
+        }
+
+        drawTrafficLights(gc, WIDTH, HEIGHT);
+    }
+
+    private void updateTrafficLights() {
+        for (TrafficLight light : Utils.trafficLights) {
+            light.updateLight();
         }
     }
 

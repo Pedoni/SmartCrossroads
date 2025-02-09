@@ -1,13 +1,16 @@
 package it.unibo.smartcrossroads.utils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import it.unibo.smartcrossroads.model.LinkedPoint;
+import it.unibo.smartcrossroads.model.TrafficLight;
 
 public class Utils {
         public final static Map<String, LinkedPoint> map = new HashMap<>();
+        public final static List<TrafficLight> trafficLights = new ArrayList<>();
 
         public static void calculatePoints(int h, int w) {
                 map.put("s1a", new LinkedPoint(0, h / 3 + Constants.ROAD_WIDTH / 4, List.of("s1b")));
@@ -108,5 +111,47 @@ public class Utils {
 
         public static List<String> getStartPoints() {
                 return List.of("s1a", "s2a", "s3a", "s4a", "s5a", "s6a", "s7a", "s8a");
+        }
+
+        public static void initializeTrafficLights(int h, int w) {
+                trafficLights.add(new TrafficLight(false, w / 3 - Constants.ROAD_WIDTH / 2 - 5,
+                                h / 3 - Constants.ROAD_WIDTH / 2 - 15));
+                trafficLights.add(new TrafficLight(false,
+                                w / 3 + Constants.ROAD_WIDTH / 2 - 5, h / 3 + Constants.ROAD_WIDTH / 2 + 5));
+
+                trafficLights.add(new TrafficLight(true, w / 3 - Constants.ROAD_WIDTH / 2 - 15,
+                                h / 3 + Constants.ROAD_WIDTH / 2 - 5));
+                trafficLights.add(new TrafficLight(true,
+                                w / 3 + Constants.ROAD_WIDTH / 2 + 5, h / 3 - Constants.ROAD_WIDTH / 2 - 5));
+
+                trafficLights.add(new TrafficLight(false, w * 2 / 3 - Constants.ROAD_WIDTH / 2 - 5,
+                                h / 3 - Constants.ROAD_WIDTH / 2 - 15));
+                trafficLights.add(new TrafficLight(false,
+                                w * 2 / 3 + Constants.ROAD_WIDTH / 2 - 5, h / 3 + Constants.ROAD_WIDTH / 2 + 5));
+
+                trafficLights.add(new TrafficLight(true, w * 2 / 3 - Constants.ROAD_WIDTH / 2 - 15,
+                                h / 3 + Constants.ROAD_WIDTH / 2 - 5));
+                trafficLights.add(new TrafficLight(true,
+                                w * 2 / 3 + Constants.ROAD_WIDTH / 2 + 5, h / 3 - Constants.ROAD_WIDTH / 2 - 5));
+
+                trafficLights.add(new TrafficLight(false, w / 3 - Constants.ROAD_WIDTH / 2 - 5,
+                                h * 2 / 3 - Constants.ROAD_WIDTH / 2 - 15));
+                trafficLights.add(new TrafficLight(false,
+                                w / 3 + Constants.ROAD_WIDTH / 2 - 5, h * 2 / 3 + Constants.ROAD_WIDTH / 2 + 5));
+
+                trafficLights.add(new TrafficLight(true, w / 3 - Constants.ROAD_WIDTH / 2 - 15,
+                                h * 2 / 3 + Constants.ROAD_WIDTH / 2 - 5));
+                trafficLights.add(new TrafficLight(true,
+                                w / 3 + Constants.ROAD_WIDTH / 2 + 5, h * 2 / 3 - Constants.ROAD_WIDTH / 2 - 5));
+
+                trafficLights.add(new TrafficLight(false, w * 2 / 3 - Constants.ROAD_WIDTH / 2 - 5,
+                                h * 2 / 3 - Constants.ROAD_WIDTH / 2 - 15));
+                trafficLights.add(new TrafficLight(false,
+                                w * 2 / 3 + Constants.ROAD_WIDTH / 2 - 5, h * 2 / 3 + Constants.ROAD_WIDTH / 2 + 5));
+
+                trafficLights.add(new TrafficLight(true, w * 2 / 3 - Constants.ROAD_WIDTH / 2 - 15,
+                                h * 2 / 3 + Constants.ROAD_WIDTH / 2 - 5));
+                trafficLights.add(new TrafficLight(true,
+                                w * 2 / 3 + Constants.ROAD_WIDTH / 2 + 5, h * 2 / 3 - Constants.ROAD_WIDTH / 2 - 5));
         }
 }
