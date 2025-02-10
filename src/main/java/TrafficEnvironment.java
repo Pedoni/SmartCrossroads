@@ -1,12 +1,7 @@
 import jason.asSyntax.Literal;
 import jason.asSyntax.Structure;
 import jason.environment.Environment;
-import jason.infra.centralised.RunCentralisedMAS;
 import jason.infra.local.RunLocalMAS;
-import jason.stdlib.print;
-import javafx.application.Platform;
-import javafx.stage.Stage;
-
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Random;

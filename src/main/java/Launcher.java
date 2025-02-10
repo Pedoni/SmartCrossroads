@@ -25,7 +25,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import jason.infra.centralised.RunCentralisedMAS;
 import jason.infra.local.RunLocalMAS;
 import model.*;
 import utils.*;
