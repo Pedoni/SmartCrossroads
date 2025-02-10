@@ -1,8 +1,8 @@
-package it.unibo.smartcrossroads.model;
+package model;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
-import it.unibo.smartcrossroads.utils.Utils;
+import utils.Utils;
 
 public class Car {
     private double x;

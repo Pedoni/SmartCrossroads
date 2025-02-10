@@ -1,4 +1,4 @@
-package it.unibo.smartcrossroads.utils;
+package utils;
 
 public class Constants {
     public static final int ROAD_WIDTH = 100;

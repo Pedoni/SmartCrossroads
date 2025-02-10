@@ -1,4 +1,3 @@
-package it.unibo.smartcrossroads;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -25,8 +24,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import it.unibo.smartcrossroads.model.*;
-import it.unibo.smartcrossroads.utils.*;
+import model.*;
+import utils.*;
 
 public class TrafficApplication extends Application {
 
@@ -189,7 +188,4 @@ public class TrafficApplication extends Application {
         cars.add(new Car(randomType, Utils.map.get(randomStart)));
     }
 
-    public static void main(String[] args) {
-        launch(args);
-    }
 }

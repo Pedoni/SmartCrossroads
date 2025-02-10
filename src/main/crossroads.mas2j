@@ -1,0 +1,14 @@
+MAS crossroads {
+
+	infrastructure: Centralised
+
+	environment: java.TrafficEnvironment()
+
+	agents:
+		car car_agent;
+        station station_agent;
+        traffic traffic_light_agent;
+
+	aslSourcePath:
+		"asl";
+}
