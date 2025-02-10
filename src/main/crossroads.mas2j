@@ -2,7 +2,7 @@ MAS crossroads {
 
 	infrastructure: Centralised
 
-	environment: java.TrafficEnvironment()
+	environment: TrafficEnvironment()
 
 	agents:
 		car car_agent;
@@ -10,5 +10,5 @@ MAS crossroads {
         traffic traffic_light_agent;
 
 	aslSourcePath:
-		"asl";
+		"src/main/asl";
 }

@@ -13,10 +13,10 @@ dependencies {
 
 javafx {
     version = "23.0.2"
-    modules = [ 'javafx.controls', 'javafx.fxml' ]
+    modules = [ "javafx.controls", "javafx.base", "javafx.graphics"]
 }
 
-mainClassName = 'TrafficApplication'
+mainClassName = 'Launcher'
 
 tasks.withType(JavaCompile).configureEach {
     options.compilerArgs += "--enable-preview"

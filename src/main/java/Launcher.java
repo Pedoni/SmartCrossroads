@@ -20,20 +20,48 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import jason.infra.centralised.RunCentralisedMAS;
 import model.*;
 import utils.*;
 
-public class TrafficApplication extends Application {
+public class Launcher extends Application {
 
     private List<Car> cars;
     private Random random;
 
+    private TrafficEnvironment environment;
+    private Stage primaryStage;
+
     @Override
     public void start(Stage primaryStage) {
+        this.primaryStage = primaryStage;
+        startJasonEnvironment();
+    }
+
+    private void startJasonEnvironment() {
+        new Thread(() -> {
+            try {
+                File file = new File("src/main/crossroads.mas2j");
+                RunCentralisedMAS mas = new RunCentralisedMAS();
+                mas.init(new String[] { file.getAbsolutePath() });
+                mas.create();
+                mas.start();
+                environment = (TrafficEnvironment) mas.getEnvironmentInfraTier().getUserEnvironment();
+                environment.setMAS(mas);
+                // Start JavaFX UI setup after environment is ready
+                javafx.application.Platform.runLater(() -> setupStage());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }).start();
+    }
+
+    public void setupStage() {
         double screenWidth = Screen.getPrimary().getBounds().getWidth();
         double screenHeight = Screen.getPrimary().getBounds().getHeight();
         int APP_WIDTH = (int) (screenWidth * 3 / 4);
@@ -188,4 +216,7 @@ public class TrafficApplication extends Application {
         cars.add(new Car(randomType, Utils.map.get(randomStart)));
     }
 
+    public static void main(String[] args) {
+        launch(args);
+    }
 }

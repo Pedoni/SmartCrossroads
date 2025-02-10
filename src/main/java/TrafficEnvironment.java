@@ -1,6 +1,7 @@
 import jason.asSyntax.Literal;
 import jason.asSyntax.Structure;
 import jason.environment.Environment;
+import jason.infra.centralised.RunCentralisedMAS;
 import jason.stdlib.print;
 import javafx.application.Platform;
 import javafx.stage.Stage;
@@ -12,7 +13,7 @@ import java.util.Random;
 public class TrafficEnvironment extends Environment {
 
     private static final Random RAND = new Random();
-    private TrafficApplication application;
+    private RunCentralisedMAS mas;
 
     // action literals
     public static final Literal hotAir = Literal.parseLiteral("spray_air(hot)");
@@ -20,14 +21,12 @@ public class TrafficEnvironment extends Environment {
 
     private double temperature;
 
-    public TrafficEnvironment(TrafficApplication application) {
-        this.application = application;
+    public void setMAS(RunCentralisedMAS mas) {
+        this.mas = mas;
     }
 
     @Override
     public void init(final String[] args) {
-        application = new TrafficApplication();
-
         if (args.length >= 1) {
             temperature = Double.parseDouble(args[0]);
         } else {
