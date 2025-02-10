@@ -1,9 +1,7 @@
-package it.unibo.smartcrossroads;
-
 import jason.asSyntax.Literal;
 import jason.asSyntax.Structure;
 import jason.environment.Environment;
-
+import jason.infra.local.RunLocalMAS;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Random;
@@ -11,12 +9,17 @@ import java.util.Random;
 public class TrafficEnvironment extends Environment {
 
     private static final Random RAND = new Random();
+    private RunLocalMAS mas;
 
     // action literals
     public static final Literal hotAir = Literal.parseLiteral("spray_air(hot)");
     public static final Literal coldAir = Literal.parseLiteral("spray_air(cold)");
 
     private double temperature;
+
+    public void setMAS(RunLocalMAS mas) {
+        this.mas = mas;
+    }
 
     @Override
     public void init(final String[] args) {

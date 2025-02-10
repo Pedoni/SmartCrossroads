@@ -1,13 +1,12 @@
-package it.unibo.smartcrossroads.utils;
+package utils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import it.unibo.smartcrossroads.model.LinkedPoint;
-import it.unibo.smartcrossroads.model.TrafficLight;
-import it.unibo.smartcrossroads.model.TrafficLight.RoadPosition;
+import model.*;
+import model.TrafficLight.RoadPosition;
 
 public class Utils {
         public final static Map<String, LinkedPoint> map = new HashMap<>();

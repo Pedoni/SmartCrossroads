@@ -1,4 +1,4 @@
-package it.unibo.smartcrossroads.model;
+package model;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
@@ -46,19 +46,19 @@ public class TrafficLight {
         timer++;
         switch (color) {
             case GREEN -> {
-                if (timer >= 5) { // Dopo 6 secondi, diventa giallo
+                if (timer >= 5) {
                     color = LightColor.YELLOW;
                     timer = 0;
                 }
             }
             case YELLOW -> {
-                if (timer >= 1) { // Dopo 2 secondi, diventa rosso
+                if (timer >= 1) {
                     color = LightColor.RED;
                     timer = 0;
                 }
             }
             case RED -> {
-                if (timer >= 6) { // Dopo 4 secondi, diventa verde
+                if (timer >= 6) {
                     color = LightColor.GREEN;
                     timer = 0;
                 }
