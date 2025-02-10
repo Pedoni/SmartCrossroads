@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Random;
 
 import jason.infra.centralised.RunCentralisedMAS;
+import jason.infra.local.RunLocalMAS;
 import model.*;
 import utils.*;
 
@@ -47,7 +48,7 @@ public class Launcher extends Application {
         new Thread(() -> {
             try {
                 File file = new File("src/main/crossroads.mas2j");
-                RunCentralisedMAS mas = new RunCentralisedMAS();
+                RunLocalMAS mas = new RunLocalMAS();
                 mas.init(new String[] { file.getAbsolutePath() });
                 mas.create();
                 mas.start();
