@@ -25,21 +25,40 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import interfaces.TrafficListener;
 import jason.infra.local.RunLocalMAS;
+import jason.stdlib.print;
 import model.*;
 import utils.*;
 
-public class Launcher extends Application {
+public class Launcher extends Application implements TrafficListener {
 
     private List<Car> cars;
-    private Random random;
 
     private TrafficEnvironment environment;
     private Stage primaryStage;
+    private int APP_WIDTH;
+    private int APP_HEIGHT;
+    private int GRAPHIC_WIDTH;
+    private int SIDEBAR_WIDTH;
 
     @Override
     public void start(Stage primaryStage) {
         this.primaryStage = primaryStage;
+
+        double screenWidth = Screen.getPrimary().getBounds().getWidth();
+        double screenHeight = Screen.getPrimary().getBounds().getHeight();
+
+        this.APP_WIDTH = (int) (screenWidth * 3 / 4);
+        this.APP_HEIGHT = (int) (screenHeight * 3 / 4);
+        this.GRAPHIC_WIDTH = (int) (APP_WIDTH * 3 / 4);
+        this.SIDEBAR_WIDTH = (int) (APP_WIDTH / 4);
+
+        Utils.calculatePoints(APP_HEIGHT, GRAPHIC_WIDTH);
+        Utils.initializeTrafficLights(APP_HEIGHT, GRAPHIC_WIDTH);
+
+        cars = new ArrayList<>();
+
         startJasonEnvironment();
     }
 
@@ -62,12 +81,7 @@ public class Launcher extends Application {
     }
 
     public void setupStage() {
-        double screenWidth = Screen.getPrimary().getBounds().getWidth();
-        double screenHeight = Screen.getPrimary().getBounds().getHeight();
-        int APP_WIDTH = (int) (screenWidth * 3 / 4);
-        int APP_HEIGHT = (int) (screenHeight * 3 / 4);
-        int GRAPHIC_WIDTH = (int) (APP_WIDTH * 3 / 4);
-        int SIDEBAR_WIDTH = (int) (APP_WIDTH / 4);
+        environment.addTrafficListener(this);
 
         Canvas canvas = new Canvas(GRAPHIC_WIDTH, APP_HEIGHT);
         GraphicsContext gc = canvas.getGraphicsContext2D();
@@ -75,13 +89,6 @@ public class Launcher extends Application {
         drawBackground(gc, GRAPHIC_WIDTH, APP_HEIGHT);
         drawIntersections(gc, GRAPHIC_WIDTH, APP_HEIGHT);
         drawDashedLines(gc, GRAPHIC_WIDTH, APP_HEIGHT);
-
-        Utils.calculatePoints(APP_HEIGHT, GRAPHIC_WIDTH);
-        Utils.initializeTrafficLights(APP_HEIGHT, GRAPHIC_WIDTH);
-
-        cars = new ArrayList<>();
-
-        random = new Random();
 
         Timeline carMovementTimeline = new Timeline(
                 new KeyFrame(Duration.millis(30), _ -> moveCar(gc, GRAPHIC_WIDTH, APP_HEIGHT)));
@@ -93,10 +100,14 @@ public class Launcher extends Application {
         trafficLightTimeline.setCycleCount(Timeline.INDEFINITE);
         trafficLightTimeline.play();
 
-        Timeline carSpawnTimeline = new Timeline(
-                new KeyFrame(Duration.seconds(1), _ -> spawnNewCar()));
-        carSpawnTimeline.setCycleCount(Timeline.INDEFINITE);
-        carSpawnTimeline.play();
+        /*
+         * Timeline carSpawnTimeline = new Timeline(
+         * new KeyFrame(Duration.seconds(1), _ -> spawnNewCar()));
+         * 
+         * 
+         * carSpawnTimeline.setCycleCount(Timeline.INDEFINITE);
+         * carSpawnTimeline.play();
+         */
 
         StackPane canvasContainer = new StackPane(canvas);
 
@@ -210,7 +221,9 @@ public class Launcher extends Application {
     }
 
     private void spawnNewCar() {
+        final Random random = new Random();
         List<String> startPoints = Utils.getStartPoints();
+        System.out.println(startPoints);
         String randomStart = startPoints.get(random.nextInt(startPoints.size()));
         int randomType = random.nextInt(3) + 1; // Genera 1, 2 o 3
         cars.add(new Car(randomType, Utils.map.get(randomStart)));
@@ -218,5 +231,16 @@ public class Launcher extends Application {
 
     public static void main(String[] args) {
         launch(args);
+    }
+
+    @Override
+    public void onCarSpawned(String carId) {
+        spawnNewCar();
+    }
+
+    @Override
+    public void onCarRemoved(String carId) {
+        // TO IMPLEMENT
+        System.out.println("CAR REMOVED IN UI");
     }
 }
