@@ -5,6 +5,7 @@ MAS crossroads {
 	environment: TrafficEnvironment()
 
 	agents:
+		car_creator car_creator_agent;
 		car car_agent;
         station station_agent;
         traffic traffic_light_agent;

@@ -14,8 +14,11 @@ public class TrafficEnvironment extends Environment {
     // action literals
     public static final Literal hotAir = Literal.parseLiteral("spray_air(hot)");
     public static final Literal coldAir = Literal.parseLiteral("spray_air(cold)");
+    public static final Literal spawnCar = Literal.parseLiteral("spawn_car(1)");
+    public static final Literal killCar = Literal.parseLiteral("kill_car(1)");
 
     private double temperature;
+    private int carIndex;
 
     public void setMAS(RunLocalMAS mas) {
         this.mas = mas;
@@ -23,6 +26,7 @@ public class TrafficEnvironment extends Environment {
 
     @Override
     public void init(final String[] args) {
+        carIndex = 1;
         if (args.length >= 1) {
             temperature = Double.parseDouble(args[0]);
         } else {
@@ -40,21 +44,6 @@ public class TrafficEnvironment extends Environment {
 
     @Override
     public boolean executeAction(final String ag, final Structure action) {
-        boolean result = true;
-        if (RAND.nextDouble() < FAILURE_PROBABILITY) {
-            result = false;
-        } else if (action.equals(hotAir)) {
-            temperature += 0.1;
-        } else if (action.equals(coldAir)) {
-            temperature -= 0.1;
-        } else {
-            RuntimeException e = new IllegalArgumentException("Cannot handle action: " + action);
-            throw e;
-        }
-        try {
-            Thread.sleep(500L); // Slowdown the system
-        } catch (InterruptedException ignored) {
-        }
-        return result;
+        return true;
     }
 }
