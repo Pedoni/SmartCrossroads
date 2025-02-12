@@ -23,7 +23,6 @@ public class TrafficEnvironment extends Environment {
     private List<TrafficListener> listeners = new ArrayList<>();
 
     private double temperature;
-    private int carIndex;
 
     public void addTrafficListener(TrafficListener listener) {
         listeners.add(listener);
@@ -35,7 +34,6 @@ public class TrafficEnvironment extends Environment {
 
     @Override
     public void init(final String[] args) {
-        carIndex = 1;
         if (args.length >= 1) {
             temperature = Double.parseDouble(args[0]);
         } else {
@@ -65,13 +63,13 @@ public class TrafficEnvironment extends Environment {
 
     private void notifyCarSpawned(String carId) {
         for (TrafficListener listener : listeners) {
-            listener.onCarSpawned(carId);
+            listener.spawnCar(carId);
         }
     }
 
     private void notifyCarRemoved(String carId) {
         for (TrafficListener listener : listeners) {
-            listener.onCarRemoved(carId);
+            listener.removeCar(carId);
         }
     }
 }

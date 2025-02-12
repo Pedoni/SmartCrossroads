@@ -24,10 +24,14 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import interfaces.TrafficListener;
+import jason.asSyntax.Literal;
 import jason.infra.local.RunLocalMAS;
-import jason.stdlib.print;
 import model.*;
 import utils.*;
 
@@ -99,15 +103,6 @@ public class Launcher extends Application implements TrafficListener {
                 new KeyFrame(Duration.seconds(1), _ -> updateTrafficLights()));
         trafficLightTimeline.setCycleCount(Timeline.INDEFINITE);
         trafficLightTimeline.play();
-
-        /*
-         * Timeline carSpawnTimeline = new Timeline(
-         * new KeyFrame(Duration.seconds(1), _ -> spawnNewCar()));
-         * 
-         * 
-         * carSpawnTimeline.setCycleCount(Timeline.INDEFINITE);
-         * carSpawnTimeline.play();
-         */
 
         StackPane canvasContainer = new StackPane(canvas);
 
@@ -229,18 +224,18 @@ public class Launcher extends Application implements TrafficListener {
         cars.add(new Car(randomType, Utils.map.get(randomStart)));
     }
 
-    public static void main(String[] args) {
-        launch(args);
-    }
-
     @Override
-    public void onCarSpawned(String carId) {
+    public void spawnCar(String carId) {
         spawnNewCar();
     }
 
     @Override
-    public void onCarRemoved(String carId) {
+    public void removeCar(String carId) {
         // TO IMPLEMENT
         System.out.println("CAR REMOVED IN UI");
+    }
+
+    public static void main(String[] args) {
+        launch(args);
     }
 }

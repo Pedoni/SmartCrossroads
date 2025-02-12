@@ -1,7 +1,7 @@
 package interfaces;
 
 public interface TrafficListener {
-    void onCarSpawned(String carId);
+    void spawnCar(String carId);
 
-    void onCarRemoved(String carId);
+    void removeCar(String carId);
 }
