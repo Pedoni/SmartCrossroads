@@ -2,9 +2,14 @@ import jason.asSyntax.Literal;
 import jason.asSyntax.Structure;
 import jason.environment.Environment;
 import jason.infra.local.RunLocalMAS;
+
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.Random;
+
+import interfaces.TrafficListener;
 
 public class TrafficEnvironment extends Environment {
 
@@ -12,10 +17,16 @@ public class TrafficEnvironment extends Environment {
     private RunLocalMAS mas;
 
     // action literals
-    public static final Literal hotAir = Literal.parseLiteral("spray_air(hot)");
-    public static final Literal coldAir = Literal.parseLiteral("spray_air(cold)");
+    public static final Literal spawnCar = Literal.parseLiteral("spawn_car(1)");
+    public static final Literal killCar = Literal.parseLiteral("kill_car(1)");
+
+    private List<TrafficListener> listeners = new ArrayList<>();
 
     private double temperature;
+
+    public void addTrafficListener(TrafficListener listener) {
+        listeners.add(listener);
+    }
 
     public void setMAS(RunLocalMAS mas) {
         this.mas = mas;
@@ -40,21 +51,25 @@ public class TrafficEnvironment extends Environment {
 
     @Override
     public boolean executeAction(final String ag, final Structure action) {
-        boolean result = true;
-        if (RAND.nextDouble() < FAILURE_PROBABILITY) {
-            result = false;
-        } else if (action.equals(hotAir)) {
-            temperature += 0.1;
-        } else if (action.equals(coldAir)) {
-            temperature -= 0.1;
-        } else {
-            RuntimeException e = new IllegalArgumentException("Cannot handle action: " + action);
-            throw e;
+        String actionName = action.getFunctor();
+        System.out.println(actionName);
+        if ("spawn_car".equals(actionName)) {
+            String carName = action.getTerm(0).toString();
+            notifyCarSpawned(carName);
+            return true;
         }
-        try {
-            Thread.sleep(500L); // Slowdown the system
-        } catch (InterruptedException ignored) {
+        return true;
+    }
+
+    private void notifyCarSpawned(String carId) {
+        for (TrafficListener listener : listeners) {
+            listener.spawnCar(carId);
         }
-        return result;
+    }
+
+    private void notifyCarRemoved(String carId) {
+        for (TrafficListener listener : listeners) {
+            listener.removeCar(carId);
+        }
     }
 }

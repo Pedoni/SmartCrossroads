@@ -1,10 +1,10 @@
-/* Initial beliefs and rules */
-
-/* Initial goals */
-
 !start.
 
-/* Plans */
++!start : true <-
+    .print("Car started");
+    .wait(3000);
+    !terminate.
 
-+!start : true <- 
-	.print("hello world").
++!terminate : true <-
+    .print("Car terminating.");
+    kill_car(x).
