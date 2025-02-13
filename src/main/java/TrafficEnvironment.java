@@ -18,16 +18,10 @@ public class TrafficEnvironment extends Environment {
     private static final Random RAND = new Random();
     private RunLocalMAS mas;
 
-    // action literals
-    public static final Literal spawnCar = Literal.parseLiteral("spawn_car(1)");
-    public static final Literal killCar = Literal.parseLiteral("kill_car(1)");
-
     private double height;
     private double width;
 
     private List<TrafficListener> listeners = new ArrayList<>();
-
-    private double temperature;
 
     public void addTrafficListener(TrafficListener listener) {
         listeners.add(listener);
@@ -39,12 +33,6 @@ public class TrafficEnvironment extends Environment {
 
     @Override
     public void init(final String[] args) {
-        if (args.length >= 1) {
-            temperature = Double.parseDouble(args[0]);
-        } else {
-            temperature = RAND.nextDouble() * 20 + 10;
-        }
-
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         height = screenSize.getHeight();
         width = screenSize.getWidth();
@@ -55,8 +43,6 @@ public class TrafficEnvironment extends Environment {
         return Collections.singletonList(
                 Literal.parseLiteral(String.format("start_creation(%s, %s)", height, width)));
     }
-
-    private static final double FAILURE_PROBABILITY = 0.2;
 
     @Override
     public boolean executeAction(final String ag, final Structure action) {
