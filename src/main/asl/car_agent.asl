@@ -1,10 +1,9 @@
-!start.
-
-+!start : true <-
-    .print("Car started");
++start(X, Y) : true <-
+    .print("Started with ", X, " and ", Y);
     .wait(3000);
     !terminate.
 
 +!terminate : true <-
-    .print("Car terminating.");
-    kill_car(x).
+    .my_name(Me);
+    .print("Terminating.");
+    .kill_agent(Me).

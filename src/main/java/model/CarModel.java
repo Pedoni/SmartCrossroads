@@ -4,7 +4,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import utils.Utils;
 
-public class Car {
+public class CarModel {
     private double x;
     private double y;
     private double width;
@@ -17,7 +17,7 @@ public class Car {
     private double speed = MAX_SPEED;
     private static final double SCALE_FACTOR = 0.05;
 
-    public Car(int type, LinkedPoint initialPoint) {
+    public CarModel(int type, LinkedPoint initialPoint) {
         this.carImage = new Image("file:src/main/resources/it/unibo/smartcrossroads/car" + type + "_s.png");
         this.width = carImage.getWidth() * SCALE_FACTOR;
         this.height = carImage.getHeight() * SCALE_FACTOR;

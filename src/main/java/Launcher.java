@@ -37,7 +37,7 @@ import utils.*;
 
 public class Launcher extends Application implements TrafficListener {
 
-    private List<Car> cars;
+    private List<CarModel> cars;
 
     private TrafficEnvironment environment;
     private Stage primaryStage;
@@ -215,18 +215,13 @@ public class Launcher extends Application implements TrafficListener {
         }
     }
 
-    private void spawnNewCar() {
-        final Random random = new Random();
-        List<String> startPoints = Utils.getStartPoints();
-        System.out.println(startPoints);
-        String randomStart = startPoints.get(random.nextInt(startPoints.size()));
-        int randomType = random.nextInt(3) + 1; // Genera 1, 2 o 3
-        cars.add(new Car(randomType, Utils.map.get(randomStart)));
-    }
-
     @Override
     public void spawnCar(String carId) {
-        spawnNewCar();
+        final Random random = new Random();
+        List<String> startPoints = Utils.getStartPoints();
+        String randomStart = startPoints.get(random.nextInt(startPoints.size()));
+        int randomType = random.nextInt(3) + 1; // Genera 1, 2 o 3
+        cars.add(new CarModel(randomType, Utils.map.get(randomStart)));
     }
 
     @Override
