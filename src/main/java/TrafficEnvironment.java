@@ -64,7 +64,7 @@ public class TrafficEnvironment extends Environment {
                 } catch (NoValueException e) {
                     e.printStackTrace();
                 }
-                System.out.println("Spawning car at: (" + Xs + ", " + Ys + ")");
+                System.out.println("[ENV] Spawning car at: (" + Xs + ", " + Ys + ")");
                 notifyCarSpawned("carName");
                 return true;
             default:

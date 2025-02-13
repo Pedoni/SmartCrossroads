@@ -1,12 +1,16 @@
+count(1).
+
 +start_creation(X, Y) <- !create_next_car(X, Y).
 
-+!create_next_car(X, Y) : true <- 
++!create_next_car(X, Y) : count(C) <- 
     .random(R);
     RInt = (R * 8) - ((R * 8) mod 1);
     !get_spawn_position(RInt, X, Y, Xs, Ys);
-    .print("Creating car at: (", Xs, ", ", Ys, ")");
     spawn_car(Xs, Ys);
-    .create_agent(car, "car_agent.asl");
+    .concat("car_", C, N);
+    .create_agent(N, "car_agent.asl");
+    .send(N, tell, start(Xs, Ys));
+    -+count(C + 1);
     .wait(1000);
     !create_next_car(X, Y).
 

@@ -1,7 +1,5 @@
-!start.
-
-+!start : true <-
-    .print("Started");
++start(X, Y) : true <-
+    .print("Started with ", X, " and ", Y);
     .wait(3000);
     !terminate.
 
