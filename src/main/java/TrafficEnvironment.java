@@ -1,7 +1,6 @@
 import jason.NoValueException;
 import jason.asSyntax.Literal;
 import jason.asSyntax.NumberTerm;
-import jason.asSyntax.StringTerm;
 import jason.asSyntax.Structure;
 import jason.environment.Environment;
 import jason.infra.local.RunLocalMAS;
@@ -56,8 +55,6 @@ public class TrafficEnvironment extends Environment {
     @Override
     public boolean executeAction(final String ag, final Structure action) {
         String actionName = action.getFunctor();
-        var array = action.getTermsArray();
-
         switch (actionName) {
             case "spawn_car":
                 double Xs = 0;
@@ -72,7 +69,6 @@ public class TrafficEnvironment extends Environment {
                 } catch (NoValueException e) {
                     e.printStackTrace();
                 }
-                System.out.println("[ENV] Spawning car " + counter + " at: (" + Xs + ", " + Ys + ")");
                 notifyCarSpawned(counter, Xs, Ys);
                 return true;
             default:
