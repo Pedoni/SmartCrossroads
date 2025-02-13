@@ -12,7 +12,7 @@ public class Utils {
         public final static Map<String, LinkedPoint> map = new HashMap<>();
         public final static List<TrafficLight> trafficLights = new ArrayList<>();
 
-        public static void calculatePoints(int h, int w) {
+        public static void calculatePoints(int w, int h) {
                 map.put("s1a", new LinkedPoint(0, h / 3 + Constants.ROAD_WIDTH / 4, List.of("s1b")));
                 map.put("s1b", new LinkedPoint(w / 3 - Constants.ROAD_WIDTH / 2, h / 3 + Constants.ROAD_WIDTH / 4,
                                 List.of("e3b", "c4a", "c1a")));

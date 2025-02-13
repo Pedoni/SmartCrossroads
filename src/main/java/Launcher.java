@@ -23,14 +23,11 @@ import javafx.util.Duration;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import java.util.stream.Collectors;
 
 import interfaces.TrafficListener;
-import jason.asSyntax.Literal;
 import jason.infra.local.RunLocalMAS;
 import model.*;
 import utils.*;
@@ -50,15 +47,15 @@ public class Launcher extends Application implements TrafficListener {
     public void start(Stage primaryStage) {
         this.primaryStage = primaryStage;
 
-        double screenWidth = Screen.getPrimary().getBounds().getWidth();
         double screenHeight = Screen.getPrimary().getBounds().getHeight();
+        double screenWidth = Screen.getPrimary().getBounds().getWidth();
 
-        this.APP_WIDTH = (int) (screenWidth * 3 / 4);
         this.APP_HEIGHT = (int) (screenHeight * 3 / 4);
+        this.APP_WIDTH = (int) (screenWidth * 3 / 4);
         this.GRAPHIC_WIDTH = (int) (APP_WIDTH * 3 / 4);
         this.SIDEBAR_WIDTH = (int) (APP_WIDTH / 4);
 
-        Utils.calculatePoints(APP_HEIGHT, GRAPHIC_WIDTH);
+        Utils.calculatePoints(GRAPHIC_WIDTH, APP_HEIGHT);
         Utils.initializeTrafficLights(APP_HEIGHT, GRAPHIC_WIDTH);
 
         cars = new ArrayList<>();
@@ -216,16 +213,20 @@ public class Launcher extends Application implements TrafficListener {
     }
 
     @Override
-    public void spawnCar(String carId) {
-        final Random random = new Random();
-        List<String> startPoints = Utils.getStartPoints();
-        String randomStart = startPoints.get(random.nextInt(startPoints.size()));
-        int randomType = random.nextInt(3) + 1; // Genera 1, 2 o 3
-        cars.add(new CarModel(randomType, Utils.map.get(randomStart)));
+    public void spawnCar(int carId, double initialX, double initialY) {
+        var startPoints = Utils.map.entrySet()
+                .stream()
+                .filter(entry -> entry.getKey().startsWith("s") && entry.getKey().endsWith("a"))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        LinkedPoint point = startPoints.values().stream().filter(s -> s.getX() == initialX && s.getY() == initialY)
+                .findFirst()
+                .get();
+        int randomType = new Random().nextInt(3) + 1;
+        cars.add(new CarModel(randomType, point));
     }
 
     @Override
-    public void removeCar(String carId) {
+    public void removeCar(int carId) {
         // TO IMPLEMENT
         System.out.println("CAR REMOVED IN UI");
     }
