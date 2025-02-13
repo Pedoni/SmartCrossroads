@@ -215,18 +215,13 @@ public class Launcher extends Application implements TrafficListener {
         }
     }
 
-    private void spawnNewCar() {
+    @Override
+    public void spawnCar(String carId) {
         final Random random = new Random();
         List<String> startPoints = Utils.getStartPoints();
-        System.out.println(startPoints);
         String randomStart = startPoints.get(random.nextInt(startPoints.size()));
         int randomType = random.nextInt(3) + 1; // Genera 1, 2 o 3
         cars.add(new Car(randomType, Utils.map.get(randomStart)));
-    }
-
-    @Override
-    public void spawnCar(String carId) {
-        spawnNewCar();
     }
 
     @Override
