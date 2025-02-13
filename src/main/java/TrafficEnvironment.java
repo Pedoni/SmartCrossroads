@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Random;
 
 import interfaces.TrafficListener;
+import java.awt.Dimension;
+import java.awt.Toolkit;
 
 public class TrafficEnvironment extends Environment {
 
@@ -19,6 +21,9 @@ public class TrafficEnvironment extends Environment {
     // action literals
     public static final Literal spawnCar = Literal.parseLiteral("spawn_car(1)");
     public static final Literal killCar = Literal.parseLiteral("kill_car(1)");
+
+    private double height;
+    private double width;
 
     private List<TrafficListener> listeners = new ArrayList<>();
 
@@ -39,12 +44,16 @@ public class TrafficEnvironment extends Environment {
         } else {
             temperature = RAND.nextDouble() * 20 + 10;
         }
+
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        height = screenSize.getHeight();
+        width = screenSize.getWidth();
     }
 
     @Override
     public Collection<Literal> getPercepts(String agName) {
         return Collections.singletonList(
-                Literal.parseLiteral(String.format("temperature(%s)", temperature)));
+                Literal.parseLiteral(String.format("start_creation(%s, %s)", height, width)));
     }
 
     private static final double FAILURE_PROBABILITY = 0.2;
