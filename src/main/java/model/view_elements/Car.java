@@ -2,40 +2,43 @@ package model.view_elements;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import utils.Constants;
 
 public class Car {
+    private int id;
     private double x;
     private double y;
     private double width;
     private double height;
-    private double angle = 0;
+    private double angle;
     private final Image carImage;
-    private static final double MAX_SPEED = 2;
-    private double speed = MAX_SPEED;
-    private static final double SCALE_FACTOR = 0.05;
 
-    public Car(int type, double x, double y) {
+    public Car(int id, int type, double x, double y) {
+        this.id = id;
         this.carImage = new Image("file:src/main/resources/it/unibo/smartcrossroads/car" + type + "_s.png");
-        this.width = carImage.getWidth() * SCALE_FACTOR;
-        this.height = carImage.getHeight() * SCALE_FACTOR;
+        this.width = carImage.getWidth() * Constants.CAR_SCALE_FACTOR;
+        this.height = carImage.getHeight() * Constants.CAR_SCALE_FACTOR;
         this.x = x - width / 2;
         this.y = y - height / 2;
-        ;
+        this.angle = 0;
     }
 
-    public void move(double newX, double newY) {
-        double dx = newX - x - width / 2;
-        double dy = newY - y - height / 2;
-        double distance = Math.sqrt(dx * dx + dy * dy);
+    public int getId() {
+        return this.id;
+    }
 
-        if (distance > speed) {
-            x += (dx / distance) * speed;
-            y += (dy / distance) * speed;
-            angle = Math.toDegrees(Math.atan2(dy, dx));
-        } else {
-            x = newX - width / 2;
-            y = newY - height / 2;
-        }
+    public double getX() {
+        return this.x;
+    }
+
+    public double getY() {
+        return this.y;
+    }
+
+    public void move(double newX, double newY, double newAngle) {
+        this.x = newX;
+        this.y = newY;
+        this.angle = newAngle;
     }
 
     public void draw(GraphicsContext gc) {
