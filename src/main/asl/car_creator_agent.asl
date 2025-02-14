@@ -46,7 +46,8 @@ lights(0).
         .nth(L, List2, Ys);
         .concat("traffic_light_", L, N);
         .create_agent(N, "traffic_light_agent.asl");
-        .send(N, tell, start(Xs, Ys));
+        if (L mod 2 = 0) { GREEN = true } else { GREEN = false };
+        .send(N, tell, start(GREEN, Xs, Ys));
         -+lights(L + 1);
     };
     !create_next_car(X, Y).

@@ -1,6 +1,4 @@
-+start(X, Y) : true <-
++start(GREEN, X, Y) : true <-
     .my_name(Me);
     .print("Started with ", X, " and ", Y);
-    spawn_traffic_light(X, Y, Me).
-
-    //COLORE E POSIZIONE
+    spawn_traffic_light(GREEN, X, Y, Me).

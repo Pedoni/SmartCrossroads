@@ -191,7 +191,6 @@ public class Launcher extends Application implements TrafficListener {
             tl.draw(gc);
         }
 
-        // drawTrafficLights(gc, WIDTH, HEIGHT);
     }
 
     private void updateTrafficLights() {
@@ -214,9 +213,9 @@ public class Launcher extends Application implements TrafficListener {
     }
 
     @Override
-    public void spawnTrafficLight(int trafficLightId, double x, double y) {
+    public void spawnTrafficLight(boolean isGreen, int trafficLightId, double x, double y) {
         var position = RoadPosition.values()[trafficLightId % 4];
-        trafficLights.add(new TrafficLight(true, x, y, position));
+        trafficLights.add(new TrafficLight(isGreen, x, y, position));
     }
 
     @Override
