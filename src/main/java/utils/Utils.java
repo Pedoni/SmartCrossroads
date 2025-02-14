@@ -3,11 +3,13 @@ package utils;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javafx.scene.image.Image;
 
 import model.*;
 
 public class Utils {
         public final static Map<String, LinkedPoint> map = new HashMap<>();
+        public final static Map<Integer, Image> carImages = new HashMap<>();
 
         public static void calculatePoints(int w, int h) {
                 map.put("s1a", new LinkedPoint(0, h / 3 + Constants.ROAD_WIDTH / 4, List.of("s1b")));
@@ -104,6 +106,12 @@ public class Utils {
                 map.put("c8b", new LinkedPoint(w * 2 / 3 - Constants.ROAD_WIDTH / 2,
                                 h * 2 / 3 + Constants.ROAD_WIDTH / 4,
                                 List.of("e6b", "e7b", "c6b")));
+        }
+
+        public static void loadCarImages() {
+                carImages.put(1, new Image("file:src/main/resources/it/unibo/smartcrossroads/car1_s.png"));
+                carImages.put(2, new Image("file:src/main/resources/it/unibo/smartcrossroads/car2_s.png"));
+                carImages.put(3, new Image("file:src/main/resources/it/unibo/smartcrossroads/car3_s.png"));
         }
 
 }

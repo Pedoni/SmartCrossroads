@@ -54,6 +54,7 @@ public class Launcher extends Application implements TrafficListener {
         this.SIDEBAR_WIDTH = (int) (APP_WIDTH / 4);
 
         Utils.calculatePoints(GRAPHIC_WIDTH, APP_HEIGHT);
+        Utils.loadCarImages();
 
         cars = new ArrayList<>();
         trafficLights = new ArrayList<>();

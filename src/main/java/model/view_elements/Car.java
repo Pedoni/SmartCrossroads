@@ -3,6 +3,7 @@ package model.view_elements;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import utils.Constants;
+import utils.Utils;
 
 public class Car {
     private int id;
@@ -15,7 +16,7 @@ public class Car {
 
     public Car(int id, int type, double x, double y) {
         this.id = id;
-        this.carImage = new Image("file:src/main/resources/it/unibo/smartcrossroads/car" + type + "_s.png");
+        this.carImage = Utils.carImages.get(type);
         this.width = carImage.getWidth() * Constants.CAR_SCALE_FACTOR;
         this.height = carImage.getHeight() * Constants.CAR_SCALE_FACTOR;
         this.x = x - width / 2;
