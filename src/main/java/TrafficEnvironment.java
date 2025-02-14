@@ -5,6 +5,7 @@ import jason.asSyntax.Structure;
 import jason.environment.Environment;
 import jason.infra.local.RunLocalMAS;
 import model.CarModel;
+import utils.LightColor;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -59,6 +60,7 @@ public class TrafficEnvironment extends Environment {
         double Xs = 0;
         double Ys = 0;
         int counter = 0;
+        String color = "";
         switch (actionName) {
             case "spawn_car":
                 try {
@@ -74,7 +76,6 @@ public class TrafficEnvironment extends Environment {
             case "spawn_traffic_light":
                 try {
                     isGreen = action.getTerm(0).toString() == "true";
-                    System.out.println(isGreen);
                     Xs = ((NumberTerm) action.getTerm(1)).solve();
                     Ys = ((NumberTerm) action.getTerm(2)).solve();
                     String name = action.getTerm(3).toString();
@@ -84,6 +85,23 @@ public class TrafficEnvironment extends Environment {
                 }
                 notifyTrafficLightSpawned(isGreen, counter, Xs, Ys);
                 return true;
+            case "update_traffic_light":
+                color = action.getTerm(0).toString();
+                LightColor lightColor = LightColor.GREEN;
+                switch (color) {
+                    case "green":
+                        break;
+                    case "red":
+                        lightColor = LightColor.RED;
+                        break;
+                    default:
+                        lightColor = LightColor.YELLOW;
+                        break;
+                }
+                String name = action.getTerm(1).toString();
+                counter = Integer.parseInt(name.substring(14));
+                notifyTrafficLightUpdate(counter, lightColor);
+                return true;
             default:
                 return false;
         }
@@ -92,6 +110,13 @@ public class TrafficEnvironment extends Environment {
     private void notifyTrafficLightSpawned(boolean isGreen, int trafficLightId, double initialX, double initialY) {
         for (TrafficListener listener : listeners) {
             listener.spawnTrafficLight(isGreen, trafficLightId, initialX, initialY);
+        }
+    }
+
+    private void notifyTrafficLightUpdate(int trafficLightId, LightColor lightColor) {
+        System.out.println("[ENV] TRAFFIC LIGHT UPDATE. Id: " + trafficLightId + ", color: " + lightColor);
+        for (TrafficListener listener : listeners) {
+            listener.updateTrafficLight(trafficLightId, lightColor);
         }
     }
 

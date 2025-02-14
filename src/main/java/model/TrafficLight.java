@@ -2,16 +2,11 @@ package model;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import utils.LightColor;
+import utils.RoadPosition;
 
 public class TrafficLight {
-    public enum LightColor {
-        RED, YELLOW, GREEN
-    }
-
-    public enum RoadPosition {
-        DOWN, UP, RIGHT, LEFT
-    }
-
+    private int id;
     private LightColor color;
     private int timer;
     private double x;
@@ -24,7 +19,8 @@ public class TrafficLight {
     private Image yellow = new Image("file:src/main/resources/it/unibo/smartcrossroads/yellow.png");
     private RoadPosition position;
 
-    public TrafficLight(boolean startGreen, double x, double y, RoadPosition position) {
+    public TrafficLight(int id, boolean startGreen, double x, double y, RoadPosition position) {
+        this.id = id;
         this.color = startGreen ? LightColor.GREEN : LightColor.RED;
         this.timer = 0;
         this.x = x;
@@ -34,12 +30,20 @@ public class TrafficLight {
         this.position = position;
     }
 
+    public int getId() {
+        return id;
+    }
+
     public double getX() {
         return this.x;
     }
 
     public double getY() {
         return this.y;
+    }
+
+    public void setColor(LightColor newColor) {
+        this.color = newColor;
     }
 
     public void updateLight() {
