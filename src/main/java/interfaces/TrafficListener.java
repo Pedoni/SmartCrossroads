@@ -9,5 +9,7 @@ public interface TrafficListener {
 
     void spawnCar(int carId, double initialX, double initialY);
 
+    void moveCar(int carId, double newX, double newY, double angle);
+
     void removeCar(int carId);
 }

@@ -30,13 +30,12 @@ import java.util.stream.Collectors;
 import interfaces.TrafficListener;
 import jason.infra.local.RunLocalMAS;
 import model.*;
-import utils.LightColor;
-import utils.RoadPosition;
+import model.view_elements.Car;
 import utils.*;
 
 public class Launcher extends Application implements TrafficListener {
 
-    private List<CarModel> cars;
+    private List<Car> cars;
     private List<TrafficLight> trafficLights;
 
     private TrafficEnvironment environment;
@@ -75,7 +74,6 @@ public class Launcher extends Application implements TrafficListener {
                 mas.create();
                 mas.start();
                 environment = (TrafficEnvironment) mas.getEnvironmentInfraTier().getUserEnvironment();
-                environment.setMAS(mas);
                 // Start JavaFX UI setup after environment is ready
                 javafx.application.Platform.runLater(() -> setupStage());
             } catch (Exception e) {
@@ -98,13 +96,6 @@ public class Launcher extends Application implements TrafficListener {
                 new KeyFrame(Duration.millis(30), _ -> updateGraphics(gc, GRAPHIC_WIDTH, APP_HEIGHT)));
         carMovementTimeline.setCycleCount(Timeline.INDEFINITE);
         carMovementTimeline.play();
-
-        /*
-         * Timeline trafficLightTimeline = new Timeline(
-         * new KeyFrame(Duration.seconds(1), _ -> updateTrafficLights()));
-         * trafficLightTimeline.setCycleCount(Timeline.INDEFINITE);
-         * trafficLightTimeline.play();
-         */
 
         StackPane canvasContainer = new StackPane(canvas);
 
@@ -183,10 +174,7 @@ public class Launcher extends Application implements TrafficListener {
         drawIntersections(gc, WIDTH, HEIGHT);
         drawDashedLines(gc, WIDTH, HEIGHT);
 
-        cars.removeIf(car -> car.hasReachedFinalDestination());
-
         for (var car : cars) {
-            car.move();
             car.draw(gc);
         }
 
@@ -196,23 +184,19 @@ public class Launcher extends Application implements TrafficListener {
 
     }
 
-    private void updateTrafficLights() {
-        for (TrafficLight light : trafficLights) {
-            light.updateLight();
-        }
+    @Override
+    public void spawnCar(int carId, double initialX, double initialY) {
+        int randomType = new Random().nextInt(3) + 1;
+        cars.add(new Car(carId, randomType, initialX, initialY));
     }
 
     @Override
-    public void spawnCar(int carId, double initialX, double initialY) {
-        var startPoints = Utils.map.entrySet()
-                .stream()
-                .filter(entry -> entry.getKey().startsWith("s") && entry.getKey().endsWith("a"))
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-        LinkedPoint point = startPoints.values().stream().filter(s -> s.getX() == initialX && s.getY() == initialY)
-                .findFirst()
-                .get();
-        int randomType = new Random().nextInt(3) + 1;
-        cars.add(new CarModel(randomType, point));
+    public void moveCar(int carId, double newX, double newY, double newAngle) {
+        for (var car : cars) {
+            if (car.getId() == carId) {
+                car.move(newX, newY, newAngle);
+            }
+        }
     }
 
     @Override
@@ -232,8 +216,7 @@ public class Launcher extends Application implements TrafficListener {
 
     @Override
     public void removeCar(int carId) {
-        // TO IMPLEMENT
-        System.out.println("CAR REMOVED IN UI");
+        cars.removeIf(car -> car.getId() == carId);
     }
 
     public static void main(String[] args) {
