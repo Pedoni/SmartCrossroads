@@ -23,13 +23,9 @@ import javafx.util.Duration;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
-import java.util.stream.Collectors;
-
 import interfaces.TrafficListener;
 import jason.infra.local.RunLocalMAS;
-import model.*;
 import model.view_elements.Car;
 import model.view_elements.TrafficLight;
 import utils.*;
@@ -39,7 +35,6 @@ public class Launcher extends Application implements TrafficListener {
     private List<Car> cars;
     private List<TrafficLight> trafficLights;
 
-    private TrafficEnvironment environment;
     private Stage primaryStage;
     private int APP_WIDTH;
     private int APP_HEIGHT;
@@ -74,9 +69,12 @@ public class Launcher extends Application implements TrafficListener {
                 mas.init(new String[] { file.getAbsolutePath() });
                 mas.create();
                 mas.start();
-                environment = (TrafficEnvironment) mas.getEnvironmentInfraTier().getUserEnvironment();
-                // Start JavaFX UI setup after environment is ready
-                javafx.application.Platform.runLater(() -> setupStage());
+                TrafficEnvironment environment = (TrafficEnvironment) mas.getEnvironmentInfraTier()
+                        .getUserEnvironment();
+                javafx.application.Platform.runLater(() -> {
+                    environment.addTrafficListener(this);
+                    setupStage();
+                });
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -84,8 +82,6 @@ public class Launcher extends Application implements TrafficListener {
     }
 
     public void setupStage() {
-        environment.addTrafficListener(this);
-
         Canvas canvas = new Canvas(GRAPHIC_WIDTH, APP_HEIGHT);
         GraphicsContext gc = canvas.getGraphicsContext2D();
 
