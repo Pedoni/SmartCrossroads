@@ -30,7 +30,8 @@ import java.util.stream.Collectors;
 import interfaces.TrafficListener;
 import jason.infra.local.RunLocalMAS;
 import model.*;
-import model.TrafficLight.RoadPosition;
+import utils.LightColor;
+import utils.RoadPosition;
 import utils.*;
 
 public class Launcher extends Application implements TrafficListener {
@@ -98,10 +99,12 @@ public class Launcher extends Application implements TrafficListener {
         carMovementTimeline.setCycleCount(Timeline.INDEFINITE);
         carMovementTimeline.play();
 
-        Timeline trafficLightTimeline = new Timeline(
-                new KeyFrame(Duration.seconds(1), _ -> updateTrafficLights()));
-        trafficLightTimeline.setCycleCount(Timeline.INDEFINITE);
-        trafficLightTimeline.play();
+        /*
+         * Timeline trafficLightTimeline = new Timeline(
+         * new KeyFrame(Duration.seconds(1), _ -> updateTrafficLights()));
+         * trafficLightTimeline.setCycleCount(Timeline.INDEFINITE);
+         * trafficLightTimeline.play();
+         */
 
         StackPane canvasContainer = new StackPane(canvas);
 
@@ -215,7 +218,16 @@ public class Launcher extends Application implements TrafficListener {
     @Override
     public void spawnTrafficLight(boolean isGreen, int trafficLightId, double x, double y) {
         var position = RoadPosition.values()[trafficLightId % 4];
-        trafficLights.add(new TrafficLight(isGreen, x, y, position));
+        trafficLights.add(new TrafficLight(trafficLightId, isGreen, x, y, position));
+    }
+
+    @Override
+    public void updateTrafficLight(int trafficLightId, LightColor color) {
+        for (var tl : trafficLights) {
+            if (tl.getId() == trafficLightId) {
+                tl.setColor(color);
+            }
+        }
     }
 
     @Override
