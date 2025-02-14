@@ -7,7 +7,6 @@ MAS crossroads {
 	agents:
 		car_creator car_creator_agent;
         station station_agent;
-        traffic traffic_light_agent;
 
 	aslSourcePath:
 		"src/main/asl";

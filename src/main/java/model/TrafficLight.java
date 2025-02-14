@@ -9,7 +9,7 @@ public class TrafficLight {
     }
 
     public enum RoadPosition {
-        UP, DOWN, LEFT, RIGHT
+        DOWN, UP, RIGHT, LEFT
     }
 
     private LightColor color;

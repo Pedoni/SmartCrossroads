@@ -23,21 +23,20 @@ import javafx.util.Duration;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import java.util.stream.Collectors;
 
 import interfaces.TrafficListener;
-import jason.asSyntax.Literal;
 import jason.infra.local.RunLocalMAS;
 import model.*;
+import model.TrafficLight.RoadPosition;
 import utils.*;
 
 public class Launcher extends Application implements TrafficListener {
 
     private List<CarModel> cars;
+    private List<TrafficLight> trafficLights;
 
     private TrafficEnvironment environment;
     private Stage primaryStage;
@@ -50,18 +49,18 @@ public class Launcher extends Application implements TrafficListener {
     public void start(Stage primaryStage) {
         this.primaryStage = primaryStage;
 
-        double screenWidth = Screen.getPrimary().getBounds().getWidth();
         double screenHeight = Screen.getPrimary().getBounds().getHeight();
+        double screenWidth = Screen.getPrimary().getBounds().getWidth();
 
-        this.APP_WIDTH = (int) (screenWidth * 3 / 4);
         this.APP_HEIGHT = (int) (screenHeight * 3 / 4);
+        this.APP_WIDTH = (int) (screenWidth * 3 / 4);
         this.GRAPHIC_WIDTH = (int) (APP_WIDTH * 3 / 4);
         this.SIDEBAR_WIDTH = (int) (APP_WIDTH / 4);
 
-        Utils.calculatePoints(APP_HEIGHT, GRAPHIC_WIDTH);
-        Utils.initializeTrafficLights(APP_HEIGHT, GRAPHIC_WIDTH);
+        Utils.calculatePoints(GRAPHIC_WIDTH, APP_HEIGHT);
 
         cars = new ArrayList<>();
+        trafficLights = new ArrayList<>();
 
         startJasonEnvironment();
     }
@@ -95,7 +94,7 @@ public class Launcher extends Application implements TrafficListener {
         drawDashedLines(gc, GRAPHIC_WIDTH, APP_HEIGHT);
 
         Timeline carMovementTimeline = new Timeline(
-                new KeyFrame(Duration.millis(30), _ -> moveCar(gc, GRAPHIC_WIDTH, APP_HEIGHT)));
+                new KeyFrame(Duration.millis(30), _ -> updateGraphics(gc, GRAPHIC_WIDTH, APP_HEIGHT)));
         carMovementTimeline.setCycleCount(Timeline.INDEFINITE);
         carMovementTimeline.play();
 
@@ -175,21 +174,7 @@ public class Launcher extends Application implements TrafficListener {
         }
     }
 
-    private void drawTrafficLights(GraphicsContext gc, int WIDTH, int HEIGHT) {
-        for (var tl : Utils.trafficLights) {
-            TrafficLight.LightColor color = tl.getColor();
-
-            gc.setFill(switch (color) {
-                case GREEN -> Color.GREEN;
-                case YELLOW -> Color.YELLOW;
-                case RED -> Color.RED;
-            });
-
-            gc.fillOval(tl.getX(), tl.getY(), 10, 10);
-        }
-    }
-
-    private void moveCar(GraphicsContext gc, int WIDTH, int HEIGHT) {
+    private void updateGraphics(GraphicsContext gc, int WIDTH, int HEIGHT) {
         gc.clearRect(0, 0, WIDTH, HEIGHT);
         drawBackground(gc, WIDTH, HEIGHT);
         drawIntersections(gc, WIDTH, HEIGHT);
@@ -202,30 +187,39 @@ public class Launcher extends Application implements TrafficListener {
             car.draw(gc);
         }
 
-        for (var tl : Utils.trafficLights) {
+        for (var tl : trafficLights) {
             tl.draw(gc);
         }
 
-        // drawTrafficLights(gc, WIDTH, HEIGHT);
     }
 
     private void updateTrafficLights() {
-        for (TrafficLight light : Utils.trafficLights) {
+        for (TrafficLight light : trafficLights) {
             light.updateLight();
         }
     }
 
     @Override
-    public void spawnCar(String carId) {
-        final Random random = new Random();
-        List<String> startPoints = Utils.getStartPoints();
-        String randomStart = startPoints.get(random.nextInt(startPoints.size()));
-        int randomType = random.nextInt(3) + 1; // Genera 1, 2 o 3
-        cars.add(new CarModel(randomType, Utils.map.get(randomStart)));
+    public void spawnCar(int carId, double initialX, double initialY) {
+        var startPoints = Utils.map.entrySet()
+                .stream()
+                .filter(entry -> entry.getKey().startsWith("s") && entry.getKey().endsWith("a"))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        LinkedPoint point = startPoints.values().stream().filter(s -> s.getX() == initialX && s.getY() == initialY)
+                .findFirst()
+                .get();
+        int randomType = new Random().nextInt(3) + 1;
+        cars.add(new CarModel(randomType, point));
     }
 
     @Override
-    public void removeCar(String carId) {
+    public void spawnTrafficLight(boolean isGreen, int trafficLightId, double x, double y) {
+        var position = RoadPosition.values()[trafficLightId % 4];
+        trafficLights.add(new TrafficLight(isGreen, x, y, position));
+    }
+
+    @Override
+    public void removeCar(int carId) {
         // TO IMPLEMENT
         System.out.println("CAR REMOVED IN UI");
     }
