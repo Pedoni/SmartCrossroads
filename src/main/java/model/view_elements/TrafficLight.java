@@ -1,32 +1,33 @@
-package model;
+package model.view_elements;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import utils.Constants;
 import utils.LightColor;
 import utils.RoadPosition;
 
 public class TrafficLight {
     private int id;
     private LightColor color;
-    private int timer;
     private double x;
     private double y;
     private double width;
     private double height;
-    private static final double SCALE_FACTOR = 0.15;
-    private Image red = new Image("file:src/main/resources/it/unibo/smartcrossroads/red.png");
-    private Image green = new Image("file:src/main/resources/it/unibo/smartcrossroads/green.png");
-    private Image yellow = new Image("file:src/main/resources/it/unibo/smartcrossroads/yellow.png");
+    private Image red;
+    private Image green;
+    private Image yellow;
     private RoadPosition position;
 
     public TrafficLight(int id, boolean startGreen, double x, double y, RoadPosition position) {
+        red = new Image("file:src/main/resources/it/unibo/smartcrossroads/red.png");
+        green = new Image("file:src/main/resources/it/unibo/smartcrossroads/green.png");
+        yellow = new Image("file:src/main/resources/it/unibo/smartcrossroads/yellow.png");
         this.id = id;
         this.color = startGreen ? LightColor.GREEN : LightColor.RED;
-        this.timer = 0;
         this.x = x;
         this.y = y;
-        this.width = red.getWidth() * SCALE_FACTOR;
-        this.height = red.getHeight() * SCALE_FACTOR;
+        this.width = red.getWidth() * Constants.TL_SCALE_FACTOR;
+        this.height = red.getHeight() * Constants.TL_SCALE_FACTOR;
         this.position = position;
     }
 
@@ -46,30 +47,6 @@ public class TrafficLight {
         this.color = newColor;
     }
 
-    public void updateLight() {
-        timer++;
-        switch (color) {
-            case GREEN -> {
-                if (timer >= 5) {
-                    color = LightColor.YELLOW;
-                    timer = 0;
-                }
-            }
-            case YELLOW -> {
-                if (timer >= 1) {
-                    color = LightColor.RED;
-                    timer = 0;
-                }
-            }
-            case RED -> {
-                if (timer >= 6) {
-                    color = LightColor.GREEN;
-                    timer = 0;
-                }
-            }
-        }
-    }
-
     public LightColor getColor() {
         return color;
     }
@@ -77,11 +54,9 @@ public class TrafficLight {
     public void draw(GraphicsContext gc) {
         gc.save();
 
-        // Centro dell'immagine
         double centerX = x + width / 2;
         double centerY = y + height / 2;
 
-        // Determina l'angolo di rotazione in base alla posizione
         double angle = switch (position) {
             case UP -> 0;
             case DOWN -> 180;
@@ -89,7 +64,6 @@ public class TrafficLight {
             case RIGHT -> 90;
         };
 
-        // Trasla, ruota e poi disegna
         gc.translate(centerX, centerY);
         gc.rotate(angle);
         gc.drawImage(getImageByColor(), -width / 2, -height / 2, width, height);
@@ -97,7 +71,6 @@ public class TrafficLight {
         gc.restore();
     }
 
-    // Metodo di utilità per ottenere l'immagine corretta
     private Image getImageByColor() {
         return switch (color) {
             case RED -> red;

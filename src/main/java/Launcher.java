@@ -31,6 +31,7 @@ import interfaces.TrafficListener;
 import jason.infra.local.RunLocalMAS;
 import model.*;
 import model.view_elements.Car;
+import model.view_elements.TrafficLight;
 import utils.*;
 
 public class Launcher extends Application implements TrafficListener {

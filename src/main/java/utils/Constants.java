@@ -6,4 +6,5 @@ public class Constants {
     public static final int DASH_GAP = 10;
     public static final double CAR_SCALE_FACTOR = 0.05;
     public static final double MAX_SPEED = 2;
+    public static final double TL_SCALE_FACTOR = 0.15;
 }
