@@ -171,8 +171,10 @@ public class Launcher extends Application implements TrafficListener {
         drawIntersections(gc, WIDTH, HEIGHT);
         drawDashedLines(gc, WIDTH, HEIGHT);
 
-        for (var car : cars) {
-            car.draw(gc);
+        synchronized (cars) {
+            for (Car car : cars) {
+                car.draw(gc);
+            }
         }
 
         for (var tl : trafficLights) {
