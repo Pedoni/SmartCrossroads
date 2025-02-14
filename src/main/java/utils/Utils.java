@@ -1,12 +1,10 @@
 package utils;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import model.*;
-import model.TrafficLight.RoadPosition;
 
 public class Utils {
         public final static Map<String, LinkedPoint> map = new HashMap<>();
@@ -106,10 +104,6 @@ public class Utils {
                 map.put("c8b", new LinkedPoint(w * 2 / 3 - Constants.ROAD_WIDTH / 2,
                                 h * 2 / 3 + Constants.ROAD_WIDTH / 4,
                                 List.of("e6b", "e7b", "c6b")));
-        }
-
-        public static List<String> getStartPoints() {
-                return List.of("s1a", "s2a", "s3a", "s4a", "s5a", "s6a", "s7a", "s8a");
         }
 
 }
