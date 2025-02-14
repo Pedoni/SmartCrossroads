@@ -55,24 +55,40 @@ public class TrafficEnvironment extends Environment {
     @Override
     public boolean executeAction(final String ag, final Structure action) {
         String actionName = action.getFunctor();
+        double Xs = 0;
+        double Ys = 0;
+        int counter = 0;
         switch (actionName) {
             case "spawn_car":
-                double Xs = 0;
-                double Ys = 0;
-                int counter = 0;
                 try {
                     Xs = ((NumberTerm) action.getTerm(0)).solve();
                     Ys = ((NumberTerm) action.getTerm(1)).solve();
                     String name = action.getTerm(2).toString();
-                    System.out.println(name);
                     counter = Integer.parseInt(name.substring(4));
                 } catch (NoValueException e) {
                     e.printStackTrace();
                 }
                 notifyCarSpawned(counter, Xs, Ys);
                 return true;
+            case "spawn_traffic_light":
+                try {
+                    Xs = ((NumberTerm) action.getTerm(0)).solve();
+                    Ys = ((NumberTerm) action.getTerm(1)).solve();
+                    String name = action.getTerm(2).toString();
+                    counter = Integer.parseInt(name.substring(14));
+                } catch (NoValueException e) {
+                    e.printStackTrace();
+                }
+                notifyTrafficLightSpawned(counter, Xs, Ys);
+                return true;
             default:
                 return false;
+        }
+    }
+
+    private void notifyTrafficLightSpawned(int trafficLightId, double initialX, double initialY) {
+        for (TrafficListener listener : listeners) {
+            listener.spawnTrafficLight(trafficLightId, initialX, initialY);
         }
     }
 

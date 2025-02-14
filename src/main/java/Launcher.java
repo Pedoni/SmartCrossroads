@@ -30,11 +30,13 @@ import java.util.stream.Collectors;
 import interfaces.TrafficListener;
 import jason.infra.local.RunLocalMAS;
 import model.*;
+import model.TrafficLight.RoadPosition;
 import utils.*;
 
 public class Launcher extends Application implements TrafficListener {
 
     private List<CarModel> cars;
+    private List<TrafficLight> trafficLights;
 
     private TrafficEnvironment environment;
     private Stage primaryStage;
@@ -56,9 +58,9 @@ public class Launcher extends Application implements TrafficListener {
         this.SIDEBAR_WIDTH = (int) (APP_WIDTH / 4);
 
         Utils.calculatePoints(GRAPHIC_WIDTH, APP_HEIGHT);
-        Utils.initializeTrafficLights(APP_HEIGHT, GRAPHIC_WIDTH);
 
         cars = new ArrayList<>();
+        trafficLights = new ArrayList<>();
 
         startJasonEnvironment();
     }
@@ -92,7 +94,7 @@ public class Launcher extends Application implements TrafficListener {
         drawDashedLines(gc, GRAPHIC_WIDTH, APP_HEIGHT);
 
         Timeline carMovementTimeline = new Timeline(
-                new KeyFrame(Duration.millis(30), _ -> moveCar(gc, GRAPHIC_WIDTH, APP_HEIGHT)));
+                new KeyFrame(Duration.millis(30), _ -> updateGraphics(gc, GRAPHIC_WIDTH, APP_HEIGHT)));
         carMovementTimeline.setCycleCount(Timeline.INDEFINITE);
         carMovementTimeline.play();
 
@@ -172,21 +174,7 @@ public class Launcher extends Application implements TrafficListener {
         }
     }
 
-    private void drawTrafficLights(GraphicsContext gc, int WIDTH, int HEIGHT) {
-        for (var tl : Utils.trafficLights) {
-            TrafficLight.LightColor color = tl.getColor();
-
-            gc.setFill(switch (color) {
-                case GREEN -> Color.GREEN;
-                case YELLOW -> Color.YELLOW;
-                case RED -> Color.RED;
-            });
-
-            gc.fillOval(tl.getX(), tl.getY(), 10, 10);
-        }
-    }
-
-    private void moveCar(GraphicsContext gc, int WIDTH, int HEIGHT) {
+    private void updateGraphics(GraphicsContext gc, int WIDTH, int HEIGHT) {
         gc.clearRect(0, 0, WIDTH, HEIGHT);
         drawBackground(gc, WIDTH, HEIGHT);
         drawIntersections(gc, WIDTH, HEIGHT);
@@ -199,7 +187,7 @@ public class Launcher extends Application implements TrafficListener {
             car.draw(gc);
         }
 
-        for (var tl : Utils.trafficLights) {
+        for (var tl : trafficLights) {
             tl.draw(gc);
         }
 
@@ -207,7 +195,7 @@ public class Launcher extends Application implements TrafficListener {
     }
 
     private void updateTrafficLights() {
-        for (TrafficLight light : Utils.trafficLights) {
+        for (TrafficLight light : trafficLights) {
             light.updateLight();
         }
     }
@@ -223,6 +211,12 @@ public class Launcher extends Application implements TrafficListener {
                 .get();
         int randomType = new Random().nextInt(3) + 1;
         cars.add(new CarModel(randomType, point));
+    }
+
+    @Override
+    public void spawnTrafficLight(int trafficLightId, double x, double y) {
+        var position = RoadPosition.values()[trafficLightId % 4];
+        trafficLights.add(new TrafficLight(true, x, y, position));
     }
 
     @Override

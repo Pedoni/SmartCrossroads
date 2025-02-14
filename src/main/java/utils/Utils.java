@@ -10,7 +10,6 @@ import model.TrafficLight.RoadPosition;
 
 public class Utils {
         public final static Map<String, LinkedPoint> map = new HashMap<>();
-        public final static List<TrafficLight> trafficLights = new ArrayList<>();
 
         public static void calculatePoints(int w, int h) {
                 map.put("s1a", new LinkedPoint(0, h / 3 + Constants.ROAD_WIDTH / 4, List.of("s1b")));
@@ -113,49 +112,4 @@ public class Utils {
                 return List.of("s1a", "s2a", "s3a", "s4a", "s5a", "s6a", "s7a", "s8a");
         }
 
-        public static void initializeTrafficLights(int h, int w) {
-                trafficLights.add(new TrafficLight(false, w / 3 - Constants.ROAD_WIDTH / 2 - 15,
-                                h / 3 - Constants.ROAD_WIDTH / 2 - 25, RoadPosition.DOWN));
-                trafficLights.add(new TrafficLight(false,
-                                w / 3 + Constants.ROAD_WIDTH / 2 + 5, h / 3 + Constants.ROAD_WIDTH / 2 + 5,
-                                RoadPosition.UP));
-                trafficLights.add(new TrafficLight(true, w / 3 - Constants.ROAD_WIDTH / 2 - 20,
-                                h / 3 + Constants.ROAD_WIDTH / 2 - 5, RoadPosition.RIGHT));
-                trafficLights.add(new TrafficLight(true,
-                                w / 3 + Constants.ROAD_WIDTH / 2 + 15, h / 3 - Constants.ROAD_WIDTH / 2 - 20,
-                                RoadPosition.LEFT));
-
-                trafficLights.add(new TrafficLight(false, w * 2 / 3 - Constants.ROAD_WIDTH / 2 - 15,
-                                h / 3 - Constants.ROAD_WIDTH / 2 - 25, RoadPosition.DOWN));
-                trafficLights.add(new TrafficLight(false,
-                                w * 2 / 3 + Constants.ROAD_WIDTH / 2 + 5, h / 3 + Constants.ROAD_WIDTH / 2 + 5,
-                                RoadPosition.UP));
-                trafficLights.add(new TrafficLight(true, w * 2 / 3 - Constants.ROAD_WIDTH / 2 - 20,
-                                h / 3 + Constants.ROAD_WIDTH / 2 - 5, RoadPosition.RIGHT));
-                trafficLights.add(new TrafficLight(true,
-                                w * 2 / 3 + Constants.ROAD_WIDTH / 2 + 15, h / 3 - Constants.ROAD_WIDTH / 2 - 20,
-                                RoadPosition.LEFT));
-
-                trafficLights.add(new TrafficLight(false, w / 3 - Constants.ROAD_WIDTH / 2 - 15,
-                                h * 2 / 3 - Constants.ROAD_WIDTH / 2 - 25, RoadPosition.DOWN));
-                trafficLights.add(new TrafficLight(false,
-                                w / 3 + Constants.ROAD_WIDTH / 2 + 5, h * 2 / 3 + Constants.ROAD_WIDTH / 2 + 5,
-                                RoadPosition.UP));
-                trafficLights.add(new TrafficLight(true, w / 3 - Constants.ROAD_WIDTH / 2 - 20,
-                                h * 2 / 3 + Constants.ROAD_WIDTH / 2 - 5, RoadPosition.RIGHT));
-                trafficLights.add(new TrafficLight(true,
-                                w / 3 + Constants.ROAD_WIDTH / 2 + 15, h * 2 / 3 - Constants.ROAD_WIDTH / 2 - 20,
-                                RoadPosition.LEFT));
-
-                trafficLights.add(new TrafficLight(false, w * 2 / 3 - Constants.ROAD_WIDTH / 2 - 15,
-                                h * 2 / 3 - Constants.ROAD_WIDTH / 2 - 25, RoadPosition.DOWN));
-                trafficLights.add(new TrafficLight(false,
-                                w * 2 / 3 + Constants.ROAD_WIDTH / 2 + 5, h * 2 / 3 + Constants.ROAD_WIDTH / 2 + 5,
-                                RoadPosition.UP));
-                trafficLights.add(new TrafficLight(true, w * 2 / 3 - Constants.ROAD_WIDTH / 2 - 20,
-                                h * 2 / 3 + Constants.ROAD_WIDTH / 2 - 5, RoadPosition.RIGHT));
-                trafficLights.add(new TrafficLight(true,
-                                w * 2 / 3 + Constants.ROAD_WIDTH / 2 + 15, h * 2 / 3 - Constants.ROAD_WIDTH / 2 - 20,
-                                RoadPosition.LEFT));
-        }
 }
