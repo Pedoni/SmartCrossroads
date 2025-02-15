@@ -61,7 +61,7 @@ public class Launcher extends Application implements TrafficListener {
         // this.GRAPHIC_WIDTH = TILE_SIZE * GRID_COLS;
         this.SIDEBAR_WIDTH = (int) (APP_WIDTH / 4);
 
-        Utils.calculatePoints(GRAPHIC_WIDTH, APP_HEIGHT);
+        Utils.calculatePoints(TILE_SIZE);
         Utils.loadCarImages();
 
         cars = Collections.synchronizedList(new ArrayList<>());
