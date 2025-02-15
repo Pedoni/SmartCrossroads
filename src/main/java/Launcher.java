@@ -28,13 +28,14 @@ import java.util.Random;
 import interfaces.TrafficListener;
 import jason.infra.local.RunLocalMAS;
 import model.view_elements.Car;
+import model.view_elements.Tile;
 import model.view_elements.TrafficLight;
 import utils.*;
 
 public class Launcher extends Application implements TrafficListener {
 
     private List<Car> cars;
-    private List<TrafficLight> trafficLights;
+    private List<Tile> tiles;
 
     private Stage primaryStage;
     private int APP_WIDTH;
@@ -65,9 +66,32 @@ public class Launcher extends Application implements TrafficListener {
         Utils.loadCarImages();
 
         cars = Collections.synchronizedList(new ArrayList<>());
-        trafficLights = new ArrayList<>();
+        tiles = Collections.synchronizedList(new ArrayList<>());
+        initializeTiles();
 
         startJasonEnvironment();
+    }
+
+    private void initializeTiles() {
+        tiles.add(new Tile(0, TILE_SIZE * 5, TILE_SIZE * 2));
+        tiles.add(new Tile(1, TILE_SIZE * 6, TILE_SIZE * 5));
+        tiles.add(new Tile(2, TILE_SIZE * 4, TILE_SIZE * 4));
+        tiles.add(new Tile(3, TILE_SIZE * 7, TILE_SIZE * 3));
+
+        tiles.add(new Tile(4, TILE_SIZE * 10, TILE_SIZE * 2));
+        tiles.add(new Tile(5, TILE_SIZE * 11, TILE_SIZE * 5));
+        tiles.add(new Tile(6, TILE_SIZE * 9, TILE_SIZE * 4));
+        tiles.add(new Tile(7, TILE_SIZE * 12, TILE_SIZE * 3));
+
+        tiles.add(new Tile(8, TILE_SIZE * 5, TILE_SIZE * 7));
+        tiles.add(new Tile(9, TILE_SIZE * 6, TILE_SIZE * 10));
+        tiles.add(new Tile(10, TILE_SIZE * 4, TILE_SIZE * 9));
+        tiles.add(new Tile(11, TILE_SIZE * 7, TILE_SIZE * 8));
+
+        tiles.add(new Tile(12, TILE_SIZE * 10, TILE_SIZE * 7));
+        tiles.add(new Tile(13, TILE_SIZE * 11, TILE_SIZE * 10));
+        tiles.add(new Tile(14, TILE_SIZE * 9, TILE_SIZE * 9));
+        tiles.add(new Tile(15, TILE_SIZE * 12, TILE_SIZE * 8));
     }
 
     private void startJasonEnvironment() {
@@ -192,16 +216,16 @@ public class Launcher extends Application implements TrafficListener {
         drawBackground(gc, WIDTH, HEIGHT);
         drawIntersections(gc, WIDTH, HEIGHT);
         drawDashedLines(gc, WIDTH, HEIGHT);
-        drawGrid(gc);
+        // drawGrid(gc);
+
+        for (var tl : tiles) {
+            tl.draw(gc);
+        }
 
         synchronized (cars) {
             for (Car car : cars) {
                 car.draw(gc);
             }
-        }
-
-        for (var tl : trafficLights) {
-            tl.draw(gc);
         }
 
     }
@@ -224,14 +248,20 @@ public class Launcher extends Application implements TrafficListener {
     @Override
     public void spawnTrafficLight(boolean isGreen, int trafficLightId, double x, double y) {
         var position = RoadPosition.values()[trafficLightId % 4];
-        trafficLights.add(new TrafficLight(trafficLightId, isGreen, x, y, position));
+        final TrafficLight tl = new TrafficLight(trafficLightId, isGreen, x, y, position);
+        for (var tile : tiles) {
+            if (tile.getId() == trafficLightId) {
+                tile.setTrafficLight(tl);
+                tile.setColor(isGreen ? LightColor.GREEN : LightColor.RED);
+            }
+        }
     }
 
     @Override
     public void updateTrafficLight(int trafficLightId, LightColor color) {
-        for (var tl : trafficLights) {
-            if (tl.getId() == trafficLightId) {
-                tl.setColor(color);
+        for (var tile : tiles) {
+            if (tile.getTrafficLight().getId() == trafficLightId) {
+                tile.setColor(color);
             }
         }
     }
@@ -245,3 +275,11 @@ public class Launcher extends Application implements TrafficListener {
         launch(args);
     }
 }
+
+// PROVARE A SOSTITUIRE I SEMAFORI CON LA COLORAZIONE A PAVIMENTAZIONE. IN
+// PRATICA
+// TOGLIERE LE ICONE DEL SEMAFORO, POI CAMBIARE IL COLORE DELLA TILE RELATIVA
+// ALL'INCROCIO (ES. TILE 4, 4) A SECONDA DEL SEMAFORO. NON DEVE CAMBIARE
+// TOTALMENTE
+// COLORE, MA AVERE UNA SFUMATURA ROSSA, VERDE O GIALLA MA SOTTO ANCORA UN PO'
+// GRIGIO STRADA

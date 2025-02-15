@@ -7,8 +7,8 @@ lights(0).
     ROAD = 100;
     TILE = 50;
     List1 = [
-        TILE * 4.5,
-        TILE * 7.5,
+        TILE * 5,
+        TILE * 6.5,
         TILE * 4.5,
         TILE * 7.5,
 
@@ -28,8 +28,8 @@ lights(0).
         TILE * 12.5
     ];
     List2 = [
-        TILE * 2.5,
-        TILE * 5.5,
+        TILE * 4.5,
+        TILE * 5,
         TILE * 5.5,
         TILE * 2.5,
 
