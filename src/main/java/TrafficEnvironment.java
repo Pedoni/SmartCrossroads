@@ -39,7 +39,7 @@ public class TrafficEnvironment extends Environment {
         height = (int) screenSize.getHeight() * 3 / 4;
         var totalWidth = (int) screenSize.getWidth() * 3 / 4;
         width = (int) totalWidth * 3 / 4;
-        cars = new ArrayList<>();
+        cars = Collections.synchronizedList(new ArrayList<>());
     }
 
     private void moveCars() {
