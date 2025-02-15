@@ -54,9 +54,6 @@ public class TrafficLight {
     public void draw(GraphicsContext gc) {
         gc.save();
 
-        double centerX = x + width / 2;
-        double centerY = y + height / 2;
-
         double angle = switch (position) {
             case UP -> 0;
             case DOWN -> 180;
@@ -64,7 +61,7 @@ public class TrafficLight {
             case RIGHT -> 90;
         };
 
-        gc.translate(centerX, centerY);
+        gc.translate(x, y);
         gc.rotate(angle);
         gc.drawImage(getImageByColor(), -width / 2, -height / 2, width, height);
 

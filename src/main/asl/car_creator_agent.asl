@@ -5,41 +5,48 @@ lights(0).
 
 +!create_traffic_lights(X, Y) <-
     ROAD = 100;
+    TILE = 50;
     List1 = [
-        X / 3 - ROAD / 2 - 15,
-        X / 3 + ROAD / 2 + 5,
-        X / 3 - ROAD / 2 - 20, 
-        X / 3 + ROAD / 2 + 15, 
-        X * 2 / 3 - ROAD / 2 - 15, 
-        X * 2 / 3 + ROAD / 2 + 5, 
-        X * 2 / 3 - ROAD / 2 - 20, 
-        X * 2 / 3 + ROAD / 2 + 15, 
-        X / 3 - ROAD / 2 - 15, 
-        X / 3 + ROAD / 2 + 5, 
-        X / 3 - ROAD / 2 - 20, 
-        X / 3 + ROAD / 2 + 15, 
-        X * 2 / 3 - ROAD / 2 - 15, 
-        X * 2 / 3 + ROAD / 2 + 5, 
-        X * 2 / 3 - ROAD / 2 - 20, 
-        X * 2 / 3 + ROAD / 2 + 15
+        TILE * 4.5,
+        TILE * 7.5,
+        TILE * 4.5,
+        TILE * 7.5,
+
+        TILE * 9.5,
+        TILE * 12.5,
+        TILE * 9.5,
+        TILE * 12.5,
+
+        TILE * 4.5,
+        TILE * 7.5,
+        TILE * 4.5,
+        TILE * 7.5,
+
+        TILE * 9.5,
+        TILE * 12.5,
+        TILE * 9.5,
+        TILE * 12.5
     ];
     List2 = [
-        Y / 3 - ROAD / 2 - 25, 
-        Y / 3 + ROAD / 2 + 5,
-        Y / 3 + ROAD / 2 - 5, 
-        Y / 3 - ROAD / 2 - 20,
-        Y / 3 - ROAD / 2 - 25, 
-        Y / 3 + ROAD / 2 + 5, 
-        Y / 3 + ROAD / 2 - 5, 
-        Y / 3 - ROAD / 2 - 20, 
-        Y * 2 / 3 - ROAD / 2 - 25, 
-        Y * 2 / 3 + ROAD / 2 + 5, 
-        Y * 2 / 3 + ROAD / 2 - 5, 
-        Y * 2 / 3 - ROAD / 2 - 20, 
-        Y * 2 / 3 - ROAD / 2 - 25, 
-        Y * 2 / 3 + ROAD / 2 + 5, 
-        Y * 2 / 3 + ROAD / 2 - 5, 
-        Y * 2 / 3 - ROAD / 2 - 20
+        TILE * 2.5,
+        TILE * 5.5,
+        TILE * 5.5,
+        TILE * 2.5,
+
+        TILE * 2.5,
+        TILE * 5.5,
+        TILE * 5.5,
+        TILE * 2.5,
+
+        TILE * 7.5,
+        TILE * 10.5,
+        TILE * 10.5,
+        TILE * 7.5,
+
+        TILE * 7.5,
+        TILE * 10.5,
+        TILE * 10.5,
+        TILE * 7.5
     ];
     while(lights(L) & L <= 15) {
         .nth(L, List1, Xs);
@@ -55,7 +62,7 @@ lights(0).
 +!create_next_car(X, Y) : cars(C) <-
     .random(R);
     RInt = (R * 8) - ((R * 8) mod 1);
-    !get_spawn_position(RInt, X, Y, Xs, Ys);
+    !get_spawn_position(RInt, Xs, Ys);
     .concat("car_", C, N);
     .create_agent(N, "car_agent.asl");
     .send(N, tell, start(Xs, Ys));
@@ -63,11 +70,11 @@ lights(0).
     .wait(1000);
     !create_next_car(X, Y).
 
-+!get_spawn_position(0, X, Y, 0, Y / 3 + 100 / 4).
-+!get_spawn_position(1, X, Y, 0, Y * 2 / 3 + 100 / 4).
-+!get_spawn_position(2, X, Y, X / 3 - 100 / 4, 0).
-+!get_spawn_position(3, X, Y, X * 2 / 3 - 100 / 4, 0).
-+!get_spawn_position(4, X, Y, X, Y / 3 - 100 / 4).
-+!get_spawn_position(5, X, Y, X, Y * 2 / 3 - 100 / 4).
-+!get_spawn_position(6, X, Y, X * 2 / 3 + 100 / 4, Y).
-+!get_spawn_position(7, X, Y, X / 3 + 100 / 4, Y).
++!get_spawn_position(0, 0, 50 * 4.5).
++!get_spawn_position(1, 0, 50 * 9.5).
++!get_spawn_position(2, 50 * 5.5, 0).
++!get_spawn_position(3, 50 * 10.5, 0).
++!get_spawn_position(4, 50 * 17, 50 * 3.5).
++!get_spawn_position(5, 50 * 17, 50 * 8.5).
++!get_spawn_position(6, 50 * 11.5, 50 * 13).
++!get_spawn_position(7, 50 * 6.5, 50 * 13).

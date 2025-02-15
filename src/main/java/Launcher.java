@@ -61,7 +61,7 @@ public class Launcher extends Application implements TrafficListener {
         // this.GRAPHIC_WIDTH = TILE_SIZE * GRID_COLS;
         this.SIDEBAR_WIDTH = (int) (APP_WIDTH / 4);
 
-        Utils.calculatePoints(GRAPHIC_WIDTH, APP_HEIGHT);
+        Utils.calculatePoints(TILE_SIZE);
         Utils.loadCarImages();
 
         cars = Collections.synchronizedList(new ArrayList<>());
@@ -142,11 +142,11 @@ public class Launcher extends Application implements TrafficListener {
                 new Stop(0, Color.GRAY), new Stop(1, Color.DARKGRAY));
         gc.setFill(roadGradient);
 
-        gc.fillRect(0, HEIGHT / 3 - Constants.ROAD_WIDTH / 2, WIDTH, Constants.ROAD_WIDTH);
-        gc.fillRect(0, 2 * HEIGHT / 3 - Constants.ROAD_WIDTH / 2, WIDTH, Constants.ROAD_WIDTH);
+        gc.fillRect(0, TILE_SIZE * 3, WIDTH, TILE_SIZE * 2);
+        gc.fillRect(0, TILE_SIZE * 8, WIDTH, TILE_SIZE * 2);
 
-        gc.fillRect(WIDTH / 3 - Constants.ROAD_WIDTH / 2, 0, Constants.ROAD_WIDTH, HEIGHT);
-        gc.fillRect(2 * WIDTH / 3 - Constants.ROAD_WIDTH / 2, 0, Constants.ROAD_WIDTH, HEIGHT);
+        gc.fillRect(TILE_SIZE * 5, 0, TILE_SIZE * 2, HEIGHT);
+        gc.fillRect(TILE_SIZE * 10, 0, TILE_SIZE * 2, HEIGHT);
     }
 
     private void drawDashedLines(GraphicsContext gc, int WIDTH, int HEIGHT) {
@@ -154,22 +154,20 @@ public class Launcher extends Application implements TrafficListener {
         gc.setLineWidth(2);
 
         for (int x = 0; x < WIDTH; x += Constants.DASH_LENGTH + Constants.DASH_GAP) {
-            if ((x + Constants.DASH_LENGTH) < WIDTH / 3 - Constants.ROAD_WIDTH / 2
-                    || (x > WIDTH / 3 + Constants.ROAD_WIDTH / 2
-                            && x + Constants.DASH_LENGTH < 2 * WIDTH / 3 - Constants.ROAD_WIDTH / 2)
-                    || x > 2 * WIDTH / 3 + Constants.ROAD_WIDTH / 2) {
-                gc.strokeLine(x, HEIGHT / 3, x + Constants.DASH_LENGTH, HEIGHT / 3);
-                gc.strokeLine(x, 2 * HEIGHT / 3, x + Constants.DASH_LENGTH, 2 * HEIGHT / 3);
+            if ((x + Constants.DASH_LENGTH) < TILE_SIZE * 5
+                    || (x > TILE_SIZE * 7 && x < TILE_SIZE * 10)
+                    || x > TILE_SIZE * 12) {
+                gc.strokeLine(x, TILE_SIZE * 4, x + Constants.DASH_LENGTH, TILE_SIZE * 4);
+                gc.strokeLine(x, TILE_SIZE * 9, x + Constants.DASH_LENGTH, TILE_SIZE * 9);
             }
         }
 
         for (int y = 0; y < HEIGHT; y += Constants.DASH_LENGTH + Constants.DASH_GAP) {
-            if ((y + Constants.DASH_LENGTH) < HEIGHT / 3 - Constants.ROAD_WIDTH / 2
-                    || (y > HEIGHT / 3 + Constants.ROAD_WIDTH / 2
-                            && y + Constants.DASH_LENGTH < 2 * HEIGHT / 3 - Constants.ROAD_WIDTH / 2)
-                    || y > 2 * HEIGHT / 3 + Constants.ROAD_WIDTH / 2) {
-                gc.strokeLine(WIDTH / 3, y, WIDTH / 3, y + Constants.DASH_LENGTH);
-                gc.strokeLine(2 * WIDTH / 3, y, 2 * WIDTH / 3, y + Constants.DASH_LENGTH);
+            if (y < TILE_SIZE * 3
+                    || (y > TILE_SIZE * 5 && y < TILE_SIZE * 8)
+                    || y > TILE_SIZE * 10) {
+                gc.strokeLine(TILE_SIZE * 6, y, TILE_SIZE * 6, y + Constants.DASH_LENGTH);
+                gc.strokeLine(TILE_SIZE * 11, y, TILE_SIZE * 11, y + Constants.DASH_LENGTH);
             }
         }
     }

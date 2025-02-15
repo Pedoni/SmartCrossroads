@@ -113,17 +113,11 @@ public class TrafficEnvironment extends Environment {
                 return true;
             case "update_traffic_light":
                 color = action.getTerm(0).toString();
-                LightColor lightColor = LightColor.GREEN;
-                switch (color) {
-                    case "green":
-                        break;
-                    case "red":
-                        lightColor = LightColor.RED;
-                        break;
-                    default:
-                        lightColor = LightColor.YELLOW;
-                        break;
-                }
+                LightColor lightColor = switch (color) {
+                    case "green" -> LightColor.GREEN;
+                    case "red" -> LightColor.RED;
+                    default -> LightColor.YELLOW;
+                };
                 String name = action.getTerm(1).toString();
                 counter = Integer.parseInt(name.substring(14));
                 notifyTrafficLightUpdate(counter, lightColor);
