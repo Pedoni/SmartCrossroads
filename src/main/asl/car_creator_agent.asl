@@ -5,41 +5,48 @@ lights(0).
 
 +!create_traffic_lights(X, Y) <-
     ROAD = 100;
+    TILE = 50;
     List1 = [
-        X / 3 - ROAD / 2 - 15,
-        X / 3 + ROAD / 2 + 5,
-        X / 3 - ROAD / 2 - 20, 
-        X / 3 + ROAD / 2 + 15, 
-        X * 2 / 3 - ROAD / 2 - 15, 
-        X * 2 / 3 + ROAD / 2 + 5, 
-        X * 2 / 3 - ROAD / 2 - 20, 
-        X * 2 / 3 + ROAD / 2 + 15, 
-        X / 3 - ROAD / 2 - 15, 
-        X / 3 + ROAD / 2 + 5, 
-        X / 3 - ROAD / 2 - 20, 
-        X / 3 + ROAD / 2 + 15, 
-        X * 2 / 3 - ROAD / 2 - 15, 
-        X * 2 / 3 + ROAD / 2 + 5, 
-        X * 2 / 3 - ROAD / 2 - 20, 
-        X * 2 / 3 + ROAD / 2 + 15
+        TILE * 4.5,
+        TILE * 7.5,
+        TILE * 4.5,
+        TILE * 7.5,
+
+        TILE * 9.5,
+        TILE * 12.5,
+        TILE * 9.5,
+        TILE * 12.5,
+
+        TILE * 4.5,
+        TILE * 7.5,
+        TILE * 4.5,
+        TILE * 7.5,
+
+        TILE * 9.5,
+        TILE * 12.5,
+        TILE * 9.5,
+        TILE * 12.5
     ];
     List2 = [
-        Y / 3 - ROAD / 2 - 25, 
-        Y / 3 + ROAD / 2 + 5,
-        Y / 3 + ROAD / 2 - 5, 
-        Y / 3 - ROAD / 2 - 20,
-        Y / 3 - ROAD / 2 - 25, 
-        Y / 3 + ROAD / 2 + 5, 
-        Y / 3 + ROAD / 2 - 5, 
-        Y / 3 - ROAD / 2 - 20, 
-        Y * 2 / 3 - ROAD / 2 - 25, 
-        Y * 2 / 3 + ROAD / 2 + 5, 
-        Y * 2 / 3 + ROAD / 2 - 5, 
-        Y * 2 / 3 - ROAD / 2 - 20, 
-        Y * 2 / 3 - ROAD / 2 - 25, 
-        Y * 2 / 3 + ROAD / 2 + 5, 
-        Y * 2 / 3 + ROAD / 2 - 5, 
-        Y * 2 / 3 - ROAD / 2 - 20
+        TILE * 2.5,
+        TILE * 5.5,
+        TILE * 5.5,
+        TILE * 2.5,
+
+        TILE * 2.5,
+        TILE * 5.5,
+        TILE * 5.5,
+        TILE * 2.5,
+
+        TILE * 7.5,
+        TILE * 10.5,
+        TILE * 10.5,
+        TILE * 7.5,
+
+        TILE * 7.5,
+        TILE * 10.5,
+        TILE * 10.5,
+        TILE * 7.5
     ];
     while(lights(L) & L <= 15) {
         .nth(L, List1, Xs);
