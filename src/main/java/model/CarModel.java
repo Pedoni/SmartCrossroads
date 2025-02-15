@@ -19,7 +19,7 @@ public class CarModel {
 
     public CarModel(int id, int type, LinkedPoint initialPoint) {
         this.id = id;
-        this.carImage = new Image("file:src/main/resources/it/unibo/smartcrossroads/car" + type + "_s.png");
+        this.carImage = Utils.carImages.get(type);
         this.width = carImage.getWidth() * Constants.CAR_SCALE_FACTOR;
         this.height = carImage.getHeight() * Constants.CAR_SCALE_FACTOR;
         this.x = initialPoint.getX() - width / 2;
