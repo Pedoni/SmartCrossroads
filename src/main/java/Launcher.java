@@ -22,6 +22,7 @@ import javafx.util.Duration;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import interfaces.TrafficListener;
@@ -40,6 +41,9 @@ public class Launcher extends Application implements TrafficListener {
     private int APP_HEIGHT;
     private int GRAPHIC_WIDTH;
     private int SIDEBAR_WIDTH;
+    private int TILE_SIZE;
+    private int GRID_COLS;
+    private int GRID_ROWS;
 
     @Override
     public void start(Stage primaryStage) {
@@ -51,12 +55,16 @@ public class Launcher extends Application implements TrafficListener {
         this.APP_HEIGHT = (int) (screenHeight * 3 / 4);
         this.APP_WIDTH = (int) (screenWidth * 3 / 4);
         this.GRAPHIC_WIDTH = (int) (APP_WIDTH * 3 / 4);
+        this.TILE_SIZE = 50;
+        this.GRID_COLS = GRAPHIC_WIDTH / TILE_SIZE;
+        this.GRID_ROWS = APP_HEIGHT / TILE_SIZE;
+        // this.GRAPHIC_WIDTH = TILE_SIZE * GRID_COLS;
         this.SIDEBAR_WIDTH = (int) (APP_WIDTH / 4);
 
         Utils.calculatePoints(GRAPHIC_WIDTH, APP_HEIGHT);
         Utils.loadCarImages();
 
-        cars = new ArrayList<>();
+        cars = Collections.synchronizedList(new ArrayList<>());
         trafficLights = new ArrayList<>();
 
         startJasonEnvironment();
@@ -166,11 +174,27 @@ public class Launcher extends Application implements TrafficListener {
         }
     }
 
+    private void drawGrid(GraphicsContext gc) {
+        gc.setStroke(Color.LIGHTGRAY);
+        gc.setLineWidth(1);
+
+        for (int col = 0; col <= GRID_COLS; col++) {
+            int x = col * TILE_SIZE;
+            gc.strokeLine(x, 0, x, APP_HEIGHT);
+        }
+
+        for (int row = 0; row <= GRID_ROWS; row++) {
+            int y = row * TILE_SIZE;
+            gc.strokeLine(0, y, GRAPHIC_WIDTH, y);
+        }
+    }
+
     private void updateGraphics(GraphicsContext gc, int WIDTH, int HEIGHT) {
         gc.clearRect(0, 0, WIDTH, HEIGHT);
         drawBackground(gc, WIDTH, HEIGHT);
         drawIntersections(gc, WIDTH, HEIGHT);
         drawDashedLines(gc, WIDTH, HEIGHT);
+        drawGrid(gc);
 
         synchronized (cars) {
             for (Car car : cars) {
