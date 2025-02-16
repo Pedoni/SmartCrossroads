@@ -1,80 +1,36 @@
 cars(1).
 lights(0).
 
-+start_creation(X, Y) <- !create_traffic_lights(X, Y).
-
-+!create_traffic_lights(X, Y) <-
-    ROAD = 100;
-    TILE = 50;
-    List1 = [
-        TILE * 5,
-        TILE * 6.5,
-        TILE * 4.5,
-        TILE * 7.5,
-
-        TILE * 9.5,
-        TILE * 12.5,
-        TILE * 9.5,
-        TILE * 12.5,
-
-        TILE * 4.5,
-        TILE * 7.5,
-        TILE * 4.5,
-        TILE * 7.5,
-
-        TILE * 9.5,
-        TILE * 12.5,
-        TILE * 9.5,
-        TILE * 12.5
-    ];
-    List2 = [
-        TILE * 4.5,
-        TILE * 5,
-        TILE * 5.5,
-        TILE * 2.5,
-
-        TILE * 2.5,
-        TILE * 5.5,
-        TILE * 5.5,
-        TILE * 2.5,
-
-        TILE * 7.5,
-        TILE * 10.5,
-        TILE * 10.5,
-        TILE * 7.5,
-
-        TILE * 7.5,
-        TILE * 10.5,
-        TILE * 10.5,
-        TILE * 7.5
-    ];
++start_creation <-
+    List1 = [5, 6, 4, 7, 10, 11, 9, 12, 5, 6, 4, 7, 10, 11, 9, 12];
+    List2 = [2, 5, 4, 3, 2, 5, 4, 3, 7, 10, 9, 8, 7, 10, 9, 8];
     while(lights(L) & L <= 15) {
-        .nth(L, List1, Xs);
-        .nth(L, List2, Ys);
+        .nth(L, List1, PosX);
+        .nth(L, List2, PosY);
         .concat("traffic_light_", L, N);
         .create_agent(N, "traffic_light_agent.asl");
         if (L mod 2 = 0) { GREEN = true } else { GREEN = false };
-        .send(N, tell, start(GREEN, Xs, Ys));
+        .send(N, tell, start(GREEN, PosX, PosY));
         -+lights(L + 1);
     };
-    !create_next_car(X, Y).
+    !create_next_car.
 
-+!create_next_car(X, Y) : cars(C) <-
++!create_next_car : cars(C) <-
     .random(R);
     RInt = (R * 8) - ((R * 8) mod 1);
-    !get_spawn_position(RInt, Xs, Ys);
+    !get_spawn_position(RInt, PosX, PosY);
     .concat("car_", C, N);
     .create_agent(N, "car_agent.asl");
-    .send(N, tell, start(Xs, Ys));
+    .send(N, tell, start(PosX, PosY));
     -+cars(C + 1);
     .wait(1000);
-    !create_next_car(X, Y).
+    !create_next_car.
 
-+!get_spawn_position(0, 0, 50 * 4.5).
-+!get_spawn_position(1, 0, 50 * 9.5).
-+!get_spawn_position(2, 50 * 5.5, 0).
-+!get_spawn_position(3, 50 * 10.5, 0).
-+!get_spawn_position(4, 50 * 17, 50 * 3.5).
-+!get_spawn_position(5, 50 * 17, 50 * 8.5).
-+!get_spawn_position(6, 50 * 11.5, 50 * 13).
-+!get_spawn_position(7, 50 * 6.5, 50 * 13).
++!get_spawn_position(0, 0, 4).
++!get_spawn_position(1, 0, 9).
++!get_spawn_position(2, 5, 0).
++!get_spawn_position(3, 10, 0).
++!get_spawn_position(4, 16, 3).
++!get_spawn_position(5, 16, 8).
++!get_spawn_position(6, 11, 12).
++!get_spawn_position(7, 6, 12).

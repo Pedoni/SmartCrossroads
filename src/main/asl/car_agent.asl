@@ -1,14 +1,14 @@
-+start(X, Y) : true <-
++start(PosX, PosY) : true <-
     .my_name(Me);
-    .print("Started with ", X, " and ", Y);
-    +position(X, Y);
-    spawn_car(X, Y, Me);
-    internal_actions.GetTargetPoint(X, Y);
+    .print("Started with ", PosX, " and ", PosY);
+    +position(PosX, PosY);
+    spawn_car(PosX, PosY, Me);
+    internal_actions.GetTargetPoint(PosX, PosY);
     !path.
 
-+!path : target(X, Y) <-
++!path : target(PosX, PosY) <-
     .my_name(Me);
-    .print("Target ", X, ", ", Y);
+    .print("Target ", PosX, ", ", PosY);
     .wait(3000);
     !terminate.
 

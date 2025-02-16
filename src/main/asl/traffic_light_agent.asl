@@ -1,8 +1,8 @@
-+start(GREEN, X, Y) : true <-
++start(GREEN, PosX, PosY) : true <-
     if (GREEN = true) { COLOR = green } else { COLOR = red };
     .my_name(Me);
-    .print("Started with ", X, " and ", Y, " with color ", COLOR);
-    spawn_traffic_light(GREEN, X, Y, Me);
+    .print("Started with ", PosX, " and ", PosY, " with color ", COLOR);
+    spawn_traffic_light(GREEN, PosX, PosY, Me);
     if (GREEN = true) { TIME = 5000 } else { TIME = 6000 };
     .wait(TIME);
     if (GREEN = true) { NEXT = yellow } else { NEXT = green };

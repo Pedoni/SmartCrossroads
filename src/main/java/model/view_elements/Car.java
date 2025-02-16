@@ -14,13 +14,13 @@ public class Car {
     private double angle;
     private final Image carImage;
 
-    public Car(int id, int type, double x, double y) {
+    public Car(int id, int type, int posX, int posY) {
         this.id = id;
         this.carImage = Utils.carImages.get(type);
         this.width = carImage.getWidth() * Constants.CAR_SCALE_FACTOR;
         this.height = carImage.getHeight() * Constants.CAR_SCALE_FACTOR;
-        this.x = x - width / 2;
-        this.y = y - height / 2;
+        this.x = posX * 50 - width / 2;
+        this.y = posY * 50 - height / 2;
         this.angle = 0;
     }
 

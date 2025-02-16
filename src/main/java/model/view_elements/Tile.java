@@ -5,22 +5,28 @@ import javafx.scene.paint.Color;
 import utils.LightColor;
 
 public class Tile {
-    private int id;
+    private int posX;
+    private int posY;
     private double x;
     private double y;
     private double size;
     private LightColor color;
     private TrafficLight trafficLight;
 
-    public Tile(int id, double x, double y) {
-        this.id = id;
-        this.x = x;
-        this.y = y;
+    public Tile(int posX, int posY) {
+        this.posX = posX;
+        this.posY = posY;
         this.size = 50;
+        this.x = posX * size;
+        this.y = posY * size;
     }
 
-    public double getId() {
-        return this.id;
+    public double getPosX() {
+        return this.posX;
+    }
+
+    public double getPosY() {
+        return this.posY;
     }
 
     public double getX() {
