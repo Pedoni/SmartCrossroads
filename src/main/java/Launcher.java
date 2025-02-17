@@ -73,25 +73,11 @@ public class Launcher extends Application implements TrafficListener {
     }
 
     private void initializeTiles() {
-        tiles.add(new Tile(0, TILE_SIZE * 5, TILE_SIZE * 2));
-        tiles.add(new Tile(1, TILE_SIZE * 6, TILE_SIZE * 5));
-        tiles.add(new Tile(2, TILE_SIZE * 4, TILE_SIZE * 4));
-        tiles.add(new Tile(3, TILE_SIZE * 7, TILE_SIZE * 3));
-
-        tiles.add(new Tile(4, TILE_SIZE * 10, TILE_SIZE * 2));
-        tiles.add(new Tile(5, TILE_SIZE * 11, TILE_SIZE * 5));
-        tiles.add(new Tile(6, TILE_SIZE * 9, TILE_SIZE * 4));
-        tiles.add(new Tile(7, TILE_SIZE * 12, TILE_SIZE * 3));
-
-        tiles.add(new Tile(8, TILE_SIZE * 5, TILE_SIZE * 7));
-        tiles.add(new Tile(9, TILE_SIZE * 6, TILE_SIZE * 10));
-        tiles.add(new Tile(10, TILE_SIZE * 4, TILE_SIZE * 9));
-        tiles.add(new Tile(11, TILE_SIZE * 7, TILE_SIZE * 8));
-
-        tiles.add(new Tile(12, TILE_SIZE * 10, TILE_SIZE * 7));
-        tiles.add(new Tile(13, TILE_SIZE * 11, TILE_SIZE * 10));
-        tiles.add(new Tile(14, TILE_SIZE * 9, TILE_SIZE * 9));
-        tiles.add(new Tile(15, TILE_SIZE * 12, TILE_SIZE * 8));
+        for (int x = 0; x < 17; x++) {
+            for (int y = 0; y < 13; y++) {
+                tiles.add(new Tile(x, y));
+            }
+        }
     }
 
     private void startJasonEnvironment() {
@@ -231,9 +217,9 @@ public class Launcher extends Application implements TrafficListener {
     }
 
     @Override
-    public void spawnCar(int carId, double initialX, double initialY) {
+    public void spawnCar(int carId, int posX, int posY) {
         int randomType = new Random().nextInt(3) + 1;
-        cars.add(new Car(carId, randomType, initialX, initialY));
+        cars.add(new Car(carId, randomType, posX, posY));
     }
 
     @Override
@@ -246,11 +232,11 @@ public class Launcher extends Application implements TrafficListener {
     }
 
     @Override
-    public void spawnTrafficLight(boolean isGreen, int trafficLightId, double x, double y) {
+    public void spawnTrafficLight(boolean isGreen, int trafficLightId, int posX, int posY) {
         var position = RoadPosition.values()[trafficLightId % 4];
-        final TrafficLight tl = new TrafficLight(trafficLightId, isGreen, x, y, position);
+        final TrafficLight tl = new TrafficLight(trafficLightId, isGreen, posX, posY, position);
         for (var tile : tiles) {
-            if (tile.getId() == trafficLightId) {
+            if (tile.getPosX() == posX && tile.getPosY() == posY) {
                 tile.setTrafficLight(tl);
                 tile.setColor(isGreen ? LightColor.GREEN : LightColor.RED);
             }
@@ -260,7 +246,7 @@ public class Launcher extends Application implements TrafficListener {
     @Override
     public void updateTrafficLight(int trafficLightId, LightColor color) {
         for (var tile : tiles) {
-            if (tile.getTrafficLight().getId() == trafficLightId) {
+            if (tile.getTrafficLight() != null && tile.getTrafficLight().getId() == trafficLightId) {
                 tile.setColor(color);
             }
         }
@@ -275,11 +261,3 @@ public class Launcher extends Application implements TrafficListener {
         launch(args);
     }
 }
-
-// PROVARE A SOSTITUIRE I SEMAFORI CON LA COLORAZIONE A PAVIMENTAZIONE. IN
-// PRATICA
-// TOGLIERE LE ICONE DEL SEMAFORO, POI CAMBIARE IL COLORE DELLA TILE RELATIVA
-// ALL'INCROCIO (ES. TILE 4, 4) A SECONDA DEL SEMAFORO. NON DEVE CAMBIARE
-// TOTALMENTE
-// COLORE, MA AVERE UNA SFUMATURA ROSSA, VERDE O GIALLA MA SOTTO ANCORA UN PO'
-// GRIGIO STRADA

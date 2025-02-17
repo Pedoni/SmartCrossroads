@@ -4,23 +4,23 @@ import java.util.List;
 import java.util.Random;
 
 public class LinkedPoint {
-    private final double x;
-    private final double y;
+    private final int posX;
+    private final int posY;
     private final List<String> destinations;
     private static final Random RANDOM = new Random();
 
-    public LinkedPoint(double x, double y, List<String> destinations) {
-        this.x = x;
-        this.y = y;
-        this.destinations = List.copyOf(destinations); // Copia immutabile per sicurezza
+    public LinkedPoint(int posX, int posY, List<String> destinations) {
+        this.posX = posX;
+        this.posY = posY;
+        this.destinations = List.copyOf(destinations);
     }
 
-    public double getX() {
-        return x;
+    public int getPosX() {
+        return posX;
     }
 
-    public double getY() {
-        return y;
+    public int getPosY() {
+        return posY;
     }
 
     public List<String> getDestinations() {

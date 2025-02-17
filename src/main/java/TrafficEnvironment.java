@@ -76,40 +76,40 @@ public class TrafficEnvironment extends Environment {
     @Override
     public Collection<Literal> getPercepts(String agName) {
         return Collections.singletonList(
-                Literal.parseLiteral(String.format("start_creation(%s, %s)", width, height)));
+                Literal.parseLiteral(String.format("start_creation")));
     }
 
     @Override
     public boolean executeAction(final String ag, final Structure action) {
         String actionName = action.getFunctor();
         boolean isGreen = false;
-        double Xs = 0;
-        double Ys = 0;
+        int posX = 0;
+        int posY = 0;
         int counter = 0;
         String color = "";
         switch (actionName) {
             case "spawn_car":
                 try {
-                    Xs = ((NumberTerm) action.getTerm(0)).solve();
-                    Ys = ((NumberTerm) action.getTerm(1)).solve();
+                    posX = (int) ((NumberTerm) action.getTerm(0)).solve();
+                    posY = (int) ((NumberTerm) action.getTerm(1)).solve();
                     String name = action.getTerm(2).toString();
                     counter = Integer.parseInt(name.substring(4));
                 } catch (NoValueException e) {
                     e.printStackTrace();
                 }
-                notifyCarSpawned(counter, Xs, Ys);
+                notifyCarSpawned(counter, posX, posY);
                 return true;
             case "spawn_traffic_light":
                 try {
                     isGreen = action.getTerm(0).toString() == "true";
-                    Xs = ((NumberTerm) action.getTerm(1)).solve();
-                    Ys = ((NumberTerm) action.getTerm(2)).solve();
+                    posX = (int) ((NumberTerm) action.getTerm(1)).solve();
+                    posY = (int) ((NumberTerm) action.getTerm(2)).solve();
                     String name = action.getTerm(3).toString();
                     counter = Integer.parseInt(name.substring(14));
                 } catch (NoValueException e) {
                     e.printStackTrace();
                 }
-                notifyTrafficLightSpawned(isGreen, counter, Xs, Ys);
+                notifyTrafficLightSpawned(isGreen, counter, posX, posY);
                 return true;
             case "update_traffic_light":
                 color = action.getTerm(0).toString();
@@ -127,7 +127,7 @@ public class TrafficEnvironment extends Environment {
         }
     }
 
-    private void notifyTrafficLightSpawned(boolean isGreen, int trafficLightId, double initialX, double initialY) {
+    private void notifyTrafficLightSpawned(boolean isGreen, int trafficLightId, int initialX, int initialY) {
         if (this.listener != null) {
             listener.spawnTrafficLight(isGreen, trafficLightId, initialX, initialY);
         }
@@ -139,22 +139,27 @@ public class TrafficEnvironment extends Environment {
         }
     }
 
-    private void addCar(int carId, double initialX, double initialY) {
-        var startPoints = Utils.map.entrySet()
-                .stream()
-                .filter(entry -> entry.getKey().startsWith("s") && entry.getKey().endsWith("a"))
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-        LinkedPoint point = startPoints.values().stream().filter(s -> s.getX() == initialX && s.getY() == initialY)
-                .findFirst()
-                .get();
-        int randomType = new Random().nextInt(3) + 1;
-        cars.add(new CarModel(carId, randomType, point));
+    private void addCar(int carId, int posX, int posY) {
+        try {
+            var startPoints = Utils.map.entrySet()
+                    .stream()
+                    .filter(entry -> entry.getKey().startsWith("s") && entry.getKey().endsWith("a"))
+                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+            LinkedPoint point = startPoints.values().stream()
+                    .filter(s -> s.getPosX() == posX && s.getPosY() == posY)
+                    .findFirst()
+                    .get();
+            int randomType = new Random().nextInt(3) + 1;
+            cars.add(new CarModel(carId, randomType, point));
+        } catch (Exception e) {
+            System.out.println("ERRORE ENV: " + e);
+        }
     }
 
-    private void notifyCarSpawned(int carId, double initialX, double initialY) {
-        addCar(carId, initialX, initialY);
+    private void notifyCarSpawned(int carId, int posX, int posY) {
+        addCar(carId, posX, posY);
         if (this.listener != null) {
-            listener.spawnCar(carId, initialX, initialY);
+            listener.spawnCar(carId, posX, posY);
         }
     }
 
