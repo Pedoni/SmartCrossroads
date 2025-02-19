@@ -23,10 +23,12 @@ import javafx.util.Duration;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 import interfaces.TrafficListener;
 import jason.infra.local.RunLocalMAS;
+import model.CarModel;
 import model.view_elements.Car;
 import model.view_elements.Tile;
 import model.view_elements.TrafficLight;
@@ -45,6 +47,7 @@ public class Launcher extends Application implements TrafficListener {
     private int TILE_SIZE;
     private int GRID_COLS;
     private int GRID_ROWS;
+    private TrafficEnvironment environment;
 
     @Override
     public void start(Stage primaryStage) {
@@ -90,6 +93,7 @@ public class Launcher extends Application implements TrafficListener {
                 mas.start();
                 TrafficEnvironment environment = (TrafficEnvironment) mas.getEnvironmentInfraTier()
                         .getUserEnvironment();
+                this.environment = environment;
                 javafx.application.Platform.runLater(() -> {
                     environment.addTrafficListener(this);
                     setupStage();
@@ -223,12 +227,26 @@ public class Launcher extends Application implements TrafficListener {
     }
 
     @Override
-    public void moveCar(int carId, double newX, double newY, double newAngle) {
+    public void moveCar(int carId, int posX, int posY) {
         for (var car : cars) {
             if (car.getId() == carId) {
-                car.move(newX, newY, newAngle);
+                new Thread(() -> {
+                    System.out.println("Time thread init: " + new Date());
+                    while (posX != car.getPosX() || posY != car.getPosY()) {
+                        try {
+                            car.move(posX, posY);
+                            Thread.sleep(30);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                            break;
+                        }
+                    }
+                    System.out.println("Pre invio fine animazione: " + new Date());
+                    environment.notifyAnimationFinished(carId);
+                }).start();
             }
         }
+
     }
 
     @Override

@@ -7,12 +7,23 @@
     !path.
 
 +!path : target(PosX, PosY) <-
+    .time(HH,MM,SS,MS);
+    .print("Agent -> ", HH, ":", MM, ":", SS);
     .my_name(Me);
     .print("Target ", PosX, ", ", PosY);
-    .wait(3000);
-    !terminate.
+    if (PosX = -1) {
+        !terminate;
+    } else {
+        move_car(PosX, PosY, Me);
+        -target(PosX, PosY);
+        internal_actions.GetTargetPoint(PosX, PosY);
+    }.
+    //
+    
+    //!terminate.
 
 +!terminate : true <-
     .my_name(Me);
     .print("Terminating.");
     .kill_agent(Me).
+

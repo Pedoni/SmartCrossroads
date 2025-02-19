@@ -9,7 +9,7 @@ public interface TrafficListener {
 
     void spawnCar(int carId, int initialX, int initialY);
 
-    void moveCar(int carId, double newX, double newY, double angle);
+    void moveCar(int carId, int posX, int posY);
 
     void removeCar(int carId);
 }
