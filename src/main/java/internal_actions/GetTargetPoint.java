@@ -22,11 +22,15 @@ public class GetTargetPoint extends DefaultInternalAction {
                 .findFirst()
                 .get();
         var points = point.getDestinations();
-        int index = new Random().nextInt(points.size());
-        var target = Utils.map.get(points.get(index));
-        final int targetX = target.getPosX();
-        final int targetY = target.getPosY();
-        agent.addBel(Literal.parseLiteral("target(" + targetX + ", " + targetY + ")"));
+        if (points.size() > 0) {
+            int index = new Random().nextInt(points.size());
+            var target = Utils.map.get(points.get(index));
+            final int targetX = target.getPosX();
+            final int targetY = target.getPosY();
+            agent.addBel(Literal.parseLiteral("target(" + targetX + ", " + targetY + ")"));
+        } else {
+            agent.addBel(Literal.parseLiteral("target(-1, -1)"));
+        }
         return true;
     }
 }

@@ -9,19 +9,25 @@ public class Car {
     private int id;
     private double x;
     private double y;
+    private int posX;
+    private int posY;
     private double width;
     private double height;
     private double angle;
     private final Image carImage;
+    private double speed;
 
     public Car(int id, int type, int posX, int posY) {
         this.id = id;
         this.carImage = Utils.carImages.get(type);
         this.width = carImage.getWidth() * Constants.CAR_SCALE_FACTOR;
         this.height = carImage.getHeight() * Constants.CAR_SCALE_FACTOR;
+        this.posX = posX;
+        this.posY = posY;
         this.x = posX * 50 - width / 2;
         this.y = posY * 50 - height / 2;
         this.angle = 0;
+        this.speed = Constants.MAX_SPEED;
     }
 
     public int getId() {
@@ -36,10 +42,28 @@ public class Car {
         return this.y;
     }
 
-    public void move(double newX, double newY, double newAngle) {
-        this.x = newX;
-        this.y = newY;
-        this.angle = newAngle;
+    public int getPosX() {
+        return this.posX;
+    }
+
+    public int getPosY() {
+        return this.posY;
+    }
+
+    public void move(int posX, int posY) {
+        double dx = posX * 50 - this.x;
+        double dy = posY * 50 - this.y;
+        double distance = Math.sqrt(dx * dx + dy * dy);
+        if (distance > speed) {
+            this.x += (dx / distance) * speed;
+            this.y += (dy / distance) * speed;
+            this.angle = Math.toDegrees(Math.atan2(dy, dx));
+        } else {
+            this.x = posX * 50;
+            this.y = posY * 50;
+        }
+        this.posX = (int) (this.x / 50);
+        this.posY = (int) (this.y / 50);
     }
 
     public void draw(GraphicsContext gc) {
