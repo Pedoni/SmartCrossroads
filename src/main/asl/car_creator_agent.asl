@@ -1,7 +1,9 @@
 cars(1).
 lights(0).
 
-+start_creation <-
+!start_creation.
+
++!start_creation <-
     List1 = [5, 6, 4, 7, 10, 11, 9, 12, 5, 6, 4, 7, 10, 11, 9, 12];
     List2 = [2, 5, 4, 3, 2, 5, 4, 3, 7, 10, 9, 8, 7, 10, 9, 8];
     while(lights(L) & L <= 15) {
@@ -23,7 +25,7 @@ lights(0).
     .create_agent(N, "car_agent.asl");
     .send(N, tell, start(PosX, PosY));
     -+cars(C + 1);
-    .wait(1000);
+    .wait(30000);
     !create_next_car.
 
 +!get_spawn_position(0, 0, 4).

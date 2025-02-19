@@ -4,26 +4,19 @@
     +position(PosX, PosY);
     spawn_car(PosX, PosY, Me);
     internal_actions.GetTargetPoint(PosX, PosY);
-    !path.
+    !path(Me).
 
-+!path : target(PosX, PosY) <-
-    .time(HH,MM,SS,MS);
-    .print("Agent -> ", HH, ":", MM, ":", SS);
-    .my_name(Me);
-    .print("Target ", PosX, ", ", PosY);
-    if (PosX = -1) {
-        !terminate;
-    } else {
++!path(Me) : target(PosX, PosY) <-
+    if (PosX >= 0) {
         move_car(PosX, PosY, Me);
-        -target(PosX, PosY);
         internal_actions.GetTargetPoint(PosX, PosY);
+    } else {
+        !terminate;
     }.
-    //
-    
-    //!terminate.
 
 +!terminate : true <-
     .my_name(Me);
+    remove_car(Me);
     .print("Terminating.");
     .kill_agent(Me).
 

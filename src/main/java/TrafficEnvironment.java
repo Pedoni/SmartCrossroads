@@ -1,30 +1,16 @@
 import jason.NoValueException;
-import jason.architecture.AgArch;
 import jason.asSemantics.Agent;
-import jason.asSyntax.ASSyntax;
 import jason.asSyntax.Literal;
 import jason.asSyntax.NumberTerm;
 import jason.asSyntax.Structure;
 import jason.environment.Environment;
-import model.CarModel;
-import model.LinkedPoint;
 import utils.LightColor;
-import utils.Utils;
-
 import java.rmi.RemoteException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.stream.Collectors;
-
 import interfaces.TrafficListener;
 
 public class TrafficEnvironment extends Environment {
-    private List<CarModel> cars;
     private TrafficListener listener = null;
 
     public void addTrafficListener(TrafficListener listener) {
@@ -32,30 +18,22 @@ public class TrafficEnvironment extends Environment {
     }
 
     public void notifyAnimationFinished(int carId) {
-        Literal goal = Literal.parseLiteral("path");
-        System.out.println("Time env notify: " + new Date());
+        Literal goal = Literal.parseLiteral("path(car_" + carId + ")");
         try {
             Agent agent = getEnvironmentInfraTier().getRuntimeServices().getAgentSnapshot("car_" + carId);
             agent.getTS().getC().addAchvGoal(goal, null);
         } catch (RemoteException e) {
             e.printStackTrace();
         }
-
-    }
-
-    public void clearAnimationFinished(int carId) {
-
     }
 
     @Override
     public void init(final String[] args) {
-        cars = Collections.synchronizedList(new ArrayList<>());
     }
 
     @Override
     public Collection<Literal> getPercepts(String agName) {
-        return Collections.singletonList(
-                Literal.parseLiteral(String.format("start_creation")));
+        return Collections.emptyList();
     }
 
     @Override
@@ -103,7 +81,6 @@ public class TrafficEnvironment extends Environment {
                 notifyTrafficLightUpdate(counter, lightColor);
                 return true;
             case "move_car":
-                System.out.println("[ENV] Inizio movecar " + new Date());
                 try {
                     posX = (int) ((NumberTerm) action.getTerm(0)).solve();
                     posY = (int) ((NumberTerm) action.getTerm(1)).solve();
@@ -112,9 +89,12 @@ public class TrafficEnvironment extends Environment {
                 } catch (NoValueException e) {
                     e.printStackTrace();
                 }
-                System.out.println("[ENV] Pre notify " + new Date());
                 notifyCarMoved(counter, posX, posY);
-                System.out.println("[ENV] post notify " + new Date());
+                return true;
+            case "remove_car":
+                name = action.getTerm(0).toString();
+                counter = Integer.parseInt(name.substring(4));
+                notifyCarRemoved(counter);
                 return true;
             default:
                 return false;
@@ -133,27 +113,7 @@ public class TrafficEnvironment extends Environment {
         }
     }
 
-    private void addCar(int carId, int posX, int posY) {
-        try {
-            var startPoints = Utils.map.entrySet()
-                    .stream()
-                    .filter(entry -> entry.getKey().startsWith("s") && entry.getKey().endsWith("a"))
-                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-            System.out.println("POS X: " + posX);
-            System.out.println("POS Y: " + posY);
-            LinkedPoint point = startPoints.values().stream()
-                    .filter(s -> s.getPosX() == posX && s.getPosY() == posY)
-                    .findFirst()
-                    .get();
-            int randomType = new Random().nextInt(3) + 1;
-            cars.add(new CarModel(carId, randomType, point));
-        } catch (Exception e) {
-            System.out.println("ERRORE ENV: " + e);
-        }
-    }
-
     private void notifyCarSpawned(int carId, int posX, int posY) {
-        addCar(carId, posX, posY);
         if (this.listener != null) {
             listener.spawnCar(carId, posX, posY);
         }
@@ -162,6 +122,12 @@ public class TrafficEnvironment extends Environment {
     private void notifyCarMoved(int carId, int posX, int posY) {
         if (this.listener != null) {
             listener.moveCar(carId, posX, posY);
+        }
+    }
+
+    private void notifyCarRemoved(int carId) {
+        if (this.listener != null) {
+            listener.removeCar(carId);
         }
     }
 

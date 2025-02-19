@@ -231,7 +231,6 @@ public class Launcher extends Application implements TrafficListener {
         for (var car : cars) {
             if (car.getId() == carId) {
                 new Thread(() -> {
-                    System.out.println("Time thread init: " + new Date());
                     while (posX != car.getPosX() || posY != car.getPosY()) {
                         try {
                             car.move(posX, posY);
@@ -241,7 +240,6 @@ public class Launcher extends Application implements TrafficListener {
                             break;
                         }
                     }
-                    System.out.println("Pre invio fine animazione: " + new Date());
                     environment.notifyAnimationFinished(carId);
                 }).start();
             }
