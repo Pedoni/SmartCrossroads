@@ -5,8 +5,8 @@
     internal_actions.GetTargetPoint(PosX, PosY);
     !path(Me).
 
-+!path(Me) : target(PosX, PosY) <-
-    if (PosX >= 0) {
++!path(Me) : true <-
+    if (target(PosX, PosY) & (PosX >= 0)) {
         move_car(PosX, PosY, Me);
         internal_actions.GetTargetPoint(PosX, PosY);
     } else {
