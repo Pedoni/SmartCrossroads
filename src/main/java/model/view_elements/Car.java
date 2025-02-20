@@ -50,6 +50,10 @@ public class Car {
         return this.posY;
     }
 
+    public double getSpeed() {
+        return this.speed;
+    }
+
     public void move(int posX, int posY) {
         double dx = posX * 50 - this.x;
         double dy = posY * 50 - this.y;
@@ -64,6 +68,13 @@ public class Car {
         }
         this.posX = (int) (this.x / 50);
         this.posY = (int) (this.y / 50);
+    }
+
+    public void setPosition(int posX, int posY) {
+        this.x = posX * 50;
+        this.y = posY * 50;
+        this.posX = posX;
+        this.posY = posY;
     }
 
     public void draw(GraphicsContext gc) {

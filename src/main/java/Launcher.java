@@ -1,4 +1,5 @@
 
+import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
@@ -204,7 +205,7 @@ public class Launcher extends Application implements TrafficListener {
         drawBackground(gc, WIDTH, HEIGHT);
         drawIntersections(gc, WIDTH, HEIGHT);
         drawDashedLines(gc, WIDTH, HEIGHT);
-        // drawGrid(gc);
+        drawGrid(gc);
 
         for (var tl : tiles) {
             tl.draw(gc);
@@ -228,21 +229,25 @@ public class Launcher extends Application implements TrafficListener {
     public void moveCar(int carId, int posX, int posY) {
         for (var car : cars) {
             if (car.getId() == carId) {
-                new Thread(() -> {
-                    while (posX != car.getPosX() || posY != car.getPosY()) {
-                        try {
-                            car.move(posX, posY);
-                            Thread.sleep(30);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                            break;
-                        }
+                Timeline timeline = new Timeline();
+                timeline.getKeyFrames().add(new KeyFrame(Duration.millis(30), _ -> {
+                    car.move(posX, posY);
+
+                    // Check distance instead of posX/posY
+                    double dx = posX * 50 - car.getX();
+                    double dy = posY * 50 - car.getY();
+                    double distance = Math.sqrt(dx * dx + dy * dy);
+
+                    if (distance < car.getSpeed()) { // Stop when very close
+                        car.setPosition(posX, posY); // Force final position
+                        timeline.stop();
+                        environment.notifyAnimationFinished(carId);
                     }
-                    environment.notifyAnimationFinished(carId);
-                }).start();
+                }));
+                timeline.setCycleCount(Animation.INDEFINITE);
+                timeline.play();
             }
         }
-
     }
 
     @Override
