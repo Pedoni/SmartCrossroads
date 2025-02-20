@@ -24,8 +24,8 @@ public class Car {
         this.height = carImage.getHeight() * Constants.CAR_SCALE_FACTOR;
         this.posX = posX;
         this.posY = posY;
-        this.x = posX * 50 - width / 2;
-        this.y = posY * 50 - height / 2;
+        this.x = posX * 50;
+        this.y = posY * 50;
         this.angle = 0;
         this.speed = Constants.MAX_SPEED;
     }
