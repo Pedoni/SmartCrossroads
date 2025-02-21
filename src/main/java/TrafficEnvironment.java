@@ -10,9 +10,11 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import interfaces.TrafficListener;
 
@@ -32,8 +34,14 @@ public class TrafficEnvironment extends Environment {
     @Override
     public boolean removePercept(String agName, Literal percept) {
         if (percepts.containsKey(agName)) {
-            boolean removed = percepts.get(agName).remove(percept);
-            informAgsEnvironmentChanged();
+            Set<Literal> agentPercepts = percepts.get(agName);
+            List<Literal> toRemove = agentPercepts.stream()
+                    .filter(p -> p.getFunctor().equals(percept.getFunctor()))
+                    .collect(Collectors.toList());
+            boolean removed = agentPercepts.removeAll(toRemove);
+            if (removed) {
+                informAgsEnvironmentChanged();
+            }
             return removed;
         }
         return false;
@@ -57,11 +65,9 @@ public class TrafficEnvironment extends Environment {
             Literal targetBelief = Literal.parseLiteral(
                     String.format("target(%d, %d)", target.getPosX(), target.getPosY()));
             addPercept("car_" + carId, targetBelief);
-            System.out.println("Aggiunto nuovo target: " + targetBelief);
         } else {
             Literal targetEnd = Literal.parseLiteral("target(-1, -1)");
             addPercept("car_" + carId, targetEnd);
-            System.out.println("Aggiunto target di fine: " + targetEnd);
         }
     }
 

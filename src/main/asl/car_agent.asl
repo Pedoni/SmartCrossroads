@@ -6,6 +6,7 @@
     internal_actions.GetTargetPoint(PosX, PosY).
 
 +target(PosX, PosY) : name(Me) & PosX >= 0 <-
+    -target(_, _);
     move_car(PosX, PosY, Me).
 
 +target(PosX, PosY) : name(Me) & PosX < 0 <-
