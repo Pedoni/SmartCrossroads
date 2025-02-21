@@ -31,16 +31,13 @@ public class TrafficEnvironment extends Environment {
                     .get();
 
             var points = point.getDestinations();
-            System.out.println("[ENV] prima di aggiunta");
             if (points.size() > 0) {
                 int index = new Random().nextInt(points.size());
                 var target = Utils.map.get(points.get(index));
 
-                // First, remove the old target belief using proper Literal creation
                 Literal oldTarget = Literal.parseLiteral("target(_, _)");
                 agent.abolish(oldTarget, null);
 
-                // Create and add the new target belief
                 Literal targetBelief = Literal.parseLiteral(
                         String.format("target(%d, %d)", target.getPosX(), target.getPosY()));
                 agent.addBel(targetBelief);

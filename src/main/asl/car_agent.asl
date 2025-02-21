@@ -5,10 +5,10 @@
     spawn_car(PosX, PosY, Me);
     internal_actions.GetTargetPoint(PosX, PosY).
 
-+target(PosX, PosY) : name(Me) & (PosX >= 0) <-
++target(PosX, PosY) : name(Me) & PosX >= 0 <-
     move_car(PosX, PosY, Me).
 
-+target(PosX, PosY) : name(Me) & (PosX < 0) <-
++target(PosX, PosY) : name(Me) & PosX < 0 <-
     !terminate.
 
 +!terminate <-

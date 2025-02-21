@@ -231,7 +231,6 @@ public class Launcher extends Application implements TrafficListener {
         for (var car : cars) {
             if (car.getId() == carId) {
                 Timeline timeline = new Timeline();
-                // System.out.println("[UI] Inizio disegno movimento: " + new Date().getTime());
                 timeline.getKeyFrames().add(new KeyFrame(Duration.millis(30), _ -> {
 
                     car.move(posX, posY);
@@ -243,7 +242,6 @@ public class Launcher extends Application implements TrafficListener {
                     if (distance < car.getSpeed()) {
                         car.setPosition(posX, posY);
                         timeline.stop();
-                        System.out.println("[UI] Fine disegno movimento: " + new Date().getTime());
                         environment.notifyAnimationFinished(carId, posX, posY);
                     }
                 }));
