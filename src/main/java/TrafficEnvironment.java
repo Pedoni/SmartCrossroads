@@ -31,20 +31,15 @@ public class TrafficEnvironment extends Environment {
                     .get();
 
             var points = point.getDestinations();
+            Literal oldTarget = Literal.parseLiteral("target(_, _)");
+            agent.abolish(oldTarget, null);
             if (points.size() > 0) {
                 int index = new Random().nextInt(points.size());
                 var target = Utils.map.get(points.get(index));
-
-                Literal oldTarget = Literal.parseLiteral("target(_, _)");
-                agent.abolish(oldTarget, null);
-
                 Literal targetBelief = Literal.parseLiteral(
                         String.format("target(%d, %d)", target.getPosX(), target.getPosY()));
                 agent.addBel(targetBelief);
             } else {
-                // Handle the case where there are no destinations
-                Literal oldTarget = Literal.parseLiteral("target(_, _)");
-                agent.abolish(oldTarget, null);
                 agent.addBel(Literal.parseLiteral("target(-1, -1)"));
             }
         } catch (RemoteException | RevisionFailedException e) {

@@ -11,8 +11,7 @@
 +target(PosX, PosY) : name(Me) & PosX < 0 <-
     !terminate.
 
-+!terminate <-
-    .my_name(Me);
++!terminate : name(Me) <-
     remove_car(Me);
     .print("Terminating.");
     .kill_agent(Me).
