@@ -27,6 +27,10 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
 import interfaces.TrafficListener;
 import jason.infra.local.RunLocalMAS;
 import model.view_elements.Car;
@@ -230,23 +234,16 @@ public class Launcher extends Application implements TrafficListener {
     public void moveCar(int carId, int posX, int posY) {
         for (var car : cars) {
             if (car.getId() == carId) {
-                Timeline timeline = new Timeline();
-                timeline.getKeyFrames().add(new KeyFrame(Duration.millis(30), _ -> {
-
-                    car.move(posX, posY);
-
-                    double dx = posX * 50 - car.getX();
-                    double dy = posY * 50 - car.getY();
-                    double distance = Math.sqrt(dx * dx + dy * dy);
-
-                    if (distance < car.getSpeed()) {
-                        car.setPosition(posX, posY);
-                        timeline.stop();
+                ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
+                scheduler.scheduleAtFixedRate(() -> {
+                    boolean finished = car.move(posX, posY);
+                    if (finished) {
                         environment.notifyAnimationFinished(carId, posX, posY);
+                        car.setPosition(posX, posY);
+                        scheduler.shutdown();
                     }
-                }));
-                timeline.setCycleCount(Animation.INDEFINITE);
-                timeline.play();
+                }, 0, 30, TimeUnit.MILLISECONDS);
+                break;
             }
         }
     }

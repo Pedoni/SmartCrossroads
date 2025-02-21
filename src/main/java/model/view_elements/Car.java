@@ -54,7 +54,7 @@ public class Car {
         return this.speed;
     }
 
-    public void move(int posX, int posY) {
+    public boolean move(int posX, int posY) {
         double dx = posX * 50 - this.x;
         double dy = posY * 50 - this.y;
         double distance = Math.sqrt(dx * dx + dy * dy);
@@ -68,6 +68,7 @@ public class Car {
         }
         this.posX = (int) (this.x / 50);
         this.posY = (int) (this.y / 50);
+        return distance == 0;
     }
 
     public void setPosition(int posX, int posY) {
