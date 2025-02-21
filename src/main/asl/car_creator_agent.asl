@@ -24,9 +24,9 @@ lights(0).
     .concat("car_", C, N);
     .create_agent(N, "car_agent.asl");
     .send(N, tell, start(PosX, PosY));
-    -+cars(C + 1);
-    .wait(30000);
-    !create_next_car.
+    -+cars(C + 1).
+    //.wait(1000);
+    //!create_next_car.
 
 +!get_spawn_position(0, 0, 4).
 +!get_spawn_position(1, 0, 9).

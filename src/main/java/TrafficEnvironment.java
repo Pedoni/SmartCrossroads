@@ -1,13 +1,18 @@
 import jason.NoValueException;
+import jason.RevisionFailedException;
 import jason.asSemantics.Agent;
 import jason.asSyntax.Literal;
 import jason.asSyntax.NumberTerm;
 import jason.asSyntax.Structure;
 import jason.environment.Environment;
 import utils.LightColor;
+import utils.Utils;
+
 import java.rmi.RemoteException;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Random;
+
 import interfaces.TrafficListener;
 
 public class TrafficEnvironment extends Environment {
@@ -17,12 +22,35 @@ public class TrafficEnvironment extends Environment {
         this.listener = listener;
     }
 
-    public void notifyAnimationFinished(int carId) {
-        Literal goal = Literal.parseLiteral("path(car_" + carId + ")");
+    public void notifyAnimationFinished(int carId, int posX, int posY) {
         try {
             Agent agent = getEnvironmentInfraTier().getRuntimeServices().getAgentSnapshot("car_" + carId);
-            agent.getTS().getC().addAchvGoal(goal, null);
-        } catch (RemoteException e) {
+            var point = Utils.map.values().stream()
+                    .filter(s -> s.getPosX() == posX && s.getPosY() == posY)
+                    .findFirst()
+                    .get();
+
+            var points = point.getDestinations();
+            System.out.println("[ENV] prima di aggiunta");
+            if (points.size() > 0) {
+                int index = new Random().nextInt(points.size());
+                var target = Utils.map.get(points.get(index));
+
+                // First, remove the old target belief using proper Literal creation
+                Literal oldTarget = Literal.parseLiteral("target(_, _)");
+                agent.abolish(oldTarget, null);
+
+                // Create and add the new target belief
+                Literal targetBelief = Literal.parseLiteral(
+                        String.format("target(%d, %d)", target.getPosX(), target.getPosY()));
+                agent.addBel(targetBelief);
+            } else {
+                // Handle the case where there are no destinations
+                Literal oldTarget = Literal.parseLiteral("target(_, _)");
+                agent.abolish(oldTarget, null);
+                agent.addBel(Literal.parseLiteral("target(-1, -1)"));
+            }
+        } catch (RemoteException | RevisionFailedException e) {
             e.printStackTrace();
         }
     }

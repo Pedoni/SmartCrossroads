@@ -24,6 +24,7 @@ import javafx.util.Duration;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 import interfaces.TrafficListener;
@@ -230,18 +231,20 @@ public class Launcher extends Application implements TrafficListener {
         for (var car : cars) {
             if (car.getId() == carId) {
                 Timeline timeline = new Timeline();
+                // System.out.println("[UI] Inizio disegno movimento: " + new Date().getTime());
                 timeline.getKeyFrames().add(new KeyFrame(Duration.millis(30), _ -> {
+
                     car.move(posX, posY);
 
-                    // Check distance instead of posX/posY
                     double dx = posX * 50 - car.getX();
                     double dy = posY * 50 - car.getY();
                     double distance = Math.sqrt(dx * dx + dy * dy);
 
-                    if (distance < car.getSpeed()) { // Stop when very close
-                        car.setPosition(posX, posY); // Force final position
+                    if (distance < car.getSpeed()) {
+                        car.setPosition(posX, posY);
                         timeline.stop();
-                        environment.notifyAnimationFinished(carId);
+                        System.out.println("[UI] Fine disegno movimento: " + new Date().getTime());
+                        environment.notifyAnimationFinished(carId, posX, posY);
                     }
                 }));
                 timeline.setCycleCount(Animation.INDEFINITE);
