@@ -1,6 +1,4 @@
 import jason.NoValueException;
-import jason.RevisionFailedException;
-import jason.asSemantics.Agent;
 import jason.asSyntax.Literal;
 import jason.asSyntax.NumberTerm;
 import jason.asSyntax.Structure;
@@ -8,42 +6,62 @@ import jason.environment.Environment;
 import utils.LightColor;
 import utils.Utils;
 
-import java.rmi.RemoteException;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 
 import interfaces.TrafficListener;
 
 public class TrafficEnvironment extends Environment {
     private TrafficListener listener = null;
+    private Map<String, Set<Literal>> percepts = new HashMap<>();
 
     public void addTrafficListener(TrafficListener listener) {
         this.listener = listener;
     }
 
-    public void notifyAnimationFinished(int carId, int posX, int posY) {
-        try {
-            Agent agent = getEnvironmentInfraTier().getRuntimeServices().getAgentSnapshot("car_" + carId);
-            var point = Utils.map.values().stream()
-                    .filter(s -> s.getPosX() == posX && s.getPosY() == posY)
-                    .findFirst()
-                    .get();
+    public void addPercept(String agName, Literal percept) {
+        percepts.computeIfAbsent(agName, _ -> new HashSet<>()).add(percept);
+        informAgsEnvironmentChanged();
+    }
 
-            var points = point.getDestinations();
-            Literal oldTarget = Literal.parseLiteral("target(_, _)");
-            agent.abolish(oldTarget, null);
-            if (points.size() > 0) {
-                int index = new Random().nextInt(points.size());
-                var target = Utils.map.get(points.get(index));
-                Literal targetBelief = Literal.parseLiteral(
-                        String.format("target(%d, %d)", target.getPosX(), target.getPosY()));
-                agent.addBel(targetBelief);
-            } else {
-                agent.addBel(Literal.parseLiteral("target(-1, -1)"));
-            }
-        } catch (RemoteException | RevisionFailedException e) {
-            e.printStackTrace();
+    @Override
+    public boolean removePercept(String agName, Literal percept) {
+        if (percepts.containsKey(agName)) {
+            boolean removed = percepts.get(agName).remove(percept);
+            informAgsEnvironmentChanged();
+            return removed;
+        }
+        return false;
+    }
+
+    public void notifyAnimationFinished(int carId, int posX, int posY) {
+        var point = Utils.map.values().stream()
+                .filter(s -> s.getPosX() == posX && s.getPosY() == posY)
+                .findFirst()
+                .orElse(null);
+
+        if (point == null)
+            return;
+
+        var points = point.getDestinations();
+        Literal oldTarget = Literal.parseLiteral("target(_, _)");
+        removePercept("car_" + carId, oldTarget);
+        if (!points.isEmpty()) {
+            int index = new Random().nextInt(points.size());
+            var target = Utils.map.get(points.get(index));
+            Literal targetBelief = Literal.parseLiteral(
+                    String.format("target(%d, %d)", target.getPosX(), target.getPosY()));
+            addPercept("car_" + carId, targetBelief);
+            System.out.println("Aggiunto nuovo target: " + targetBelief);
+        } else {
+            Literal targetEnd = Literal.parseLiteral("target(-1, -1)");
+            addPercept("car_" + carId, targetEnd);
+            System.out.println("Aggiunto target di fine: " + targetEnd);
         }
     }
 
@@ -53,7 +71,7 @@ public class TrafficEnvironment extends Environment {
 
     @Override
     public Collection<Literal> getPercepts(String agName) {
-        return Collections.emptyList();
+        return percepts.getOrDefault(agName, Collections.emptySet());
     }
 
     @Override
