@@ -4,14 +4,12 @@
     .print("Started with ", PosX, " and ", PosY);
     spawn_car(PosX, PosY, Me);
     internal_actions.GetTargetPoint(PosX, PosY).
-    //!path(Me).
 
-+target(_, _) : name(Me) <-
-    if (target(PosX, PosY) & (PosX >= 0)) {
-        move_car(PosX, PosY, Me);
-    } else {
-        !terminate;
-    }.
++target(PosX, PosY) : name(Me) & (PosX >= 0) <-
+    move_car(PosX, PosY, Me).
+
++target(PosX, PosY) : name(Me) & (PosX < 0) <-
+    !terminate.
 
 +!terminate <-
     .my_name(Me);
