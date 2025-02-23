@@ -4,7 +4,6 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import utils.Constants;
 import utils.LightColor;
-import utils.RoadPosition;
 
 public class TrafficLight {
     private int id;
@@ -16,9 +15,8 @@ public class TrafficLight {
     private Image red;
     private Image green;
     private Image yellow;
-    private RoadPosition position;
 
-    public TrafficLight(int id, boolean startGreen, double x, double y, RoadPosition position) {
+    public TrafficLight(int id, boolean startGreen, double x, double y) {
         red = new Image("file:src/main/resources/it/unibo/smartcrossroads/red.png");
         green = new Image("file:src/main/resources/it/unibo/smartcrossroads/green.png");
         yellow = new Image("file:src/main/resources/it/unibo/smartcrossroads/yellow.png");
@@ -28,7 +26,6 @@ public class TrafficLight {
         this.y = y;
         this.width = red.getWidth() * Constants.TL_SCALE_FACTOR;
         this.height = red.getHeight() * Constants.TL_SCALE_FACTOR;
-        this.position = position;
     }
 
     public int getId() {
@@ -53,18 +50,8 @@ public class TrafficLight {
 
     public void draw(GraphicsContext gc) {
         gc.save();
-
-        double angle = switch (position) {
-            case UP -> 0;
-            case DOWN -> 180;
-            case LEFT -> -90;
-            case RIGHT -> 90;
-        };
-
         gc.translate(x, y);
-        gc.rotate(angle);
         gc.drawImage(getImageByColor(), -width / 2, -height / 2, width, height);
-
         gc.restore();
     }
 

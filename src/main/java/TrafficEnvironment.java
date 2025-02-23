@@ -5,26 +5,17 @@ import jason.asSyntax.Structure;
 import jason.environment.Environment;
 import jason.util.Pair;
 import model.view_elements.Tile;
-import utils.Constants;
-import utils.Direction;
-import utils.LightColor;
-import utils.Utils;
+import utils.*;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 import interfaces.TrafficListener;
 
 public class TrafficEnvironment extends Environment {
     private TrafficListener listener = null;
-    private Map<String, Set<Literal>> percepts = new HashMap<>();
+    private Map<String, Set<Literal>> percepts = new ConcurrentHashMap<>();
 
     public void addTrafficListener(TrafficListener listener) {
         this.listener = listener;
@@ -54,7 +45,7 @@ public class TrafficEnvironment extends Environment {
     public void notifyAnimationFinished(int carId, int posX, int posY, Direction dir) {
         Tile tile = new Tile(posX, posY);
 
-        var points = Utils.directions.get(new Pair<>(tile, dir));
+        var points = Utils.getDirections().get(new Pair<>(tile, dir));
         if (points.size() > 0) {
             int index = new Random().nextInt(points.size());
             var tileDir = points.get(index);
@@ -68,16 +59,13 @@ public class TrafficEnvironment extends Environment {
                     String.format("direction(%d)", newDir.ordinal()));
             addPercept("car_" + carId, directionBelief);
 
-            // First, remove the old target belief using proper Literal creation
             Literal oldTarget = Literal.parseLiteral("target(_, _)");
             removePercept("car_" + carId, oldTarget);
 
-            // Create and add the new target belief
             Literal targetBelief = Literal.parseLiteral(
                     String.format("target(%d, %d)", target.getPosX(), target.getPosY()));
             addPercept("car_" + carId, targetBelief);
         } else {
-            // Handle the case where there are no destinations
             Literal oldDirection = Literal.parseLiteral("direction(_)");
             removePercept("car_" + carId, oldDirection);
             Literal oldTarget = Literal.parseLiteral("target(_, _)");

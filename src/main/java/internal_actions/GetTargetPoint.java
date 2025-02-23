@@ -24,7 +24,7 @@ public class GetTargetPoint extends DefaultInternalAction {
         Direction dir = Direction.values()[d];
         Tile tile = new Tile(x, y);
 
-        var points = Utils.directions.get(new Pair<>(tile, dir));
+        var points = Utils.getDirections().get(new Pair<>(tile, dir));
         if (points.size() > 0) {
             int index = new Random().nextInt(points.size());
             var tileDir = points.get(index);
@@ -38,16 +38,13 @@ public class GetTargetPoint extends DefaultInternalAction {
                     String.format("direction(%d)", newDir.ordinal()));
             agent.addBel(directionBelief);
 
-            // First, remove the old target belief using proper Literal creation
             Literal oldTarget = Literal.parseLiteral("target(_, _)");
             agent.abolish(oldTarget, un);
 
-            // Create and add the new target belief
             Literal targetBelief = Literal.parseLiteral(
                     String.format("target(%d, %d)", target.getPosX(), target.getPosY()));
             agent.addBel(targetBelief);
         } else {
-            // Handle the case where there are no destinations
             Literal oldDirection = Literal.parseLiteral("direction(_)");
             agent.abolish(oldDirection, un);
             Literal oldTarget = Literal.parseLiteral("target(_, _)");

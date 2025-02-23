@@ -19,7 +19,7 @@ public class Car {
 
     public Car(int id, int type, int posX, int posY) {
         this.id = id;
-        this.carImage = Utils.carImages.get(type);
+        this.carImage = Utils.getCarImages().get(type);
         this.width = carImage.getWidth() * Constants.CAR_SCALE_FACTOR;
         this.height = carImage.getHeight() * Constants.CAR_SCALE_FACTOR;
         this.posX = posX;

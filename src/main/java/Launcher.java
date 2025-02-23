@@ -1,5 +1,3 @@
-
-import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
@@ -24,7 +22,6 @@ import javafx.util.Duration;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.Executors;
@@ -250,8 +247,7 @@ public class Launcher extends Application implements TrafficListener {
 
     @Override
     public void spawnTrafficLight(boolean isGreen, int trafficLightId, int posX, int posY) {
-        var position = RoadPosition.values()[trafficLightId % 4];
-        final TrafficLight tl = new TrafficLight(trafficLightId, isGreen, posX, posY, position);
+        final TrafficLight tl = new TrafficLight(trafficLightId, isGreen, posX, posY);
         for (var tile : tiles) {
             if (tile.getPosX() == posX && tile.getPosY() == posY) {
                 tile.setTrafficLight(tl);
