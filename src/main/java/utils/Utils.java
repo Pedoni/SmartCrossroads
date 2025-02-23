@@ -18,25 +18,25 @@ public final class Utils {
 	public static final List<Tile> tiles = new ArrayList<>();
 
 	// Strade verticali
-	private static final List<Integer> corsieX = List.of(5, 10);
+	private static final List<Integer> lanesX = List.of(5, 10);
 	// Strade orizzonatali
-	private static final List<Integer> corsieY = List.of(3, 8);
+	private static final List<Integer> lanesY = List.of(3, 8);
 	public static final Map<Pair<Tile, Direction>, List<Tile>> directions = new HashMap<>();
 
 	public static void initializeThings() {
 		final int numRows = Constants.ROWS;
 		final int numColumns = Constants.COLUMNS;
 		for (int x = 0; x < numColumns; x++) {
-			final boolean onRoadX = corsieX.contains(x) || corsieX.contains(x - 1);
+			final boolean onRoadX = lanesX.contains(x) || lanesX.contains(x - 1);
 			for (int y = 0; y < numRows; y++) {
-				final boolean onRoadY = corsieY.contains(y) || corsieY.contains(y - 1);
+				final boolean onRoadY = lanesY.contains(y) || lanesY.contains(y - 1);
 				final Tile tile = new Tile(x, y);
 				// Siamo una strada
 				if (onRoadX ^ onRoadY) {
 					// Verticale
 					if (onRoadX) {
 						// Verso il basso
-						if (corsieX.contains(x)) {
+						if (lanesX.contains(x)) {
 							directions.put(new Pair<>(tile, Direction.NORTH), List.of(new Tile(x, y + 1)));
 						} else { // Verso l'alto
 							directions.put(new Pair<>(tile, Direction.SOUTH), List.of(new Tile(x, y - 1)));
@@ -45,7 +45,7 @@ public final class Utils {
 					// Orizzontale
 					if (onRoadY) {
 						// Verso sinistra
-						if (corsieY.contains(y)) {
+						if (lanesY.contains(y)) {
 							directions.put(new Pair<>(tile, Direction.EAST), List.of(new Tile(x - 1, y)));
 						} else { // Verso destra
 							directions.put(new Pair<>(tile, Direction.WEST), List.of(new Tile(x + 1, y)));
@@ -54,9 +54,9 @@ public final class Utils {
 
 				} else if (onRoadX && onRoadY) { // Incrocio
 					// Sinistra
-					if (corsieX.contains(x)) {
+					if (lanesX.contains(x)) {
 						// In alto
-						if (corsieY.contains(y)) {
+						if (lanesY.contains(y)) {
 							directions.put(new Pair<>(tile, Direction.NORTH), List.of(
 									new Tile(x - 1, y),
 									new Tile(x, y + 1),
@@ -71,24 +71,24 @@ public final class Utils {
 									new Tile(x, y + 1),
 									new Tile(x + 1, y - 1)));
 							directions.put(new Pair<>(tile, Direction.NORTH), List.of(
-									new Tile(x + 1, y)));
+									new Tile(x, y + 1)));
 							directions.put(new Pair<>(tile, Direction.EAST), List.of(
-									new Tile(x + 1, y)));
+									new Tile(x, y + 1)));
 						}
 					} else { // Destra
 						// In alto
-						if (corsieY.contains(y)) {
+						if (lanesY.contains(y)) {
 							directions.put(new Pair<>(tile, Direction.EAST), List.of(
 									new Tile(x - 1, y),
 									new Tile(x, y - 1),
 									new Tile(x - 1, y + 1)));
 							directions.put(new Pair<>(tile, Direction.SOUTH), List.of(
-									new Tile(x - 1, y)));
+									new Tile(x, y - 1)));
 							directions.put(new Pair<>(tile, Direction.WEST), List.of(
-									new Tile(x - 1, y)));
+									new Tile(x, y - 1)));
 						} else { // In basso
 							directions.put(new Pair<>(tile, Direction.SOUTH), List.of(
-									new Tile(x - 1, y),
+									new Tile(x, y - 1),
 									new Tile(x + 1, y),
 									new Tile(x - 1, y - 1)));
 							directions.put(new Pair<>(tile, Direction.WEST), List.of(
