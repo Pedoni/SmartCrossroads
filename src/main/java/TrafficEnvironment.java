@@ -57,7 +57,16 @@ public class TrafficEnvironment extends Environment {
         var points = Utils.directions.get(new Pair<>(tile, dir));
         if (points.size() > 0) {
             int index = new Random().nextInt(points.size());
-            var target = points.get(index);
+            var tileDir = points.get(index);
+            var target = tileDir.getFirst();
+            var newDir = tileDir.getSecond();
+
+            Literal oldDirection = Literal.parseLiteral("direction(_)");
+            removePercept("car_" + carId, oldDirection);
+
+            Literal directionBelief = Literal.parseLiteral(
+                    String.format("direction(%d)", newDir.ordinal()));
+            addPercept("car_" + carId, directionBelief);
 
             // First, remove the old target belief using proper Literal creation
             Literal oldTarget = Literal.parseLiteral("target(_, _)");
@@ -69,6 +78,8 @@ public class TrafficEnvironment extends Environment {
             addPercept("car_" + carId, targetBelief);
         } else {
             // Handle the case where there are no destinations
+            Literal oldDirection = Literal.parseLiteral("direction(_)");
+            removePercept("car_" + carId, oldDirection);
             Literal oldTarget = Literal.parseLiteral("target(_, _)");
             removePercept("car_" + carId, oldTarget);
             addPercept("car_" + carId, Literal.parseLiteral("target(-1, -1)"));

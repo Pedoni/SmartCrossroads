@@ -21,7 +21,7 @@ public final class Utils {
 	private static final List<Integer> lanesX = List.of(5, 10);
 	// Strade orizzonatali
 	private static final List<Integer> lanesY = List.of(3, 8);
-	public static final Map<Pair<Tile, Direction>, List<Tile>> directions = new HashMap<>();
+	public static final Map<Pair<Tile, Direction>, List<Pair<Tile, Direction>>> directions = new HashMap<>();
 
 	public static void initializeThings() {
 		final int numRows = Constants.ROWS;
@@ -37,18 +37,22 @@ public final class Utils {
 					if (onRoadX) {
 						// Verso il basso
 						if (lanesX.contains(x)) {
-							directions.put(new Pair<>(tile, Direction.NORTH), List.of(new Tile(x, y + 1)));
+							directions.put(new Pair<>(tile, Direction.NORTH),
+									List.of(new Pair<>(new Tile(x, y + 1), Direction.NORTH)));
 						} else { // Verso l'alto
-							directions.put(new Pair<>(tile, Direction.SOUTH), List.of(new Tile(x, y - 1)));
+							directions.put(new Pair<>(tile, Direction.SOUTH),
+									List.of(new Pair<>(new Tile(x, y - 1), Direction.SOUTH)));
 						}
 					}
 					// Orizzontale
 					if (onRoadY) {
 						// Verso sinistra
 						if (lanesY.contains(y)) {
-							directions.put(new Pair<>(tile, Direction.EAST), List.of(new Tile(x - 1, y)));
+							directions.put(new Pair<>(tile, Direction.EAST),
+									List.of(new Pair<>(new Tile(x - 1, y), Direction.EAST)));
 						} else { // Verso destra
-							directions.put(new Pair<>(tile, Direction.WEST), List.of(new Tile(x + 1, y)));
+							directions.put(new Pair<>(tile, Direction.WEST),
+									List.of(new Pair<>(new Tile(x + 1, y), Direction.WEST)));
 						}
 					}
 
@@ -58,43 +62,43 @@ public final class Utils {
 						// In alto
 						if (lanesY.contains(y)) {
 							directions.put(new Pair<>(tile, Direction.NORTH), List.of(
-									new Tile(x - 1, y),
-									new Tile(x, y + 1),
-									new Tile(x + 1, y + 1)));
+									new Pair<>(new Tile(x - 1, y), Direction.EAST),
+									new Pair<>(new Tile(x, y + 1), Direction.NORTH),
+									new Pair<>(new Tile(x + 1, y + 1), Direction.WEST)));
 							directions.put(new Pair<>(tile, Direction.EAST), List.of(
-									new Tile(x - 1, y)));
+									new Pair<>(new Tile(x - 1, y), Direction.EAST)));
 							directions.put(new Pair<>(tile, Direction.SOUTH), List.of(
-									new Tile(x - 1, y)));
+									new Pair<>(new Tile(x - 1, y), Direction.EAST)));
 						} else { // In basso
 							directions.put(new Pair<>(tile, Direction.WEST), List.of(
-									new Tile(x + 1, y),
-									new Tile(x, y + 1),
-									new Tile(x + 1, y - 1)));
+									new Pair<>(new Tile(x + 1, y), Direction.WEST),
+									new Pair<>(new Tile(x, y + 1), Direction.NORTH),
+									new Pair<>(new Tile(x + 1, y - 1), Direction.SOUTH)));
 							directions.put(new Pair<>(tile, Direction.NORTH), List.of(
-									new Tile(x, y + 1)));
+									new Pair<>(new Tile(x, y + 1), Direction.NORTH)));
 							directions.put(new Pair<>(tile, Direction.EAST), List.of(
-									new Tile(x, y + 1)));
+									new Pair<>(new Tile(x, y + 1), Direction.NORTH)));
 						}
 					} else { // Destra
 						// In alto
 						if (lanesY.contains(y)) {
 							directions.put(new Pair<>(tile, Direction.EAST), List.of(
-									new Tile(x - 1, y),
-									new Tile(x, y - 1),
-									new Tile(x - 1, y + 1)));
+									new Pair<>(new Tile(x - 1, y), Direction.EAST),
+									new Pair<>(new Tile(x, y - 1), Direction.SOUTH),
+									new Pair<>(new Tile(x - 1, y + 1), Direction.NORTH)));
 							directions.put(new Pair<>(tile, Direction.SOUTH), List.of(
-									new Tile(x, y - 1)));
+									new Pair<>(new Tile(x, y - 1), Direction.SOUTH)));
 							directions.put(new Pair<>(tile, Direction.WEST), List.of(
-									new Tile(x, y - 1)));
+									new Pair<>(new Tile(x, y - 1), Direction.SOUTH)));
 						} else { // In basso
 							directions.put(new Pair<>(tile, Direction.SOUTH), List.of(
-									new Tile(x, y - 1),
-									new Tile(x + 1, y),
-									new Tile(x - 1, y - 1)));
+									new Pair<>(new Tile(x, y - 1), Direction.SOUTH),
+									new Pair<>(new Tile(x + 1, y), Direction.WEST),
+									new Pair<>(new Tile(x - 1, y - 1), Direction.EAST)));
 							directions.put(new Pair<>(tile, Direction.WEST), List.of(
-									new Tile(x + 1, y)));
+									new Pair<>(new Tile(x + 1, y), Direction.WEST)));
 							directions.put(new Pair<>(tile, Direction.NORTH), List.of(
-									new Tile(x + 1, y)));
+									new Pair<>(new Tile(x + 1, y), Direction.WEST)));
 						}
 					}
 				} else { // Non strada
