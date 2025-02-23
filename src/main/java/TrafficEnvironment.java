@@ -3,6 +3,10 @@ import jason.asSyntax.Literal;
 import jason.asSyntax.NumberTerm;
 import jason.asSyntax.Structure;
 import jason.environment.Environment;
+import jason.util.Pair;
+import model.view_elements.Tile;
+import utils.Constants;
+import utils.Direction;
 import utils.LightColor;
 import utils.Utils;
 
@@ -47,27 +51,27 @@ public class TrafficEnvironment extends Environment {
         return false;
     }
 
-    public void notifyAnimationFinished(int carId, int posX, int posY) {
-        var point = Utils.map.values().stream()
-                .filter(s -> s.getPosX() == posX && s.getPosY() == posY)
-                .findFirst()
-                .orElse(null);
+    public void notifyAnimationFinished(int carId, int posX, int posY, Direction dir) {
+        Tile tile = new Tile(posX, posY);
 
-        if (point == null)
-            return;
-
-        var points = point.getDestinations();
-        Literal oldTarget = Literal.parseLiteral("target(_, _)");
-        removePercept("car_" + carId, oldTarget);
-        if (!points.isEmpty()) {
+        var points = Utils.directions.get(new Pair<>(tile, dir));
+        if (points.size() > 0) {
             int index = new Random().nextInt(points.size());
-            var target = Utils.map.get(points.get(index));
+            var target = points.get(index);
+
+            // First, remove the old target belief using proper Literal creation
+            Literal oldTarget = Literal.parseLiteral("target(_, _)");
+            removePercept("car_" + carId, oldTarget);
+
+            // Create and add the new target belief
             Literal targetBelief = Literal.parseLiteral(
                     String.format("target(%d, %d)", target.getPosX(), target.getPosY()));
             addPercept("car_" + carId, targetBelief);
         } else {
-            Literal targetEnd = Literal.parseLiteral("target(-1, -1)");
-            addPercept("car_" + carId, targetEnd);
+            // Handle the case where there are no destinations
+            Literal oldTarget = Literal.parseLiteral("target(_, _)");
+            removePercept("car_" + carId, oldTarget);
+            addPercept("car_" + carId, Literal.parseLiteral("target(-1, -1)"));
         }
     }
 
@@ -76,7 +80,7 @@ public class TrafficEnvironment extends Environment {
     }
 
     @Override
-    public Collection<Literal> getPercepts(String agName) {
+    public Set<Literal> getPercepts(String agName) {
         return percepts.getOrDefault(agName, Collections.emptySet());
     }
 
@@ -99,6 +103,20 @@ public class TrafficEnvironment extends Environment {
                 } catch (NoValueException e) {
                     e.printStackTrace();
                 }
+                Direction dir = null;
+                if (posX == 0) {
+                    dir = Direction.WEST;
+                }
+                if (posX == Constants.COLUMNS - 1) {
+                    dir = Direction.EAST;
+                }
+                if (posY == 0) {
+                    dir = Direction.NORTH;
+                }
+                if (posY == Constants.ROWS - 1) {
+                    dir = Direction.SOUTH;
+                }
+                addPercept(name, Literal.parseLiteral(String.format("direction(%d)", dir.ordinal())));
                 notifyCarSpawned(counter, posX, posY);
                 return true;
             case "spawn_traffic_light":
@@ -125,15 +143,17 @@ public class TrafficEnvironment extends Environment {
                 notifyTrafficLightUpdate(counter, lightColor);
                 return true;
             case "move_car":
+                int dire = 0;
                 try {
                     posX = (int) ((NumberTerm) action.getTerm(0)).solve();
                     posY = (int) ((NumberTerm) action.getTerm(1)).solve();
                     name = action.getTerm(2).toString();
+                    dire = (int) ((NumberTerm) action.getTerm(3)).solve();
                     counter = Integer.parseInt(name.substring(4));
                 } catch (NoValueException e) {
                     e.printStackTrace();
                 }
-                notifyCarMoved(counter, posX, posY);
+                notifyCarMoved(counter, posX, posY, dire);
                 return true;
             case "remove_car":
                 name = action.getTerm(0).toString();
@@ -163,9 +183,9 @@ public class TrafficEnvironment extends Environment {
         }
     }
 
-    private void notifyCarMoved(int carId, int posX, int posY) {
+    private void notifyCarMoved(int carId, int posX, int posY, int dir) {
         if (this.listener != null) {
-            listener.moveCar(carId, posX, posY);
+            listener.moveCar(carId, posX, posY, dir);
         }
     }
 

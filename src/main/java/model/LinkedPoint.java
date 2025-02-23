@@ -1,18 +1,17 @@
 package model;
 
 import java.util.List;
-import java.util.Random;
+import java.util.Map;
 
 public class LinkedPoint {
     private final int posX;
     private final int posY;
-    private final List<String> destinations;
-    private static final Random RANDOM = new Random();
+    private final Map<String, List<String>> destinations;
 
-    public LinkedPoint(int posX, int posY, List<String> destinations) {
+    public LinkedPoint(int posX, int posY, Map<String, List<String>> destinations) {
         this.posX = posX;
         this.posY = posY;
-        this.destinations = List.copyOf(destinations);
+        this.destinations = Map.copyOf(destinations);
     }
 
     public int getPosX() {
@@ -23,21 +22,7 @@ public class LinkedPoint {
         return posY;
     }
 
-    public List<String> getDestinations() {
+    public Map<String, List<String>> getDestinations() {
         return destinations;
-    }
-
-    public String getDestination(int index) {
-        if (index < 0 || index >= destinations.size()) {
-            throw new IndexOutOfBoundsException("Index fuori dai limiti");
-        }
-        return destinations.get(index);
-    }
-
-    public String getRandomDestination() {
-        if (destinations.isEmpty()) {
-            throw new IllegalStateException("Nessuna destinazione disponibile");
-        }
-        return destinations.get(RANDOM.nextInt(destinations.size()));
     }
 }

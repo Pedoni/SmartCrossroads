@@ -4,14 +4,25 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import utils.LightColor;
 
-public class Tile {
-    private int posX;
-    private int posY;
-    private double x;
-    private double y;
-    private double size;
+public final class Tile {
+
+    private final int posX;
+    private final int posY;
+    private final double x;
+    private final double y;
+    private final double size;
     private LightColor color;
     private TrafficLight trafficLight;
+
+    @Override
+    public boolean equals(Object obj) {
+        Tile other = (Tile)obj;
+        return this.posX == other.getPosX() && this.posY == other.getPosY();
+    }
+    @Override
+    public int hashCode() {
+        return posX * 31 + posY;
+    }
 
     public Tile(int posX, int posY) {
         this.posX = posX;
@@ -21,11 +32,11 @@ public class Tile {
         this.y = posY * size;
     }
 
-    public double getPosX() {
+    public int getPosX() {
         return this.posX;
     }
 
-    public double getPosY() {
+    public int getPosY() {
         return this.posY;
     }
 
@@ -64,5 +75,10 @@ public class Tile {
             gc.fillRect(x, y, size, size);
         }
 
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Tile(%d, %d)", posX, posY);
     }
 }

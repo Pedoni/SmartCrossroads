@@ -1,13 +1,16 @@
-+start(PosX, PosY) <-
++start(PosX, PosY, D) <-
     .my_name(Me);
     +name(Me);
+    +direction(D);
     .print("Started with ", PosX, " and ", PosY);
     spawn_car(PosX, PosY, Me);
-    internal_actions.GetTargetPoint(PosX, PosY).
+    .print("Direction: ", D);
+    internal_actions.GetTargetPoint(PosX, PosY, D).
 
-+target(PosX, PosY) : name(Me) & PosX >= 0 <-
++target(PosX, PosY) : direction(D) & name(Me) & PosX >= 0 <-
     -target(_, _);
-    move_car(PosX, PosY, Me).
+    .print("Target: ", PosX, " and ", PosY);
+    move_car(PosX, PosY, Me, D).
 
 +target(PosX, PosY) : name(Me) & PosX < 0 <-
     !terminate.

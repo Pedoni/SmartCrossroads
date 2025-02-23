@@ -9,6 +9,9 @@ import jason.asSemantics.Unifier;
 import jason.asSyntax.Literal;
 import jason.asSyntax.NumberTerm;
 import jason.asSyntax.Term;
+import jason.util.Pair;
+import model.view_elements.Tile;
+import utils.Direction;
 import utils.Utils;
 
 public class GetTargetPoint extends DefaultInternalAction {
@@ -17,21 +20,19 @@ public class GetTargetPoint extends DefaultInternalAction {
         Agent agent = ts.getAg();
         int x = (int) ((NumberTerm) args[0]).solve();
         int y = (int) ((NumberTerm) args[1]).solve();
+        int d = (int) ((NumberTerm) args[2]).solve();
+        Direction dir = Direction.values()[d];
+        Tile tile = new Tile(x, y);
 
-        // Use a more efficient lookup if possible
-        var point = Utils.map.values().stream()
-                .filter(s -> s.getPosX() == x && s.getPosY() == y)
-                .findFirst()
-                .get();
-
-        var points = point.getDestinations();
+        var points = Utils.directions.get(new Pair<>(tile, dir));
         if (points.size() > 0) {
             int index = new Random().nextInt(points.size());
-            var target = Utils.map.get(points.get(index));
+            var target = points.get(index);
 
             // First, remove the old target belief using proper Literal creation
             Literal oldTarget = Literal.parseLiteral("target(_, _)");
             agent.abolish(oldTarget, un);
+            
 
             // Create and add the new target belief
             Literal targetBelief = Literal.parseLiteral(
