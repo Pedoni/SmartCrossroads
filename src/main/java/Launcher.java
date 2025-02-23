@@ -69,7 +69,7 @@ public class Launcher extends Application implements TrafficListener {
         // this.GRAPHIC_WIDTH = TILE_SIZE * GRID_COLS;
         this.SIDEBAR_WIDTH = (int) (APP_WIDTH / 4);
 
-        Utils.calculatePoints(TILE_SIZE);
+        Utils.initializeThings();
         Utils.loadCarImages();
 
         cars = Collections.synchronizedList(new ArrayList<>());
@@ -231,14 +231,14 @@ public class Launcher extends Application implements TrafficListener {
     }
 
     @Override
-    public void moveCar(int carId, int posX, int posY) {
+    public void moveCar(int carId, int posX, int posY, int dir) {
         for (var car : cars) {
             if (car.getId() == carId) {
                 ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
                 scheduler.scheduleAtFixedRate(() -> {
                     boolean finished = car.move(posX, posY);
                     if (finished) {
-                        environment.notifyAnimationFinished(carId, posX, posY);
+                        environment.notifyAnimationFinished(carId, posX, posY, Direction.values()[dir]);
                         car.setPosition(posX, posY);
                         scheduler.shutdown();
                     }

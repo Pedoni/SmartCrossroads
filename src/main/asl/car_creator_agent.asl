@@ -20,19 +20,19 @@ lights(0).
 +!create_next_car : cars(C) <-
     .random(R);
     RInt = (R * 8) - ((R * 8) mod 1);
-    !get_spawn_position(RInt, PosX, PosY);
+    !get_spawn_position(RInt, PosX, PosY, D);
     .concat("car_", C, N);
     .create_agent(N, "car_agent.asl");
-    .send(N, tell, start(PosX, PosY));
+    .send(N, tell, start(PosX, PosY, D));
     -+cars(C + 1);
     .wait(1000);
     !create_next_car.
 
-+!get_spawn_position(0, 0, 4).
-+!get_spawn_position(1, 0, 9).
-+!get_spawn_position(2, 5, 0).
-+!get_spawn_position(3, 10, 0).
-+!get_spawn_position(4, 16, 3).
-+!get_spawn_position(5, 16, 8).
-+!get_spawn_position(6, 11, 12).
-+!get_spawn_position(7, 6, 12).
++!get_spawn_position(0, 0, 4, 3).
++!get_spawn_position(1, 0, 9, 3).
++!get_spawn_position(2, 5, 0, 0).
++!get_spawn_position(3, 10, 0, 0).
++!get_spawn_position(4, 16, 3, 2).
++!get_spawn_position(5, 16, 8, 2).
++!get_spawn_position(6, 11, 12, 1).
++!get_spawn_position(7, 6, 12, 1).

@@ -9,6 +9,9 @@ import jason.asSemantics.Unifier;
 import jason.asSyntax.Literal;
 import jason.asSyntax.NumberTerm;
 import jason.asSyntax.Term;
+import jason.util.Pair;
+import model.view_elements.Tile;
+import utils.Direction;
 import utils.Utils;
 
 public class GetTargetPoint extends DefaultInternalAction {
@@ -17,17 +20,23 @@ public class GetTargetPoint extends DefaultInternalAction {
         Agent agent = ts.getAg();
         int x = (int) ((NumberTerm) args[0]).solve();
         int y = (int) ((NumberTerm) args[1]).solve();
+        int d = (int) ((NumberTerm) args[2]).solve();
+        Direction dir = Direction.values()[d];
+        Tile tile = new Tile(x, y);
 
-        // Use a more efficient lookup if possible
-        var point = Utils.map.values().stream()
-                .filter(s -> s.getPosX() == x && s.getPosY() == y)
-                .findFirst()
-                .get();
-
-        var points = point.getDestinations();
+        var points = Utils.directions.get(new Pair<>(tile, dir));
         if (points.size() > 0) {
             int index = new Random().nextInt(points.size());
-            var target = Utils.map.get(points.get(index));
+            var tileDir = points.get(index);
+            var target = tileDir.getFirst();
+            var newDir = tileDir.getSecond();
+
+            Literal oldDirection = Literal.parseLiteral("direction(_)");
+            agent.abolish(oldDirection, un);
+
+            Literal directionBelief = Literal.parseLiteral(
+                    String.format("direction(%d)", newDir.ordinal()));
+            agent.addBel(directionBelief);
 
             // First, remove the old target belief using proper Literal creation
             Literal oldTarget = Literal.parseLiteral("target(_, _)");
@@ -39,6 +48,8 @@ public class GetTargetPoint extends DefaultInternalAction {
             agent.addBel(targetBelief);
         } else {
             // Handle the case where there are no destinations
+            Literal oldDirection = Literal.parseLiteral("direction(_)");
+            agent.abolish(oldDirection, un);
             Literal oldTarget = Literal.parseLiteral("target(_, _)");
             agent.abolish(oldTarget, un);
             agent.addBel(Literal.parseLiteral("target(-1, -1)"));
