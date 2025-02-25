@@ -7,6 +7,7 @@
 
 +target(PosX, PosY) : direction(D) & name(Me) & PosX >= 0 <-
     -target(_, _);
+    -direction(_);
     -+position(PosX, PosY, D);
     move_car(PosX, PosY, Me, D).
 
