@@ -1,14 +1,14 @@
 +start(PosX, PosY, D) <-
     .my_name(Me);
     +name(Me);
-    +direction(D);
-    //.print("Started with ", PosX, " and ", PosY);
+    +position(PosX, PosY, D);
     spawn_car(PosX, PosY, Me);
     internal_actions.GetTargetPoint(PosX, PosY, D).
 
 +target(PosX, PosY) : direction(D) & name(Me) & PosX >= 0 <-
     -target(_, _);
-    //.print("Target: ", PosX, " and ", PosY);
+    -direction(_);
+    -+position(PosX, PosY, D);
     move_car(PosX, PosY, Me, D).
 
 +target(PosX, PosY) : name(Me) & PosX < 0 <-
