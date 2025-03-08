@@ -6,7 +6,6 @@ lights(0).
 +!start_creation <-
     List1 = [5, 6, 4, 7, 10, 11, 9, 12, 5, 6, 4, 7, 10, 11, 9, 12];
     List2 = [2, 5, 4, 3, 2, 5, 4, 3, 7, 10, 9, 8, 7, 10, 9, 8];
-    // In creator_agent.asl modification
     while(lights(L) & L <= 15) {
         GroupID = L / 4;  // 0-3 groups for 16 lights
         IndexInGroup = L mod 4;
@@ -30,7 +29,9 @@ lights(0).
     !get_spawn_position(RInt, PosX, PosY, D);
     .concat("car_", C, N);
     .create_agent(N, "car_agent.asl");
-    .send(N, tell, start(PosX, PosY, D));
+    .send(N, tell, position(PosX, PosY));
+    .send(N, tell, direction(D));
+    .send(N, achieve, start);
     -+cars(C + 1);
     .wait(1500);
     !create_next_car.

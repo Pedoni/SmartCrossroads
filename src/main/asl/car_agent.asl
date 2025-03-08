@@ -1,8 +1,6 @@
-+start(PosX, PosY, D) <-
-    -start(PosX, PosY, D)[source(creator)];
++!start[source(creator)] : direction(D) & position(PosX, PosY) <-
     .my_name(Me);
     +name(Me);
-    +position(PosX, PosY);
     spawn_car(PosX, PosY, Me);
     internal_actions.GetTargetPoint(PosX, PosY, D).
 
