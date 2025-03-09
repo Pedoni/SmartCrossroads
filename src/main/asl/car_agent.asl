@@ -10,7 +10,7 @@
             .broadcast(untell, position(_, _));
             !terminate;
         } else {
-            -target(_, _);
+            -target(_,_);
             -+position(PosX, PosY);
             move_car(PosX, PosY, Me, D);
             .broadcast(tell, share(PosX, PosY));
@@ -21,10 +21,8 @@
         -+target(PosX, PosY).
 
 +share(PosX, PosY)[source(Other)] : name(Me) & (Other \== self) <-
-    synchronized(position) {
-        -share(_, _)[source(Other)]; 
-        -+position(PosX, PosY)[source(Other)];
-    }.
+    -share(_, _)[source(Other)]; 
+    -+position(PosX, PosY)[source(Other)].
 
 +!terminate : name(Me) <-
     .print("Terminating.");
