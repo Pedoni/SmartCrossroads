@@ -5,7 +5,7 @@ MAS crossroads {
 	environment: TrafficEnvironment()
 
 	agents:
-		car_creator car_creator_agent;
+		creator creator_agent;
 
 	aslSourcePath:
 		"src/main/asl";
