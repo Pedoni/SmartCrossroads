@@ -12,8 +12,16 @@ red_time(6000).
         !cycle(yellow);
     }.
 
++share(_, _)[source(Other)] : name(Me) & (Other \== self) <-
+    -share(_, _)[source(Other)]. 
+
++position(_, _)[source(Other)] : name(Me) & (Other \== self) <-
+    -position(_, _)[source(Other)].
+
++direction(_)[source(Other)] : name(Me) & (Other \== self) <-
+    -direction(_)[source(Other)]. 
+
 +!cycle(green) <-
-    .print("I go green");
     .my_name(Me);
     update_traffic_light(green, Me);
     .wait(2000);
@@ -35,5 +43,4 @@ red_time(6000).
         M = N + 1;
     };
     .concat("traffic_light_", M, Res);
-    .print("Sending achieve to ", Res);
     .send(Res, achieve, cycle(green)).

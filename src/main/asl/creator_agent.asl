@@ -6,7 +6,7 @@ lights(0).
 +!start_creation <-
     List1 = [5, 6, 4, 7, 10, 11, 9, 12, 5, 6, 4, 7, 10, 11, 9, 12];
     List2 = [2, 5, 4, 3, 2, 5, 4, 3, 7, 10, 9, 8, 7, 10, 9, 8];
-    while(lights(L) & L <= 3) {
+    while(lights(L) & L <= 15) {
         .nth(L, List1, PosX);
         .nth(L, List2, PosY);
         .concat("traffic_light_", L, N);
