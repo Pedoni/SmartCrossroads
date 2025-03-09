@@ -6,7 +6,7 @@ lights(0).
 +!start_creation <-
     List1 = [5, 6, 4, 7, 10, 11, 9, 12, 5, 6, 4, 7, 10, 11, 9, 12];
     List2 = [2, 5, 4, 3, 2, 5, 4, 3, 7, 10, 9, 8, 7, 10, 9, 8];
-    while(lights(L) & L <= 15) {
+    while(lights(L) & L <= 3) {
         .nth(L, List1, PosX);
         .nth(L, List2, PosY);
         .concat("traffic_light_", L, N);
@@ -14,6 +14,7 @@ lights(0).
         if (L mod 4 = 0) { GREEN = true } else { GREEN = false };
         .send(N, tell, is_green(GREEN));
         .send(N, tell, position(PosX, PosY));
+        .send(N, tell, number(L));
         .send(N, achieve, start);
         -+lights(L + 1);
     };

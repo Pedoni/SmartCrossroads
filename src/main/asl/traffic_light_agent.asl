@@ -6,27 +6,34 @@ red_time(6000).
     .my_name(Me);
     +name(Me);
     if (GREEN) { COLOR = green } else { COLOR = red };
-    .print("Started with ", PosX, " and ", PosY, " with color ", COLOR);
     spawn_traffic_light(GREEN, PosX, PosY, Me);
-    if (GREEN) { TIME = 5000 } else { TIME = 6000 };
-    .wait(TIME);
-    if (GREEN) { NEXT = yellow } else { NEXT = green };
-    !cycle(NEXT).
+    if (GREEN) { 
+        .wait(2000);
+        !cycle(yellow);
+    }.
 
-+!cycle(green) : true <-
++!cycle(green) <-
+    .print("I go green");
     .my_name(Me);
     update_traffic_light(green, Me);
-    .wait(5000);
+    .wait(2000);
     !cycle(yellow).
 
-+!cycle(yellow) : true <-
++!cycle(yellow) <-
     .my_name(Me);
     update_traffic_light(yellow, Me);
-    .wait(1000);
+    .wait(500);
     !cycle(red).
 
-+!cycle(red) : true <-
++!cycle(red) : number(N) <-
     .my_name(Me);
     update_traffic_light(red, Me);
-    .wait(6000);
-    !cycle(green).
+    .wait(1000);
+    if (not(N = 0) & N mod 4 = 3) {
+        M = N - 3;
+    } else {
+        M = N + 1;
+    };
+    .concat("traffic_light_", M, Res);
+    .print("Sending achieve to ", Res);
+    .send(Res, achieve, cycle(green)).
