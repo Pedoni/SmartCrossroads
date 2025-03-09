@@ -7,18 +7,12 @@ lights(0).
     List1 = [5, 6, 4, 7, 10, 11, 9, 12, 5, 6, 4, 7, 10, 11, 9, 12];
     List2 = [2, 5, 4, 3, 2, 5, 4, 3, 7, 10, 9, 8, 7, 10, 9, 8];
     while(lights(L) & L <= 15) {
-        GroupID = L / 4;  // 0-3 groups for 16 lights
-        IndexInGroup = L mod 4;
         .nth(L, List1, PosX);
         .nth(L, List2, PosY);
         .concat("traffic_light_", L, N);
         .create_agent(N, "traffic_light_agent.asl");
-        
-        if (IndexInGroup == 0) {
-            .send(N, tell, start(true, PosX, PosY, GroupID, IndexInGroup));
-        } else {
-            .send(N, tell, start(false, PosX, PosY, GroupID, IndexInGroup));
-        }
+        if (L mod 4 = 0) { GREEN = true } else { GREEN = false };
+        .send(N, tell, start(GREEN, PosX, PosY));
         -+lights(L + 1);
     };
     !create_next_car.
