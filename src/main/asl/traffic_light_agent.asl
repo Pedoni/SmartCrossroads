@@ -1,27 +1,46 @@
-+start(GREEN, PosX, PosY) : true <-
-    if (GREEN = true) { COLOR = green } else { COLOR = red };
-    .my_name(Me);
-    .print("Started with ", PosX, " and ", PosY, " with color ", COLOR);
-    spawn_traffic_light(GREEN, PosX, PosY, Me);
-    if (GREEN = true) { TIME = 5000 } else { TIME = 6000 };
-    .wait(TIME);
-    if (GREEN = true) { NEXT = yellow } else { NEXT = green };
-    !cycle(NEXT).
+green_time(5000).
+yellow_time(1000).
+red_time(6000).
 
-+!cycle(green) : true <-
++!start : is_green(GREEN) & position(PosX, PosY) <-
+    .my_name(Me);
+    +name(Me);
+    if (GREEN) { COLOR = green } else { COLOR = red };
+    spawn_traffic_light(GREEN, PosX, PosY, Me);
+    if (GREEN) { 
+        .wait(2000);
+        !cycle(yellow);
+    }.
+
++share(_, _)[source(Other)] : name(Me) & (Other \== self) <-
+    -share(_, _)[source(Other)]. 
+
++position(_, _)[source(Other)] : name(Me) & (Other \== self) <-
+    -position(_, _)[source(Other)].
+
++direction(_)[source(Other)] : name(Me) & (Other \== self) <-
+    -direction(_)[source(Other)]. 
+
++!cycle(green) <-
     .my_name(Me);
     update_traffic_light(green, Me);
-    .wait(5000);
+    .wait(2000);
     !cycle(yellow).
 
-+!cycle(yellow) : true <-
++!cycle(yellow) <-
     .my_name(Me);
     update_traffic_light(yellow, Me);
-    .wait(1000);
+    .wait(500);
     !cycle(red).
 
-+!cycle(red) : true <-
++!cycle(red) : number(N) <-
     .my_name(Me);
     update_traffic_light(red, Me);
-    .wait(6000);
-    !cycle(green).
+    .wait(1000);
+    if (not(N = 0) & N mod 4 = 3) {
+        M = N - 3;
+    } else {
+        M = N + 1;
+    };
+    .concat("traffic_light_", M, Res);
+    .send(Res, achieve, cycle(green)).
