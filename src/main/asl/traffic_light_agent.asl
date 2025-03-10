@@ -21,6 +21,9 @@ red_time(6000).
 +direction(_)[source(Other)] : name(Me) & (Other \== self) <-
     -direction(_)[source(Other)]. 
 
++ask_position[source(Other)] : (Other \== self) <-
+    -ask_position[source(Other)].
+
 +!cycle(green) <-
     -+is_green(true);
     .my_name(Me);

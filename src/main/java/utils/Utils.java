@@ -8,16 +8,17 @@ import jason.util.Pair;
 import javafx.scene.image.Image;
 
 import model.view_elements.Tile;
+import java.util.concurrent.ConcurrentHashMap;
 
 public final class Utils {
 
-	private static final Map<Integer, Image> carImages = new HashMap<>();
+	private static final Map<Integer, Image> carImages = new ConcurrentHashMap<>();
 
 	// Strade verticali
 	private static final List<Integer> lanesX = List.of(5, 10);
 	// Strade orizzonatali
 	private static final List<Integer> lanesY = List.of(3, 8);
-	private static final Map<Pair<Tile, Direction>, List<Pair<Tile, Direction>>> directions = new HashMap<>();
+	private static final Map<Pair<Tile, Direction>, List<Pair<Tile, Direction>>> directions = new ConcurrentHashMap<>();
 
 	public static void initializeThings() {
 		final int numRows = Constants.ROWS;
