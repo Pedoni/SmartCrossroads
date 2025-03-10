@@ -16,12 +16,14 @@ tl(14, 9, 9).
 tl(15, 12, 8).
 
 +!start[source(creator)] : direction(D) & position(PosX, PosY) <-
+    -position(_, _)[source(creator)];
+    +position(PosX, PosY)[source(self)];
     .my_name(Me);
     +name(Me);
     spawn_car(PosX, PosY, Me);
     internal_actions.GetTargetPoint(PosX, PosY, D).
 
-+target(PosX, PosY) : direction(D) & name(Me) & not(position(PosX, PosY)) & position(X, Y) <-
++target(PosX, PosY) : direction(D) & name(Me) & not(position(PosX, PosY)) & position(X, Y)[source(self)] <-
         if (PosX = -1 | PosY = -1 | PosX = 17 | PosY = 13) {
             .broadcast(untell, position(_, _));
             !terminate;
@@ -32,7 +34,7 @@ tl(15, 12, 8).
                 .send(TL, askOne, is_green(GREEN), is_green(GREEN));
                 .print("Traffic light ", TL, " is green: ", GREEN);
                 if (not(GREEN)) {
-                    .wait(50);
+                    .wait(500);
                     -target(_,_);
                     +target(PosX, PosY);
                 } else {
@@ -46,15 +48,16 @@ tl(15, 12, 8).
 +!go(PosX, PosY, Me, D) <-
     -direction(_)[source(percept)];
     -target(_,_);
+    -position(_, _)[source(creator)];
     -+position(PosX, PosY);
     move_car(PosX, PosY, Me, D);
     .broadcast(tell, share(PosX, PosY)).
 
 +target(PosX, PosY) : direction(D) & name(Me) & position(PosX, PosY) <-
-        .wait(50);
+        .wait(500);
         -+target(PosX, PosY).
 
-+share(PosX, PosY)[source(Other)] : name(Me) & (Other \== self) <-
++share(PosX, PosY)[source(Other)] : (Other \== self) <-
     -share(_, _)[source(Other)]; 
     -+position(PosX, PosY)[source(Other)].
 
