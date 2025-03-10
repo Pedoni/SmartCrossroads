@@ -22,18 +22,21 @@ red_time(6000).
     -direction(_)[source(Other)]. 
 
 +!cycle(green) <-
+    -+is_green(true);
     .my_name(Me);
     update_traffic_light(green, Me);
     .wait(2000);
     !cycle(yellow).
 
 +!cycle(yellow) <-
+    -+is_green(false);
     .my_name(Me);
     update_traffic_light(yellow, Me);
     .wait(500);
     !cycle(red).
 
 +!cycle(red) : number(N) <-
+    -+is_green(false);
     .my_name(Me);
     update_traffic_light(red, Me);
     .wait(1000);

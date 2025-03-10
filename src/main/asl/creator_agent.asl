@@ -30,7 +30,7 @@ lights(0).
     .send(N, tell, direction(D));
     .send(N, achieve, start);
     -+cars(C + 1);
-    .wait(1500);
+    .wait(2000);
     !create_next_car.
 
 +!get_spawn_position(0, 0, 4, 3).
