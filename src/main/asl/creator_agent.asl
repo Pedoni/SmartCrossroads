@@ -26,12 +26,13 @@ lights(0).
     !get_spawn_position(RInt, PosX, PosY, D);
     .concat("car_", C, N);
     .create_agent(N, "car_agent.asl");
-    .send(N, tell, position(PosX, PosY));
-    .send(N, tell, direction(D));
-    .send(N, achieve, start);
+    .send(N, achieve, start(PosX, PosY, D));
     -+cars(C + 1);
     .wait(2000);
     !create_next_car.
+
++ask_position[source(Other)] : (Other \== self) <-
+    -ask_position[source(Other)].
 
 +!get_spawn_position(0, 0, 4, 3).
 +!get_spawn_position(1, 0, 9, 3).
