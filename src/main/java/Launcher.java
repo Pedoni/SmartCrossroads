@@ -60,7 +60,8 @@ public class Launcher extends Application implements TrafficListener {
         this.APP_HEIGHT = (int) (screenHeight * 3 / 4);
         this.APP_WIDTH = (int) (screenWidth * 3 / 4);
         this.GRAPHIC_WIDTH = (int) (APP_WIDTH * 3 / 4);
-        this.TILE_SIZE = 50;
+        this.TILE_SIZE = GRAPHIC_WIDTH / 17;
+        this.GRAPHIC_WIDTH = TILE_SIZE * 17;
         this.GRID_COLS = GRAPHIC_WIDTH / TILE_SIZE;
         this.GRID_ROWS = APP_HEIGHT / TILE_SIZE;
         // this.GRAPHIC_WIDTH = TILE_SIZE * GRID_COLS;
