@@ -142,7 +142,7 @@ public class Launcher extends Application implements TrafficListener {
         logArea.setStyle("-fx-font-family: monospace; -fx-font-size: 12px;");
         VBox.setMargin(logArea, new Insets(10));
         VBox.setVgrow(logArea, javafx.scene.layout.Priority.ALWAYS);
-        logArea.textProperty().addListener((obs, oldVal, newVal) -> logArea.setScrollTop(Double.MAX_VALUE));
+        logArea.textProperty().addListener((_, _, _) -> logArea.setScrollTop(Double.MAX_VALUE));
         sidebar.getChildren().add(logArea);
 
         HBox root = new HBox(canvasContainer, sidebar);
@@ -231,7 +231,7 @@ public class Launcher extends Application implements TrafficListener {
     @Override
     public void spawnCar(int carId, int posX, int posY) {
         int randomType = new Random().nextInt(3) + 1;
-        cars.add(new Car(carId, randomType, posX, posY));
+        cars.add(new Car(carId, randomType, posX, posY, TILE_SIZE));
         logMessage("🚗 Auto #" + carId + " generata in (" + posX + ", " + posY + ")");
     }
 
@@ -278,6 +278,7 @@ public class Launcher extends Application implements TrafficListener {
     @Override
     public void removeCar(int carId) {
         cars.removeIf(car -> car.getId() == carId);
+        logMessage("🔄 Auto #" + carId + " ha terminato il percorso");
     }
 
     public static void main(String[] args) {

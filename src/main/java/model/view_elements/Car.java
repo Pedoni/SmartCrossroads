@@ -16,18 +16,20 @@ public class Car {
     private double angle;
     private final Image carImage;
     private double speed;
+    private int size;
 
-    public Car(int id, int type, int posX, int posY) {
+    public Car(int id, int type, int posX, int posY, int size) {
         this.id = id;
         this.carImage = Utils.getCarImages().get(type);
         this.width = carImage.getWidth() * Constants.CAR_SCALE_FACTOR;
         this.height = carImage.getHeight() * Constants.CAR_SCALE_FACTOR;
         this.posX = posX;
         this.posY = posY;
-        this.x = posX * 50;
-        this.y = posY * 50;
+        this.x = posX * size;
+        this.y = posY * size;
         this.angle = 0;
         this.speed = Constants.MAX_SPEED;
+        this.size = size;
     }
 
     public int getId() {
@@ -55,25 +57,25 @@ public class Car {
     }
 
     public boolean move(int posX, int posY) {
-        double dx = posX * 50 - this.x;
-        double dy = posY * 50 - this.y;
+        double dx = posX * size - this.x;
+        double dy = posY * size - this.y;
         double distance = Math.sqrt(dx * dx + dy * dy);
         if (distance > speed) {
             this.x += (dx / distance) * speed;
             this.y += (dy / distance) * speed;
             this.angle = Math.toDegrees(Math.atan2(dy, dx));
         } else {
-            this.x = posX * 50;
-            this.y = posY * 50;
+            this.x = posX * size;
+            this.y = posY * size;
         }
-        this.posX = (int) (this.x / 50);
-        this.posY = (int) (this.y / 50);
+        this.posX = (int) (this.x / size);
+        this.posY = (int) (this.y / size);
         return distance == 0;
     }
 
     public void setPosition(int posX, int posY) {
-        this.x = posX * 50;
-        this.y = posY * 50;
+        this.x = posX * size;
+        this.y = posY * size;
         this.posX = posX;
         this.posY = posY;
     }
