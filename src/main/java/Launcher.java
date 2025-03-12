@@ -48,6 +48,7 @@ public class Launcher extends Application implements TrafficListener {
     private int TILE_SIZE;
     private int GRID_COLS;
     private int GRID_ROWS;
+    private TextArea logArea;
     private TrafficEnvironment environment;
 
     @Override
@@ -104,6 +105,12 @@ public class Launcher extends Application implements TrafficListener {
         }).start();
     }
 
+    private void logMessage(String message) {
+        javafx.application.Platform.runLater(() -> {
+            logArea.appendText(message + "\n");
+        });
+    }
+
     public void setupStage() {
         Canvas canvas = new Canvas(GRAPHIC_WIDTH, APP_HEIGHT);
         GraphicsContext gc = canvas.getGraphicsContext2D();
@@ -129,12 +136,13 @@ public class Launcher extends Application implements TrafficListener {
         sidebar.setAlignment(Pos.TOP_CENTER);
         sidebar.getChildren().add(titleLabel);
 
-        TextArea logArea = new TextArea();
+        logArea = new TextArea();
         logArea.setEditable(false);
         logArea.setWrapText(true);
         logArea.setStyle("-fx-font-family: monospace; -fx-font-size: 12px;");
         VBox.setMargin(logArea, new Insets(10));
         VBox.setVgrow(logArea, javafx.scene.layout.Priority.ALWAYS);
+        logArea.textProperty().addListener((obs, oldVal, newVal) -> logArea.setScrollTop(Double.MAX_VALUE));
         sidebar.getChildren().add(logArea);
 
         HBox root = new HBox(canvasContainer, sidebar);
@@ -224,12 +232,14 @@ public class Launcher extends Application implements TrafficListener {
     public void spawnCar(int carId, int posX, int posY) {
         int randomType = new Random().nextInt(3) + 1;
         cars.add(new Car(carId, randomType, posX, posY));
+        logMessage("🚗 Auto #" + carId + " generata in (" + posX + ", " + posY + ")");
     }
 
     @Override
     public void moveCar(int carId, int posX, int posY, int dir) {
         for (var car : cars) {
             if (car.getId() == carId) {
+                logMessage("🔄 Auto #" + carId + " si muove verso (" + posX + ", " + posY + ")");
                 ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
                 scheduler.scheduleAtFixedRate(() -> {
                     boolean finished = car.move(posX, posY);
@@ -259,6 +269,7 @@ public class Launcher extends Application implements TrafficListener {
     public void updateTrafficLight(int trafficLightId, LightColor color) {
         for (var tile : tiles) {
             if (tile.getTrafficLight() != null && tile.getTrafficLight().getId() == trafficLightId) {
+                logMessage("🚦 Semaforo #" + trafficLightId + " cambiato a " + color);
                 tile.setColor(color);
             }
         }
