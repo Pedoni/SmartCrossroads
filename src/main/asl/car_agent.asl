@@ -55,7 +55,6 @@ tl(15, 12, 8).
     -direction(_)[source(percept)];
     -target(_, _)[source(percept)];
     -target(_, _)[source(self)];
-    -position(_, _)[source(creator)];
     -+position(PosX, PosY);
     .broadcast(tell, share(PosX, PosY));
     move_car(PosX, PosY, Me, D).
