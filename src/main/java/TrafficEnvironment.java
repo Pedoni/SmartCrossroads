@@ -3,8 +3,6 @@ import jason.asSyntax.Literal;
 import jason.asSyntax.NumberTerm;
 import jason.asSyntax.Structure;
 import jason.environment.Environment;
-import jason.util.Pair;
-import model.view_elements.Tile;
 import utils.*;
 
 import java.util.*;
@@ -43,36 +41,43 @@ public class TrafficEnvironment extends Environment {
     }
 
     public void notifyAnimationFinished(int carId, int posX, int posY, Direction dir) {
-        Tile tile = new Tile(posX, posY);
+        Literal findTarget = Literal.parseLiteral(String.format("find_target(%d, %d, %d)", posX, posY, dir.ordinal()));
+        addPercept("car_" + carId, findTarget);
 
-        var points = Utils.getDirections().get(new Pair<>(tile, dir));
-        int index = new Random().nextInt(points.size());
-        var tileDir = points.get(index);
-        var target = tileDir.getFirst();
-        var newDir = tileDir.getSecond();
-        if (target.getPosX() >= 0 && target.getPosY() >= 0) {
-
-            Literal oldDirection = Literal.parseLiteral("direction(_)");
-            removePercept("car_" + carId, oldDirection);
-
-            Literal directionBelief = Literal.parseLiteral(
-                    String.format("direction(%d)", newDir.ordinal()));
-            addPercept("car_" + carId, directionBelief);
-
-            Literal oldTarget = Literal.parseLiteral("target(_, _)");
-            removePercept("car_" + carId, oldTarget);
-
-            Literal targetBelief = Literal.parseLiteral(
-                    String.format("target(%d, %d)", target.getPosX(), target.getPosY()));
-            addPercept("car_" + carId, targetBelief);
-        } else {
-            System.out.println("No direction found for tile " + tile + " and direction " + dir);
-            Literal oldDirection = Literal.parseLiteral("direction(_)");
-            removePercept("car_" + carId, oldDirection);
-            Literal oldTarget = Literal.parseLiteral("target(_, _)");
-            removePercept("car_" + carId, oldTarget);
-            addPercept("car_" + carId, Literal.parseLiteral("target(-1, -1)"));
-        }
+        /*
+         * Tile tile = new Tile(posX, posY);
+         * 
+         * var points = Utils.getDirections().get(new Pair<>(tile, dir));
+         * int index = new Random().nextInt(points.size());
+         * var tileDir = points.get(index);
+         * var target = tileDir.getFirst();
+         * var newDir = tileDir.getSecond();
+         * if (target.getPosX() >= 0 && target.getPosY() >= 0 && target.getPosX() <= 16
+         * && target.getPosY() <= 12) {
+         * 
+         * Literal oldDirection = Literal.parseLiteral("direction(_)");
+         * removePercept("car_" + carId, oldDirection);
+         * 
+         * Literal directionBelief = Literal.parseLiteral(
+         * String.format("direction(%d)", newDir.ordinal()));
+         * addPercept("car_" + carId, directionBelief);
+         * 
+         * Literal oldTarget = Literal.parseLiteral("target(_, _)");
+         * removePercept("car_" + carId, oldTarget);
+         * 
+         * Literal targetBelief = Literal.parseLiteral(
+         * String.format("target(%d, %d)", target.getPosX(), target.getPosY()));
+         * addPercept("car_" + carId, targetBelief);
+         * } else {
+         * System.out.println("No direction found for tile " + tile + " and direction "
+         * + dir);
+         * Literal oldDirection = Literal.parseLiteral("direction(_)");
+         * removePercept("car_" + carId, oldDirection);
+         * Literal oldTarget = Literal.parseLiteral("target(_, _)");
+         * removePercept("car_" + carId, oldTarget);
+         * addPercept("car_" + carId, Literal.parseLiteral("target(-1, -1)"));
+         * }
+         */
     }
 
     @Override
