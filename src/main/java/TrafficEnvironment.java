@@ -46,11 +46,11 @@ public class TrafficEnvironment extends Environment {
         Tile tile = new Tile(posX, posY);
 
         var points = Utils.getDirections().get(new Pair<>(tile, dir));
-        if (points.size() > 0) {
-            int index = new Random().nextInt(points.size());
-            var tileDir = points.get(index);
-            var target = tileDir.getFirst();
-            var newDir = tileDir.getSecond();
+        int index = new Random().nextInt(points.size());
+        var tileDir = points.get(index);
+        var target = tileDir.getFirst();
+        var newDir = tileDir.getSecond();
+        if (target.getPosX() >= 0 && target.getPosY() >= 0) {
 
             Literal oldDirection = Literal.parseLiteral("direction(_)");
             removePercept("car_" + carId, oldDirection);
@@ -66,6 +66,7 @@ public class TrafficEnvironment extends Environment {
                     String.format("target(%d, %d)", target.getPosX(), target.getPosY()));
             addPercept("car_" + carId, targetBelief);
         } else {
+            System.out.println("No direction found for tile " + tile + " and direction " + dir);
             Literal oldDirection = Literal.parseLiteral("direction(_)");
             removePercept("car_" + carId, oldDirection);
             Literal oldTarget = Literal.parseLiteral("target(_, _)");

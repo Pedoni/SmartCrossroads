@@ -8,6 +8,8 @@ import jason.asSemantics.TransitionSystem;
 import jason.asSemantics.Unifier;
 import jason.asSyntax.Literal;
 import jason.asSyntax.NumberTerm;
+import jason.asSyntax.Plan;
+import jason.asSyntax.PlanLibrary;
 import jason.asSyntax.Term;
 import jason.util.Pair;
 import model.view_elements.Tile;
@@ -32,23 +34,23 @@ public class GetTargetPoint extends DefaultInternalAction {
             var newDir = tileDir.getSecond();
 
             Literal oldDirection = Literal.parseLiteral("direction(_)");
-            agent.abolish(oldDirection, un);
+            agent.delBel(oldDirection);
 
             Literal directionBelief = Literal.parseLiteral(
                     String.format("direction(%d)", newDir.ordinal()));
             agent.addBel(directionBelief);
 
             Literal oldTarget = Literal.parseLiteral("target(_, _)");
-            agent.abolish(oldTarget, un);
+            agent.delBel(oldTarget);
 
             Literal targetBelief = Literal.parseLiteral(
                     String.format("target(%d, %d)", target.getPosX(), target.getPosY()));
             agent.addBel(targetBelief);
         } else {
             Literal oldDirection = Literal.parseLiteral("direction(_)");
-            agent.abolish(oldDirection, un);
+            agent.delBel(oldDirection);
             Literal oldTarget = Literal.parseLiteral("target(_, _)");
-            agent.abolish(oldTarget, un);
+            agent.delBel(oldTarget);
             agent.addBel(Literal.parseLiteral("target(-1, -1)"));
         }
         return true;

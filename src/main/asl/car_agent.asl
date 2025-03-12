@@ -28,7 +28,7 @@ tl(15, 12, 8).
     -ask_position[source(Other)];
     .send(Other, tell, position(X, Y)).
 
-+target(PosX, PosY) : direction(D) & name(Me) & not(position(PosX, PosY)) & position(X, Y)[source(self)] <-
++target(PosX, PosY) : direction(D) & name(Me) & not(position(PosX, PosY)[source(Other)]) & (Other \== self) & position(X, Y)[source(self)] <-
         if (PosX = -1 | PosY = -1 | PosX = 17 | PosY = 13) {
             .broadcast(untell, position(X, Y));
             !terminate;
@@ -49,11 +49,12 @@ tl(15, 12, 8).
 
 +!go(PosX, PosY, Me, D) <-
     -direction(_)[source(percept)];
-    -target(_,_);
+    -target(_, _)[source(percept)];
+    -target(_, _)[source(self)];
     -position(_, _)[source(creator)];
     -+position(PosX, PosY);
-    move_car(PosX, PosY, Me, D);
-    .broadcast(tell, share(PosX, PosY)).
+    .broadcast(tell, share(PosX, PosY));
+    move_car(PosX, PosY, Me, D).
 
 +target(PosX, PosY) : direction(D) & name(Me) & position(PosX, PosY)[source(Other)] & (Other \== self) <-
         -+target(PosX, PosY).
