@@ -2,6 +2,7 @@ package model.view_elements;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import utils.Configuration;
 import utils.Constants;
 import utils.Utils;
 
@@ -18,18 +19,18 @@ public class Car {
     private double speed;
     private int size;
 
-    public Car(int id, int type, int posX, int posY, int size) {
+    public Car(int id, int type, int posX, int posY) {
         this.id = id;
         this.carImage = Utils.getCarImages().get(type);
         this.width = carImage.getWidth() * Constants.CAR_SCALE_FACTOR;
         this.height = carImage.getHeight() * Constants.CAR_SCALE_FACTOR;
         this.posX = posX;
         this.posY = posY;
-        this.x = posX * size;
-        this.y = posY * size;
+        this.x = posX * Configuration.TILE_SIZE;
+        this.y = posY * Configuration.TILE_SIZE;
         this.angle = 0;
         this.speed = Constants.MAX_SPEED;
-        this.size = size;
+        this.size = Configuration.TILE_SIZE;
     }
 
     public int getId() {

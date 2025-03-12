@@ -2,6 +2,7 @@ package model.view_elements;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+import utils.Configuration;
 import utils.LightColor;
 
 public final class Tile {
@@ -16,9 +17,10 @@ public final class Tile {
 
     @Override
     public boolean equals(Object obj) {
-        Tile other = (Tile)obj;
+        Tile other = (Tile) obj;
         return this.posX == other.getPosX() && this.posY == other.getPosY();
     }
+
     @Override
     public int hashCode() {
         return posX * 31 + posY;
@@ -27,7 +29,7 @@ public final class Tile {
     public Tile(int posX, int posY) {
         this.posX = posX;
         this.posY = posY;
-        this.size = 50;
+        this.size = Configuration.TILE_SIZE;
         this.x = posX * size;
         this.y = posY * size;
     }

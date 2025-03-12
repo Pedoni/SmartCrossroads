@@ -41,13 +41,6 @@ public class Launcher extends Application implements TrafficListener {
     private List<Tile> tiles;
 
     private Stage primaryStage;
-    private int APP_WIDTH;
-    private int APP_HEIGHT;
-    private int GRAPHIC_WIDTH;
-    private int SIDEBAR_WIDTH;
-    private int TILE_SIZE;
-    private int GRID_COLS;
-    private int GRID_ROWS;
     private TextArea logArea;
     private TrafficEnvironment environment;
 
@@ -56,15 +49,7 @@ public class Launcher extends Application implements TrafficListener {
         this.primaryStage = primaryStage;
 
         double screenWidth = Screen.getPrimary().getBounds().getWidth();
-
-        this.APP_WIDTH = (int) (screenWidth * 3 / 4);
-        this.GRAPHIC_WIDTH = (int) (APP_WIDTH * 3 / 4);
-        this.TILE_SIZE = GRAPHIC_WIDTH / 17;
-        this.GRAPHIC_WIDTH = TILE_SIZE * 17;
-        this.GRID_COLS = 17;
-        this.GRID_ROWS = 13;
-        this.SIDEBAR_WIDTH = (int) (APP_WIDTH / 4);
-        this.APP_HEIGHT = TILE_SIZE * GRID_ROWS;
+        Configuration.initializeSizes(screenWidth);
 
         Utils.initializeThings();
         Utils.loadCarImages();
@@ -112,22 +97,23 @@ public class Launcher extends Application implements TrafficListener {
     }
 
     public void setupStage() {
-        Canvas canvas = new Canvas(GRAPHIC_WIDTH, APP_HEIGHT);
+        Canvas canvas = new Canvas(Configuration.GRAPHIC_WIDTH, Configuration.APP_HEIGHT);
         GraphicsContext gc = canvas.getGraphicsContext2D();
 
-        drawBackground(gc, GRAPHIC_WIDTH, APP_HEIGHT);
-        drawIntersections(gc, GRAPHIC_WIDTH, APP_HEIGHT);
-        drawDashedLines(gc, GRAPHIC_WIDTH, APP_HEIGHT);
+        drawBackground(gc, Configuration.GRAPHIC_WIDTH, Configuration.APP_HEIGHT);
+        drawIntersections(gc, Configuration.GRAPHIC_WIDTH, Configuration.APP_HEIGHT);
+        drawDashedLines(gc, Configuration.GRAPHIC_WIDTH, Configuration.APP_HEIGHT);
 
         Timeline carMovementTimeline = new Timeline(
-                new KeyFrame(Duration.millis(30), _ -> updateGraphics(gc, GRAPHIC_WIDTH, APP_HEIGHT)));
+                new KeyFrame(Duration.millis(30),
+                        _ -> updateGraphics(gc, Configuration.GRAPHIC_WIDTH, Configuration.APP_HEIGHT)));
         carMovementTimeline.setCycleCount(Timeline.INDEFINITE);
         carMovementTimeline.play();
 
         StackPane canvasContainer = new StackPane(canvas);
 
         VBox sidebar = new VBox();
-        sidebar.setMinWidth(SIDEBAR_WIDTH);
+        sidebar.setMinWidth(Configuration.SIDEBAR_WIDTH);
         sidebar.setStyle("-fx-background-color: lightgray;");
 
         Label titleLabel = new Label("Monitoring");
@@ -146,7 +132,7 @@ public class Launcher extends Application implements TrafficListener {
         sidebar.getChildren().add(logArea);
 
         HBox root = new HBox(canvasContainer, sidebar);
-        primaryStage.setScene(new Scene(root, APP_WIDTH, APP_HEIGHT));
+        primaryStage.setScene(new Scene(root, Configuration.APP_WIDTH, Configuration.APP_HEIGHT));
         primaryStage.setTitle("Smart Crossroads");
         primaryStage.setResizable(false);
         primaryStage.show();
@@ -164,11 +150,11 @@ public class Launcher extends Application implements TrafficListener {
                 new Stop(0, Color.GRAY), new Stop(1, Color.DARKGRAY));
         gc.setFill(roadGradient);
 
-        gc.fillRect(0, TILE_SIZE * 3, WIDTH, TILE_SIZE * 2);
-        gc.fillRect(0, TILE_SIZE * 8, WIDTH, TILE_SIZE * 2);
+        gc.fillRect(0, Configuration.TILE_SIZE * 3, WIDTH, Configuration.TILE_SIZE * 2);
+        gc.fillRect(0, Configuration.TILE_SIZE * 8, WIDTH, Configuration.TILE_SIZE * 2);
 
-        gc.fillRect(TILE_SIZE * 5, 0, TILE_SIZE * 2, HEIGHT);
-        gc.fillRect(TILE_SIZE * 10, 0, TILE_SIZE * 2, HEIGHT);
+        gc.fillRect(Configuration.TILE_SIZE * 5, 0, Configuration.TILE_SIZE * 2, HEIGHT);
+        gc.fillRect(Configuration.TILE_SIZE * 10, 0, Configuration.TILE_SIZE * 2, HEIGHT);
     }
 
     private void drawDashedLines(GraphicsContext gc, int WIDTH, int HEIGHT) {
@@ -176,20 +162,20 @@ public class Launcher extends Application implements TrafficListener {
         gc.setLineWidth(2);
 
         for (int x = 0; x < WIDTH; x += Constants.DASH_LENGTH + Constants.DASH_GAP) {
-            if ((x + Constants.DASH_LENGTH) < TILE_SIZE * 5
-                    || (x > TILE_SIZE * 7 && x < TILE_SIZE * 10)
-                    || x > TILE_SIZE * 12) {
-                gc.strokeLine(x, TILE_SIZE * 4, x + Constants.DASH_LENGTH, TILE_SIZE * 4);
-                gc.strokeLine(x, TILE_SIZE * 9, x + Constants.DASH_LENGTH, TILE_SIZE * 9);
+            if ((x + Constants.DASH_LENGTH) < Configuration.TILE_SIZE * 5
+                    || (x > Configuration.TILE_SIZE * 7 && x < Configuration.TILE_SIZE * 10)
+                    || x > Configuration.TILE_SIZE * 12) {
+                gc.strokeLine(x, Configuration.TILE_SIZE * 4, x + Constants.DASH_LENGTH, Configuration.TILE_SIZE * 4);
+                gc.strokeLine(x, Configuration.TILE_SIZE * 9, x + Constants.DASH_LENGTH, Configuration.TILE_SIZE * 9);
             }
         }
 
         for (int y = 0; y < HEIGHT; y += Constants.DASH_LENGTH + Constants.DASH_GAP) {
-            if (y < TILE_SIZE * 3
-                    || (y > TILE_SIZE * 5 && y < TILE_SIZE * 8)
-                    || y > TILE_SIZE * 10) {
-                gc.strokeLine(TILE_SIZE * 6, y, TILE_SIZE * 6, y + Constants.DASH_LENGTH);
-                gc.strokeLine(TILE_SIZE * 11, y, TILE_SIZE * 11, y + Constants.DASH_LENGTH);
+            if (y < Configuration.TILE_SIZE * 3
+                    || (y > Configuration.TILE_SIZE * 5 && y < Configuration.TILE_SIZE * 8)
+                    || y > Configuration.TILE_SIZE * 10) {
+                gc.strokeLine(Configuration.TILE_SIZE * 6, y, Configuration.TILE_SIZE * 6, y + Constants.DASH_LENGTH);
+                gc.strokeLine(Configuration.TILE_SIZE * 11, y, Configuration.TILE_SIZE * 11, y + Constants.DASH_LENGTH);
             }
         }
     }
@@ -198,14 +184,14 @@ public class Launcher extends Application implements TrafficListener {
         gc.setStroke(Color.LIGHTGRAY);
         gc.setLineWidth(1);
 
-        for (int col = 0; col <= GRID_COLS; col++) {
-            int x = col * TILE_SIZE;
-            gc.strokeLine(x, 0, x, APP_HEIGHT);
+        for (int col = 0; col <= Configuration.GRID_COLS; col++) {
+            int x = col * Configuration.TILE_SIZE;
+            gc.strokeLine(x, 0, x, Configuration.APP_HEIGHT);
         }
 
-        for (int row = 0; row <= GRID_ROWS; row++) {
-            int y = row * TILE_SIZE;
-            gc.strokeLine(0, y, GRAPHIC_WIDTH, y);
+        for (int row = 0; row <= Configuration.GRID_ROWS; row++) {
+            int y = row * Configuration.TILE_SIZE;
+            gc.strokeLine(0, y, Configuration.GRAPHIC_WIDTH, y);
         }
     }
 
@@ -231,7 +217,7 @@ public class Launcher extends Application implements TrafficListener {
     @Override
     public void spawnCar(int carId, int posX, int posY) {
         int randomType = new Random().nextInt(3) + 1;
-        cars.add(new Car(carId, randomType, posX, posY, TILE_SIZE));
+        cars.add(new Car(carId, randomType, posX, posY));
         logMessage("🚗 Auto #" + carId + " generata in (" + posX + ", " + posY + ")");
     }
 
