@@ -8,8 +8,6 @@ import jason.asSemantics.TransitionSystem;
 import jason.asSemantics.Unifier;
 import jason.asSyntax.Literal;
 import jason.asSyntax.NumberTerm;
-import jason.asSyntax.Plan;
-import jason.asSyntax.PlanLibrary;
 import jason.asSyntax.Term;
 import jason.util.Pair;
 import model.view_elements.Tile;

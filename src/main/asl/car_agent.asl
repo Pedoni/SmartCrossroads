@@ -68,6 +68,5 @@ tl(15, 12, 8).
     -+position(PosX, PosY)[source(Other)].
 
 +!terminate : name(Me) <-
-    .print("Terminating.");
     remove_car(Me);
     .kill_agent(Me).
