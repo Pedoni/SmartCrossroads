@@ -15,7 +15,7 @@ tl(13, 11, 10).
 tl(14, 9, 9).
 tl(15, 12, 8).
 
-+!start(PosX, PosY, D)[source(creator)] <-
++!start(PosX, PosY, D) <-
     +direction(D);
     +position(PosX, PosY);
     .my_name(Me);
@@ -30,7 +30,7 @@ tl(15, 12, 8).
 
 +target(PosX, PosY) : direction(D) & name(Me) & not(position(PosX, PosY)) & position(X, Y)[source(self)] <-
         if (PosX = -1 | PosY = -1 | PosX = 17 | PosY = 13) {
-            .broadcast(untell, position(_, _));
+            .broadcast(untell, position(X, Y));
             !terminate;
         } else {
             if (tl(S, X, Y)) {
