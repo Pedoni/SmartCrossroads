@@ -28,7 +28,7 @@ lights(0).
     .create_agent(N, "car_agent.asl");
     .send(N, achieve, start(PosX, PosY, D));
     -+cars(C + 1);
-    .wait(10000);
+    .wait(2000);
     !create_next_car.
 
 +ask_position[source(Other)] : (Other \== self) <-
