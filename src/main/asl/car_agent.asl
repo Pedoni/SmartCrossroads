@@ -59,7 +59,7 @@ tl(15, 12, 8).
     .broadcast(tell, share(PosX, PosY));
     move_car(PosX, PosY, Me, D).
 
-+target(PosX, PosY) : direction(D) & name(Me) & position(PosX, PosY)[source(Other)] & (Other \== self) <-
++target(PosX, PosY) : position(PosX, PosY)[source(Other)] & (Other \== self) <-
         -+target(PosX, PosY).
 
 +share(PosX, PosY)[source(Other)] : (Other \== self) <-
