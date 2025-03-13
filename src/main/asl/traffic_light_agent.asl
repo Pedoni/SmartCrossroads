@@ -12,8 +12,9 @@ red_time(6000).
         !cycle(yellow);
     }.
 
-+share(_, _)[source(Other)] : name(Me) & (Other \== self) <-
-    -share(_, _)[source(Other)]. 
++share(PosX, PosY)[source(Other)] : (Other \== self) <-
+    -share(_, _)[source(Other)]; 
+    -+position(PosX, PosY)[source(Other)].
 
 +position(_, _)[source(Other)] : name(Me) & (Other \== self) <-
     -position(_, _)[source(Other)].

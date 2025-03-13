@@ -29,8 +29,8 @@ tl(15, 12, 8).
     -find_target(PosX, PosY, D)[source(_)].
 
 +ask_position[source(Other)] : (Other \== self) & position(X, Y)[source(self)] <-
-    -ask_position[source(Other)];
-    .send(Other, tell, position(X, Y)).
+    .send(Other, tell, position(X, Y));
+    -ask_position[source(Other)].
 
 +target(PosX, PosY) : PosX = -1 & PosY = -1 & position(X, Y)[source(self)] <-
     .broadcast(untell, position(X, Y));
@@ -60,11 +60,11 @@ tl(15, 12, 8).
     move_car(PosX, PosY, Me, D).
 
 +target(PosX, PosY) : position(PosX, PosY)[source(Other)] & (Other \== self) <-
-        -+target(PosX, PosY).
+    -+target(PosX, PosY).
 
 +share(PosX, PosY)[source(Other)] : (Other \== self) <-
-    -share(_, _)[source(Other)]; 
-    -+position(PosX, PosY)[source(Other)].
+    -+position(PosX, PosY)[source(Other)];
+    -share(_, _)[source(Other)].
 
 +!terminate : name(Me) <-
     remove_car(Me);
