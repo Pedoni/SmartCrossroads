@@ -1,7 +1,3 @@
-green_time(5000).
-yellow_time(1000).
-red_time(6000).
-
 +!start : is_green(GREEN) & position(PosX, PosY) <-
     .my_name(Me);
     +name(Me);
@@ -13,11 +9,8 @@ red_time(6000).
     }.
 
 +share(PosX, PosY)[source(Other)] : (Other \== self) <-
-    -share(_, _)[source(Other)]; 
-    -+position(PosX, PosY)[source(Other)].
-
-+position(_, _)[source(Other)] : name(Me) & (Other \== self) <-
-    -position(_, _)[source(Other)].
+    -+position(PosX, PosY)[source(Other)];
+    -share(_, _)[source(Other)].
 
 +direction(_)[source(Other)] : name(Me) & (Other \== self) <-
     -direction(_)[source(Other)]. 
