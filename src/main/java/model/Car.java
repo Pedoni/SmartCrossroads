@@ -1,4 +1,4 @@
-package model.view_elements;
+package model;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;

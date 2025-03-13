@@ -30,8 +30,8 @@ import java.util.concurrent.TimeUnit;
 
 import interfaces.TrafficListener;
 import jason.infra.local.RunLocalMAS;
-import model.view_elements.Car;
-import model.view_elements.Tile;
+import model.Car;
+import model.Tile;
 import utils.*;
 
 public class Launcher extends Application implements TrafficListener {
