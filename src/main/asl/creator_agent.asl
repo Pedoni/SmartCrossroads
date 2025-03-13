@@ -11,11 +11,10 @@ lights(0).
         .nth(L, List2, PosY);
         .concat("traffic_light_", L, N);
         .create_agent(N, "traffic_light_agent.asl");
-        if (L mod 4 = 0) { GREEN = true } else { GREEN = false };
-        .send(N, tell, is_green(GREEN));
-        .send(N, tell, position(PosX, PosY));
+        TYPE = L mod 4;
         .send(N, tell, number(L));
-        .send(N, achieve, start);
+        .send(N, tell, type(TYPE));
+        .send(N, achieve, start(PosX, PosY));
         -+lights(L + 1);
     };
     !create_next_car.

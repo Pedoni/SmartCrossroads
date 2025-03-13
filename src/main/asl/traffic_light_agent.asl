@@ -1,9 +1,10 @@
-+!start : is_green(GREEN) & position(PosX, PosY) <-
++!start(PosX, PosY) : type(T) <-
     .my_name(Me);
     +name(Me);
-    if (GREEN) { COLOR = green } else { COLOR = red };
-    spawn_traffic_light(GREEN, PosX, PosY, Me);
-    if (GREEN) { 
+    +is_green(T = 0);
+    if (T = 0) { COLOR = green } else { COLOR = red };
+    spawn_traffic_light(T = 0, PosX, PosY, Me);
+    if (T = 0) { 
         .wait(2000);
         !cycle(yellow);
     }.
