@@ -25,8 +25,8 @@ tl(15, 12, 8).
     +find_target(PosX, PosY, D).
 
 +find_target(PosX, PosY, D) <-
-    -find_target(PosX, PosY, D);
-    internal_actions.GetTargetPoint(PosX, PosY, D).
+    internal_actions.GetTargetPoint(PosX, PosY, D);
+    -find_target(PosX, PosY, D)[source(_)].
 
 +ask_position[source(Other)] : (Other \== self) & position(X, Y)[source(self)] <-
     -ask_position[source(Other)];
