@@ -13,7 +13,7 @@ public final class Tile {
     private final double y;
     private final double size;
     private LightColor color;
-    private TrafficLight trafficLight;
+    private int trafficLightId;
 
     @Override
     public boolean equals(Object obj) {
@@ -32,6 +32,7 @@ public final class Tile {
         this.size = Configuration.TILE_SIZE;
         this.x = posX * size;
         this.y = posY * size;
+        this.trafficLightId = -1;
     }
 
     public int getPosX() {
@@ -42,28 +43,18 @@ public final class Tile {
         return this.posY;
     }
 
-    public double getX() {
-        return this.x;
-    }
-
-    public double getY() {
-        return this.y;
-    }
 
     public void setColor(LightColor color) {
         this.color = color;
     }
 
-    public LightColor getColor() {
-        return color;
+
+    public int getTrafficLightId() {
+        return this.trafficLightId;
     }
 
-    public TrafficLight getTrafficLight() {
-        return this.trafficLight;
-    }
-
-    public void setTrafficLight(TrafficLight trafficLight) {
-        this.trafficLight = trafficLight;
+    public void setTrafficLightId(int trafficLightId) {
+        this.trafficLightId = trafficLightId;
     }
 
     public void draw(GraphicsContext gc) {

@@ -7,13 +7,12 @@ import utils.*;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 
 import interfaces.TrafficListener;
 
 public class TrafficEnvironment extends Environment {
     private TrafficListener listener = null;
-    private Map<String, Set<Literal>> percepts = new ConcurrentHashMap<>();
+    private final Map<String, Set<Literal>> percepts = new ConcurrentHashMap<>();
 
     public void addTrafficListener(TrafficListener listener) {
         this.listener = listener;
@@ -30,7 +29,7 @@ public class TrafficEnvironment extends Environment {
             Set<Literal> agentPercepts = percepts.get(agName);
             List<Literal> toRemove = agentPercepts.stream()
                     .filter(p -> p.getFunctor().equals(percept.getFunctor()))
-                    .collect(Collectors.toList());
+                    .toList();
             boolean removed = agentPercepts.removeAll(toRemove);
             if (removed) {
                 informAgsEnvironmentChanged();
@@ -91,7 +90,7 @@ public class TrafficEnvironment extends Environment {
                 return true;
             case Actions.SPAWN_TRAFFIC_LIGHT:
                 try {
-                    isGreen = action.getTerm(0).toString() == "true";
+                    isGreen = Objects.equals(action.getTerm(0).toString(), "true");
                     posX = (int) ((NumberTerm) action.getTerm(1)).solve();
                     posY = (int) ((NumberTerm) action.getTerm(2)).solve();
                     name = action.getTerm(3).toString();

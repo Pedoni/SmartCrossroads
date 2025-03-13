@@ -52,7 +52,7 @@ public final class Utils {
 						}
 					}
 
-				} else if (onRoadX && onRoadY) { // Incrocio
+				} else { // Incrocio
 					// Sinistra
 					if (lanesX.contains(x)) {
 						// In alto

@@ -25,7 +25,7 @@ public class GetTargetPoint extends DefaultInternalAction {
         Tile tile = new Tile(x, y);
 
         var points = Utils.getDirections().get(new Pair<>(tile, dir));
-        if (points != null && points.size() > 0) {
+        if (points != null && !points.isEmpty()) {
             int index = new Random().nextInt(points.size());
             var tileDir = points.get(index);
             var target = tileDir.getFirst();

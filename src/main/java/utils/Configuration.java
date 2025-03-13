@@ -11,10 +11,10 @@ public class Configuration {
 
     public static void initializeSizes(double screenWidth) {
         APP_WIDTH = (int) (screenWidth * 3 / 4);
-        GRAPHIC_WIDTH = (int) (APP_WIDTH * 3 / 4);
+        GRAPHIC_WIDTH = APP_WIDTH * 3 / 4;
         TILE_SIZE = GRAPHIC_WIDTH / 17;
         GRAPHIC_WIDTH = TILE_SIZE * 17;
-        SIDEBAR_WIDTH = (int) (APP_WIDTH / 4);
+        SIDEBAR_WIDTH = APP_WIDTH / 4;
         APP_HEIGHT = TILE_SIZE * GRID_ROWS;
     }
 }
