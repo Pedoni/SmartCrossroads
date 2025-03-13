@@ -32,7 +32,6 @@ import interfaces.TrafficListener;
 import jason.infra.local.RunLocalMAS;
 import model.view_elements.Car;
 import model.view_elements.Tile;
-import model.view_elements.TrafficLight;
 import utils.*;
 
 public class Launcher extends Application implements TrafficListener {
@@ -242,10 +241,9 @@ public class Launcher extends Application implements TrafficListener {
 
     @Override
     public void spawnTrafficLight(boolean isGreen, int trafficLightId, int posX, int posY) {
-        final TrafficLight tl = new TrafficLight(trafficLightId, isGreen, posX, posY);
         for (var tile : tiles) {
             if (tile.getPosX() == posX && tile.getPosY() == posY) {
-                tile.setTrafficLight(tl);
+                tile.setTrafficLightId(trafficLightId);
                 tile.setColor(isGreen ? LightColor.GREEN : LightColor.RED);
             }
         }
@@ -254,7 +252,7 @@ public class Launcher extends Application implements TrafficListener {
     @Override
     public void updateTrafficLight(int trafficLightId, LightColor color) {
         for (var tile : tiles) {
-            if (tile.getTrafficLight() != null && tile.getTrafficLight().getId() == trafficLightId) {
+            if (tile.getTrafficLightId() != -1 && tile.getTrafficLightId() == trafficLightId) {
                 logMessage("🚦 Semaforo #" + trafficLightId + " cambiato a " + color);
                 tile.setColor(color);
             }

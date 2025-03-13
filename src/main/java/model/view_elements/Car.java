@@ -7,25 +7,21 @@ import utils.Constants;
 import utils.Utils;
 
 public class Car {
-    private int id;
+    private final int id;
     private double x;
     private double y;
-    private int posX;
-    private int posY;
-    private double width;
-    private double height;
+    private final double width;
+    private final double height;
     private double angle;
     private final Image carImage;
-    private double speed;
-    private int size;
+    private final double speed;
+    private final int size;
 
     public Car(int id, int type, int posX, int posY) {
         this.id = id;
         this.carImage = Utils.getCarImages().get(type);
-        this.width = carImage.getWidth() * Constants.CAR_SCALE_FACTOR;
-        this.height = carImage.getHeight() * Constants.CAR_SCALE_FACTOR;
-        this.posX = posX;
-        this.posY = posY;
+        this.width = Configuration.TILE_SIZE;
+        this.height = Configuration.TILE_SIZE;
         this.x = posX * Configuration.TILE_SIZE;
         this.y = posY * Configuration.TILE_SIZE;
         this.angle = 0;
@@ -35,26 +31,6 @@ public class Car {
 
     public int getId() {
         return this.id;
-    }
-
-    public double getX() {
-        return this.x;
-    }
-
-    public double getY() {
-        return this.y;
-    }
-
-    public int getPosX() {
-        return this.posX;
-    }
-
-    public int getPosY() {
-        return this.posY;
-    }
-
-    public double getSpeed() {
-        return this.speed;
     }
 
     public boolean move(int posX, int posY) {
@@ -69,16 +45,12 @@ public class Car {
             this.x = posX * size;
             this.y = posY * size;
         }
-        this.posX = (int) (this.x / size);
-        this.posY = (int) (this.y / size);
         return distance == 0;
     }
 
     public void setPosition(int posX, int posY) {
         this.x = posX * size;
         this.y = posY * size;
-        this.posX = posX;
-        this.posY = posY;
     }
 
     public void draw(GraphicsContext gc) {
