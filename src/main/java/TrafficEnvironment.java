@@ -64,7 +64,7 @@ public class TrafficEnvironment extends Environment {
         String color = "";
         String name = "";
         switch (actionName) {
-            case "spawn_car":
+            case Actions.SPAWN_CAR:
                 try {
                     posX = (int) ((NumberTerm) action.getTerm(0)).solve();
                     posY = (int) ((NumberTerm) action.getTerm(1)).solve();
@@ -89,7 +89,7 @@ public class TrafficEnvironment extends Environment {
                 addPercept(name, Literal.parseLiteral(String.format("direction(%d)", dir.ordinal())));
                 notifyCarSpawned(counter, posX, posY);
                 return true;
-            case "spawn_traffic_light":
+            case Actions.SPAWN_TRAFFIC_LIGHT:
                 try {
                     isGreen = action.getTerm(0).toString() == "true";
                     posX = (int) ((NumberTerm) action.getTerm(1)).solve();
@@ -101,7 +101,7 @@ public class TrafficEnvironment extends Environment {
                 }
                 notifyTrafficLightSpawned(isGreen, counter, posX, posY);
                 return true;
-            case "update_traffic_light":
+            case Actions.UPDATE_TRAFFIC_LIGHT:
                 color = action.getTerm(0).toString();
                 LightColor lightColor = switch (color) {
                     case "green" -> LightColor.GREEN;
@@ -112,7 +112,7 @@ public class TrafficEnvironment extends Environment {
                 counter = Integer.parseInt(name.substring(14));
                 notifyTrafficLightUpdate(counter, lightColor);
                 return true;
-            case "move_car":
+            case Actions.MOVE_CAR:
                 int dire = 0;
                 try {
                     posX = (int) ((NumberTerm) action.getTerm(0)).solve();
@@ -125,7 +125,7 @@ public class TrafficEnvironment extends Environment {
                 }
                 notifyCarMoved(counter, posX, posY, dire);
                 return true;
-            case "remove_car":
+            case Actions.REMOVE_CAR:
                 name = action.getTerm(0).toString();
                 counter = Integer.parseInt(name.substring(4));
                 notifyCarRemoved(counter);
