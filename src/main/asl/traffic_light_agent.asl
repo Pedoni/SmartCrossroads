@@ -1,4 +1,5 @@
 +!start(PosX, PosY) : type(T) <-
+    +tl_position(PosX, PosY);
     .my_name(Me);
     +name(Me);
     +is_green(T = 0);
@@ -8,8 +9,20 @@
         !cycle(yellow);
     }.
 
-+share(PosX, PosY)[source(Other)] : (Other \== self) <-
-    -+position(PosX, PosY)[source(Other)];
++share(PosX, PosY)[source(Other)] : (Other \== self) & type(T) & tl_position(X, Y) & number(N) <-
+    -position(_, _)[source(Other)];
+    if (T = 0 & PosX = X & (PosY = Y | (PosY + 1) = Y | (PosY + 2) = Y)) {
+        +position(PosX, PosY)[source(Other)];
+    };
+    if (T = 1 & PosX = X & (PosY = Y | (PosY - 1) = Y | (PosY - 2) = Y)) {
+        +position(PosX, PosY)[source(Other)];
+    };
+    if ((N = 2 | N = 14) & PosY = Y & (PosX = X | (PosX + 1) = X | (PosX + 2) = X | (PosX + 3) = X | (PosX + 4) = X)) {
+        +position(PosX, PosY)[source(Other)];
+    };
+    if ((N = 7 | N = 11) & PosY = Y & (PosX = X | (PosX - 1) = X | (PosX - 2) = X | (PosX - 3) = X | (PosX - 4) = X)) {
+        +position(PosX, PosY)[source(Other)];
+    };
     -share(_, _)[source(Other)].
 
 +direction(_)[source(Other)] : name(Me) & (Other \== self) <-
