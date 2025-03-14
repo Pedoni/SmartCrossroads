@@ -17,36 +17,3 @@ javafx {
 }
 
 mainClassName = 'Launcher'
-
-tasks.withType(JavaCompile).configureEach {
-    options.compilerArgs += "--enable-preview"
-}
-
-tasks.withType(JavaExec).configureEach {
-    jvmArgs += "--enable-preview"
-}
-
-afterEvaluate {
-    def mas2jDir = file("src/main") // Percorso corretto
-    def mas2jFiles = mas2jDir.listFiles()?.findAll { it.name.endsWith('.mas2j') } ?: []
-
-    println "File .mas2j trovati: ${mas2jFiles*.name}" // Debug
-
-    mas2jFiles.each { mas2jFile ->
-        def fileNameWithoutExtension = mas2jFile.name.replaceFirst(~/\.mas2j$/, "")
-        def taskName = "run${fileNameWithoutExtension.capitalize()}Mas"
-        println "Registrando task: $taskName"
-
-        tasks.register(taskName, JavaExec) {
-            group = "run"
-            classpath = sourceSets.main.runtimeClasspath
-            mainClass.set("jason.infra.centralised.RunCentralisedMAS")
-            args = [mas2jFile.path]
-            standardInput = System.in
-            javaLauncher.set(javaToolchains.launcherFor(java.toolchain))
-        }
-    }
-}
-
-
-
