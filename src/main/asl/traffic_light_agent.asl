@@ -35,7 +35,12 @@
     -+is_green(true);
     .my_name(Me);
     update_traffic_light(green, Me);
-    .wait(2000);
+    .count(position(_, _), N);
+    if (N = 0) {
+        .wait(1000);
+    } else {
+        .wait(N * 1000);
+    }
     !cycle(yellow).
 
 +!cycle(yellow) <-
