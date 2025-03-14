@@ -1,22 +1,29 @@
-green_time(5000).
-yellow_time(1000).
-red_time(6000).
-
-+!start : is_green(GREEN) & position(PosX, PosY) <-
++!start(PosX, PosY) : type(T) <-
+    +tl_position(PosX, PosY);
     .my_name(Me);
     +name(Me);
-    if (GREEN) { COLOR = green } else { COLOR = red };
-    spawn_traffic_light(GREEN, PosX, PosY, Me);
-    if (GREEN) { 
+    +is_green(T = 0);
+    spawn_traffic_light(T = 0, PosX, PosY, Me);
+    if (T = 0) { 
         .wait(2000);
         !cycle(yellow);
     }.
 
-+share(_, _)[source(Other)] : name(Me) & (Other \== self) <-
-    -share(_, _)[source(Other)]. 
-
-+position(_, _)[source(Other)] : name(Me) & (Other \== self) <-
-    -position(_, _)[source(Other)].
++share(PosX, PosY)[source(Other)] : (Other \== self) & type(T) & tl_position(X, Y) & number(N) <-
+    -position(_, _)[source(Other)];
+    if (T = 0 & PosX = X & (PosY = Y | (PosY + 1) = Y | (PosY + 2) = Y)) {
+        +position(PosX, PosY)[source(Other)];
+    };
+    if (T = 1 & PosX = X & (PosY = Y | (PosY - 1) = Y | (PosY - 2) = Y)) {
+        +position(PosX, PosY)[source(Other)];
+    };
+    if ((N = 2 | N = 14) & PosY = Y & (PosX = X | (PosX + 1) = X | (PosX + 2) = X | (PosX + 3) = X | (PosX + 4) = X)) {
+        +position(PosX, PosY)[source(Other)];
+    };
+    if ((N = 7 | N = 11) & PosY = Y & (PosX = X | (PosX - 1) = X | (PosX - 2) = X | (PosX - 3) = X | (PosX - 4) = X)) {
+        +position(PosX, PosY)[source(Other)];
+    };
+    -share(_, _)[source(Other)].
 
 +direction(_)[source(Other)] : name(Me) & (Other \== self) <-
     -direction(_)[source(Other)]. 
@@ -28,7 +35,12 @@ red_time(6000).
     -+is_green(true);
     .my_name(Me);
     update_traffic_light(green, Me);
-    .wait(2000);
+    .count(position(_, _), N);
+    if (N = 0) {
+        .wait(1000);
+    } else {
+        .wait(N * 1000);
+    }
     !cycle(yellow).
 
 +!cycle(yellow) <-
