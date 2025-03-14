@@ -1,3 +1,5 @@
+package env;
+
 import jason.NoValueException;
 import jason.asSyntax.Literal;
 import jason.asSyntax.NumberTerm;

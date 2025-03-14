@@ -5,8 +5,8 @@ import java.util.Map;
 
 import jason.util.Pair;
 import javafx.scene.image.Image;
+import ui.Tile;
 
-import model.view_elements.Tile;
 import java.util.concurrent.ConcurrentHashMap;
 
 public final class Utils {

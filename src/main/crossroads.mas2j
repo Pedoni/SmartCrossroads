@@ -2,7 +2,7 @@ MAS crossroads {
 
 	infrastructure: Centralised
 
-	environment: TrafficEnvironment()
+	environment: env.TrafficEnvironment()
 
 	agents:
 		creator creator_agent;

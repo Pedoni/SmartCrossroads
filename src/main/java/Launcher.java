@@ -1,3 +1,4 @@
+
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
@@ -7,7 +8,10 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -18,33 +22,46 @@ import javafx.scene.paint.Stop;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import ui.Car;
+import ui.Tile;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import env.TrafficEnvironment;
 import interfaces.TrafficListener;
 import jason.infra.local.RunLocalMAS;
-import model.view_elements.Car;
-import model.view_elements.Tile;
 import utils.*;
 
 public class Launcher extends Application implements TrafficListener {
 
-    private List<Car> cars;
-    private List<Tile> tiles;
+    private final List<Car> cars = Collections.synchronizedList(new ArrayList<>());
+    private final List<Tile> tiles = Collections.synchronizedList(new ArrayList<>());
 
     private Stage primaryStage;
-    private TextArea logArea;
+    private VBox logArea;
     private TrafficEnvironment environment;
+    private ScrollPane scrollPane;
+    private Map<String, Image> images;
 
     @Override
     public void start(Stage primaryStage) {
+        images = new HashMap<>();
+        images.put("car1", new Image("file:src/main/resources/it/unibo/smartcrossroads/car1_s.png"));
+        images.put("car2", new Image("file:src/main/resources/it/unibo/smartcrossroads/car2_s.png"));
+        images.put("car3", new Image("file:src/main/resources/it/unibo/smartcrossroads/car3_s.png"));
+        images.put("GREEN", new Image("file:src/main/resources/it/unibo/smartcrossroads/green.png"));
+        images.put("RED", new Image("file:src/main/resources/it/unibo/smartcrossroads/red.png"));
+        images.put("YELLOW", new Image("file:src/main/resources/it/unibo/smartcrossroads/yellow.png"));
+
         this.primaryStage = primaryStage;
 
         double screenWidth = Screen.getPrimary().getBounds().getWidth();
@@ -53,8 +70,6 @@ public class Launcher extends Application implements TrafficListener {
         Utils.initializeThings();
         Utils.loadCarImages();
 
-        cars = Collections.synchronizedList(new ArrayList<>());
-        tiles = Collections.synchronizedList(new ArrayList<>());
         initializeTiles();
 
         startJasonEnvironment();
@@ -89,11 +104,51 @@ public class Launcher extends Application implements TrafficListener {
         }).start();
     }
 
-    private void logMessage(String message) {
+    private void logMessage(String title, String message, String type) {
         javafx.application.Platform.runLater(() -> {
-            logArea.appendText(message + "\n");
+            // Carica l'icona
+            ImageView icon = new ImageView(images.get(type));
+            icon.setFitWidth(30);
+            icon.setFitHeight(30);
+
+            // Crea titolo e descrizione
+            Label titleLabel = new Label(title);
+            titleLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 14px;");
+
+            Label messageLabel = new Label(message);
+            messageLabel.setStyle("-fx-font-size: 12px; -fx-text-fill: gray;");
+
+            // VBox per il testo
+            VBox textBox = new VBox(titleLabel, messageLabel);
+            textBox.setSpacing(2);
+
+            // Contenitore principale
+            HBox messageContainer = new HBox(icon, textBox);
+            messageContainer.setSpacing(10);
+            messageContainer.setPadding(new Insets(5));
+            messageContainer.setStyle(
+                    "-fx-background-color: #f0f0f0; -fx-border-color: #d0d0d0; -fx-border-radius: 5; -fx-padding: 5;");
+            messageContainer.setAlignment(Pos.CENTER_LEFT);
+
+            // Aggiungi alla logArea
+            logArea.getChildren().add(messageContainer);
+
+            if (logArea.getChildren().size() > 50) {
+                logArea.getChildren().remove(0);
+            }
+
+            // 🔹 Scorri sempre in basso
+            javafx.application.Platform.runLater(() -> scrollPane.setVvalue(1.0));
         });
     }
+
+    /*
+     * private void logMessage(String message) {
+     * javafx.application.Platform.runLater(() -> {
+     * logArea.appendText(message + "\n");
+     * });
+     * }
+     */
 
     public void setupStage() {
         Canvas canvas = new Canvas(Configuration.GRAPHIC_WIDTH, Configuration.APP_HEIGHT);
@@ -121,14 +176,17 @@ public class Launcher extends Application implements TrafficListener {
         sidebar.setAlignment(Pos.TOP_CENTER);
         sidebar.getChildren().add(titleLabel);
 
-        logArea = new TextArea();
-        logArea.setEditable(false);
-        logArea.setWrapText(true);
-        logArea.setStyle("-fx-font-family: monospace; -fx-font-size: 12px;");
-        VBox.setMargin(logArea, new Insets(10));
-        VBox.setVgrow(logArea, javafx.scene.layout.Priority.ALWAYS);
-        logArea.textProperty().addListener((_, _, _) -> logArea.setScrollTop(Double.MAX_VALUE));
-        sidebar.getChildren().add(logArea);
+        logArea = new VBox();
+        logArea.setPadding(new Insets(10));
+        logArea.setSpacing(5);
+        logArea.setStyle("-fx-background-color: white;");
+        scrollPane = new ScrollPane(logArea);
+        scrollPane.setFitToWidth(true);
+        scrollPane.setFitToHeight(true);
+        scrollPane.setStyle("-fx-background: white; -fx-border-color: gray;");
+        VBox.setVgrow(scrollPane, javafx.scene.layout.Priority.ALWAYS);
+
+        sidebar.getChildren().add(scrollPane);
 
         HBox root = new HBox(canvasContainer, sidebar);
         primaryStage.setScene(new Scene(root, Configuration.APP_WIDTH, Configuration.APP_HEIGHT));
@@ -217,14 +275,16 @@ public class Launcher extends Application implements TrafficListener {
     public void spawnCar(int carId, int posX, int posY) {
         int randomType = new Random().nextInt(3) + 1;
         cars.add(new Car(carId, randomType, posX, posY));
-        logMessage("🚗 Auto #" + carId + " generata in (" + posX + ", " + posY + ")");
+        logMessage("Car spawned", "Car " + carId + " spawned in (" + posX + ", " + posY + ")",
+                "car" + randomType);
     }
 
     @Override
     public void moveCar(int carId, int posX, int posY, int dir) {
         for (var car : cars) {
             if (car.getId() == carId) {
-                logMessage("🔄 Auto #" + carId + " si muove verso (" + posX + ", " + posY + ")");
+                logMessage("Car moving", "Car " + carId + " is mowing to (" + posX + ", " + posY + ")",
+                        "car" + car.getType());
                 ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
                 scheduler.scheduleAtFixedRate(() -> {
                     boolean finished = car.move(posX, posY);
@@ -253,7 +313,9 @@ public class Launcher extends Application implements TrafficListener {
     public void updateTrafficLight(int trafficLightId, LightColor color) {
         for (var tile : tiles) {
             if (tile.getTrafficLightId() != -1 && tile.getTrafficLightId() == trafficLightId) {
-                logMessage("🚦 Semaforo #" + trafficLightId + " cambiato a " + color);
+                logMessage("Traffic light updating",
+                        "Traffic light " + trafficLightId + " changed to " + color,
+                        color.name());
                 tile.setColor(color);
             }
         }
@@ -262,7 +324,8 @@ public class Launcher extends Application implements TrafficListener {
     @Override
     public void removeCar(int carId) {
         cars.removeIf(car -> car.getId() == carId);
-        logMessage("🔄 Auto #" + carId + " ha terminato il percorso");
+        logMessage("Car terminating", "Car " + carId + " ender his path",
+                "car1");
     }
 
     public static void main(String[] args) {
