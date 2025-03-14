@@ -1,4 +1,5 @@
-package model;
+
+package ui;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
@@ -43,11 +44,9 @@ public final class Tile {
         return this.posY;
     }
 
-
     public void setColor(LightColor color) {
         this.color = color;
     }
-
 
     public int getTrafficLightId() {
         return this.trafficLightId;

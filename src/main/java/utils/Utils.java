@@ -5,7 +5,7 @@ import java.util.Map;
 
 import jason.util.Pair;
 import javafx.scene.image.Image;
-import model.Tile;
+import ui.Tile;
 
 import java.util.concurrent.ConcurrentHashMap;
 

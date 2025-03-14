@@ -10,7 +10,7 @@ import jason.asSyntax.Literal;
 import jason.asSyntax.NumberTerm;
 import jason.asSyntax.Term;
 import jason.util.Pair;
-import model.Tile;
+import ui.Tile;
 import utils.Direction;
 import utils.Utils;
 

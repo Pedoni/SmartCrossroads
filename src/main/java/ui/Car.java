@@ -1,4 +1,5 @@
-package model;
+
+package ui;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
@@ -16,6 +17,7 @@ public class Car {
     private final Image carImage;
     private final double speed;
     private final int size;
+    private final int type;
 
     public Car(int id, int type, int posX, int posY) {
         this.id = id;
@@ -27,6 +29,7 @@ public class Car {
         this.angle = 0;
         this.speed = Constants.MAX_SPEED;
         this.size = Configuration.TILE_SIZE;
+        this.type = type;
     }
 
     public int getId() {
@@ -59,5 +62,9 @@ public class Car {
         gc.rotate(angle);
         gc.drawImage(carImage, -width / 2, -height / 2, width, height);
         gc.restore();
+    }
+
+    public int getType() {
+        return this.type;
     }
 }
