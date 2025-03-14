@@ -2,7 +2,6 @@
     .my_name(Me);
     +name(Me);
     +is_green(T = 0);
-    if (T = 0) { COLOR = green } else { COLOR = red };
     spawn_traffic_light(T = 0, PosX, PosY, Me);
     if (T = 0) { 
         .wait(2000);
