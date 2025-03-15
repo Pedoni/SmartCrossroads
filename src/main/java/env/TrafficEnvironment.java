@@ -63,6 +63,12 @@ public class TrafficEnvironment extends Environment {
         return new HashSet<>(percepts.getOrDefault(agName, Collections.emptySet()));
     }
 
+    public void removeAgent(String agName) {
+        synchronized (percepts) {
+            percepts.remove(agName);
+        }
+    }
+
     @Override
     public boolean executeAction(final String ag, final Structure action) {
         String actionName = action.getFunctor();
@@ -123,6 +129,7 @@ public class TrafficEnvironment extends Environment {
             case Actions.REMOVE_CAR:
                 name = action.getTerm(0).toString();
                 counter = Integer.parseInt(name.substring(4));
+                removeAgent(name);
                 notifyCarRemoved(counter);
                 return true;
             default:
