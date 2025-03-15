@@ -13,11 +13,11 @@ import java.util.concurrent.ConcurrentHashMap;
 import interfaces.TrafficListener;
 
 public class TrafficEnvironment extends Environment {
-    private TrafficListener listener = null;
+    private TrafficListener view = null;
     private final Map<String, Set<Literal>> percepts = new ConcurrentHashMap<>();
 
     public void addTrafficListener(TrafficListener listener) {
-        this.listener = listener;
+        this.view = listener;
     }
 
     public void addPercept(String agName, Literal percept) {
@@ -138,32 +138,32 @@ public class TrafficEnvironment extends Environment {
     }
 
     private void notifyTrafficLightSpawned(boolean isGreen, int trafficLightId, int initialX, int initialY) {
-        if (this.listener != null) {
-            listener.spawnTrafficLight(isGreen, trafficLightId, initialX, initialY);
+        if (this.view != null) {
+            view.spawnTrafficLight(isGreen, trafficLightId, initialX, initialY);
         }
     }
 
     private void notifyTrafficLightUpdate(int trafficLightId, LightColor lightColor) {
-        if (this.listener != null) {
-            listener.updateTrafficLight(trafficLightId, lightColor);
+        if (this.view != null) {
+            view.updateTrafficLight(trafficLightId, lightColor);
         }
     }
 
     private void notifyCarSpawned(int carId, int posX, int posY) {
-        if (this.listener != null) {
-            listener.spawnCar(carId, posX, posY);
+        if (this.view != null) {
+            view.spawnCar(carId, posX, posY);
         }
     }
 
     private void notifyCarMoved(int carId, int posX, int posY, int dir) {
-        if (this.listener != null) {
-            listener.moveCar(carId, posX, posY, dir);
+        if (this.view != null) {
+            view.moveCar(carId, posX, posY, dir);
         }
     }
 
     private void notifyCarRemoved(int carId) {
-        if (this.listener != null) {
-            listener.removeCar(carId);
+        if (this.view != null) {
+            view.removeCar(carId);
         }
     }
 
