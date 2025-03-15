@@ -4,7 +4,7 @@ lights(0).
 !start_creation.
 
 +!start_creation <-
-    List1 = [5, 6, 4, 7, 10, 11, 9, 12, 5, 6, 4, 7, 10, 11, 9, 12];
+    List1 = [5, 6, 4, 7, 10, 11, 9, 12, 10, 11, 9, 12, 5, 6, 4, 7];
     List2 = [2, 5, 4, 3, 2, 5, 4, 3, 7, 10, 9, 8, 7, 10, 9, 8];
     while(lights(L) & L <= 15) {
         .nth(L, List1, PosX);
@@ -32,6 +32,8 @@ lights(0).
 
 +ask_position[source(Other)] : (Other \== self) <-
     -ask_position[source(Other)].
+
++!share(_, _).
 
 +!get_spawn_position(0, 0, 4, 3).
 +!get_spawn_position(1, 0, 9, 3).

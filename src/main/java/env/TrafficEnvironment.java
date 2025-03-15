@@ -21,7 +21,7 @@ public class TrafficEnvironment extends Environment {
     }
 
     public void addPercept(String agName, Literal percept) {
-        percepts.computeIfAbsent(agName, _ -> new HashSet<>()).add(percept);
+        percepts.computeIfAbsent(agName, _ -> ConcurrentHashMap.newKeySet()).add(percept);
         informAgsEnvironmentChanged();
     }
 
@@ -29,20 +29,28 @@ public class TrafficEnvironment extends Environment {
     public boolean removePercept(String agName, Literal percept) {
         if (percepts.containsKey(agName)) {
             Set<Literal> agentPercepts = percepts.get(agName);
-            List<Literal> toRemove = agentPercepts.stream()
-                    .filter(p -> p.getFunctor().equals(percept.getFunctor()))
-                    .toList();
-            boolean removed = agentPercepts.removeAll(toRemove);
-            if (removed) {
-                informAgsEnvironmentChanged();
+            synchronized (agentPercepts) {
+                Iterator<Literal> iter = agentPercepts.iterator();
+                boolean removed = false;
+                while (iter.hasNext()) {
+                    Literal p = iter.next();
+                    if (p.getFunctor().equals(percept.getFunctor())) {
+                        iter.remove();
+                        removed = true;
+                    }
+                }
+                if (removed) {
+                    informAgsEnvironmentChanged();
+                }
+                return removed;
             }
-            return removed;
         }
         return false;
     }
 
     public void notifyAnimationFinished(int carId, int posX, int posY, Direction dir) {
         Literal findTarget = Literal.parseLiteral(String.format("find_target(%d, %d, %d)", posX, posY, dir.ordinal()));
+        removePercept("car_" + carId, findTarget);
         addPercept("car_" + carId, findTarget);
     }
 
@@ -52,7 +60,7 @@ public class TrafficEnvironment extends Environment {
 
     @Override
     public Set<Literal> getPercepts(String agName) {
-        return percepts.getOrDefault(agName, Collections.emptySet());
+        return new HashSet<>(percepts.getOrDefault(agName, Collections.emptySet()));
     }
 
     @Override

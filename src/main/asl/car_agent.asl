@@ -6,14 +6,14 @@ tl(4, 10, 2).
 tl(5, 11, 5).
 tl(6, 9, 4).
 tl(7, 12, 3).
-tl(8, 5, 7).
-tl(9, 6, 10).
-tl(10, 4, 9).
-tl(11, 7, 8).
-tl(12, 10, 7).
-tl(13, 11, 10).
-tl(14, 9, 9).
-tl(15, 12, 8).
+tl(8, 10, 7).
+tl(9, 11, 10).
+tl(10, 9, 9).
+tl(11, 12, 8).
+tl(12, 5, 7).
+tl(13, 6, 10).
+tl(14, 4, 9).
+tl(15, 7, 8).
 
 +!start(PosX, PosY, D) <-
     +direction(D);
@@ -56,15 +56,14 @@ tl(15, 12, 8).
     -target(_, _)[source(percept)];
     -target(_, _)[source(self)];
     -+position(PosX, PosY);
-    .broadcast(tell, share(PosX, PosY));
+    .broadcast(achieve, share(PosX, PosY));
     move_car(PosX, PosY, Me, D).
 
 +target(PosX, PosY) : position(PosX, PosY)[source(Other)] & (Other \== self) <-
     -+target(PosX, PosY).
 
-+share(PosX, PosY)[source(Other)] : (Other \== self) <-
-    -+position(PosX, PosY)[source(Other)];
-    -share(_, _)[source(Other)].
++!share(PosX, PosY)[source(Other)] : (Other \== self) <-
+    -+position(PosX, PosY)[source(Other)].
 
 +!terminate : name(Me) <-
     remove_car(Me);
