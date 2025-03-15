@@ -82,20 +82,6 @@ public class TrafficEnvironment extends Environment {
                 } catch (NoValueException e) {
                     e.printStackTrace();
                 }
-                Direction dir = null;
-                if (posX == 0) {
-                    dir = Direction.WEST;
-                }
-                if (posX == Constants.COLUMNS - 1) {
-                    dir = Direction.EAST;
-                }
-                if (posY == 0) {
-                    dir = Direction.NORTH;
-                }
-                if (posY == Constants.ROWS - 1) {
-                    dir = Direction.SOUTH;
-                }
-                addPercept(name, Literal.parseLiteral(String.format("direction(%d)", dir.ordinal())));
                 notifyCarSpawned(counter, posX, posY);
                 return true;
             case Actions.SPAWN_TRAFFIC_LIGHT:
