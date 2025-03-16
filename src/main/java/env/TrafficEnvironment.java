@@ -8,65 +8,32 @@ import jason.environment.Environment;
 import utils.*;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
 import interfaces.TrafficListener;
 
 public class TrafficEnvironment extends Environment {
-    private TrafficListener listener = null;
-    private final Map<String, Set<Literal>> percepts = new ConcurrentHashMap<>();
+    private TrafficListener view = null;
+    private TrafficModel model;
 
     public void addTrafficListener(TrafficListener listener) {
-        this.listener = listener;
+        this.view = listener;
     }
 
-    public void addPercept(String agName, Literal percept) {
-        percepts.computeIfAbsent(agName, _ -> ConcurrentHashMap.newKeySet()).add(percept);
+    public void notifyAnimationFinished(int carId, int posX, int posY, Direction dir) {
+        System.out.println("Called notify");
+        this.model.calculateTarget("car_" + carId);
         informAgsEnvironmentChanged();
     }
 
     @Override
-    public boolean removePercept(String agName, Literal percept) {
-        if (percepts.containsKey(agName)) {
-            Set<Literal> agentPercepts = percepts.get(agName);
-            synchronized (agentPercepts) {
-                Iterator<Literal> iter = agentPercepts.iterator();
-                boolean removed = false;
-                while (iter.hasNext()) {
-                    Literal p = iter.next();
-                    if (p.getFunctor().equals(percept.getFunctor())) {
-                        iter.remove();
-                        removed = true;
-                    }
-                }
-                if (removed) {
-                    informAgsEnvironmentChanged();
-                }
-                return removed;
-            }
-        }
-        return false;
-    }
-
-    public void notifyAnimationFinished(int carId, int posX, int posY, Direction dir) {
-        Literal findTarget = Literal.parseLiteral(String.format("find_target(%d, %d, %d)", posX, posY, dir.ordinal()));
-        removePercept("car_" + carId, findTarget);
-        addPercept("car_" + carId, findTarget);
-    }
-
-    @Override
     public void init(final String[] args) {
+        model = new TrafficModelImpl();
+        model.insertAgent("creator", new CreatorAgent(1, 0));
     }
 
     @Override
     public Set<Literal> getPercepts(String agName) {
-        return new HashSet<>(percepts.getOrDefault(agName, Collections.emptySet()));
-    }
-
-    public void removeAgent(String agName) {
-        synchronized (percepts) {
-            percepts.remove(agName);
-        }
+        return this.model.getPercepts(agName);
     }
 
     @Override
@@ -79,7 +46,11 @@ public class TrafficEnvironment extends Environment {
         String color = "";
         String name = "";
         switch (actionName) {
-            case Actions.SPAWN_CAR:
+            case "remove_target":
+                name = action.getTerm(0).toString();
+                this.model.removeTarget(name);
+                return true;
+            case "add_target":
                 try {
                     posX = (int) ((NumberTerm) action.getTerm(0)).solve();
                     posY = (int) ((NumberTerm) action.getTerm(1)).solve();
@@ -88,6 +59,26 @@ public class TrafficEnvironment extends Environment {
                 } catch (NoValueException e) {
                     e.printStackTrace();
                 }
+                this.model.addTarget(name, posX, posY);
+                return true;
+            case Actions.NEXT_LIGHT:
+                this.model.nextLight();
+                return true;
+            case Actions.NEXT_CAR:
+                this.model.nextCar();
+                return true;
+            case Actions.SPAWN_CAR:
+                int direction = 0;
+                try {
+                    posX = (int) ((NumberTerm) action.getTerm(0)).solve();
+                    posY = (int) ((NumberTerm) action.getTerm(1)).solve();
+                    name = action.getTerm(2).toString();
+                    counter = Integer.parseInt(name.substring(4));
+                    direction = (int) ((NumberTerm) action.getTerm(3)).solve();
+                } catch (NoValueException e) {
+                    e.printStackTrace();
+                }
+                this.model.insertAgent(name, new CarAgent(posX, posY, name, Direction.values()[direction]));
                 notifyCarSpawned(counter, posX, posY);
                 return true;
             case Actions.SPAWN_TRAFFIC_LIGHT:
@@ -100,6 +91,7 @@ public class TrafficEnvironment extends Environment {
                 } catch (NoValueException e) {
                     e.printStackTrace();
                 }
+                this.model.insertAgent(name, new TrafficLightAgent(isGreen, posX, posY, name));
                 notifyTrafficLightSpawned(isGreen, counter, posX, posY);
                 return true;
             case Actions.UPDATE_TRAFFIC_LIGHT:
@@ -111,6 +103,7 @@ public class TrafficEnvironment extends Environment {
                 };
                 name = action.getTerm(1).toString();
                 counter = Integer.parseInt(name.substring(14));
+                this.model.updateTrafficLight(name, lightColor);
                 notifyTrafficLightUpdate(counter, lightColor);
                 return true;
             case Actions.MOVE_CAR:
@@ -124,12 +117,13 @@ public class TrafficEnvironment extends Environment {
                 } catch (NoValueException e) {
                     e.printStackTrace();
                 }
+                this.model.moveCar(name, posX, posY, dire);
                 notifyCarMoved(counter, posX, posY, dire);
                 return true;
             case Actions.REMOVE_CAR:
                 name = action.getTerm(0).toString();
                 counter = Integer.parseInt(name.substring(4));
-                removeAgent(name);
+                this.model.removeAgent(name);
                 notifyCarRemoved(counter);
                 return true;
             default:
@@ -138,32 +132,32 @@ public class TrafficEnvironment extends Environment {
     }
 
     private void notifyTrafficLightSpawned(boolean isGreen, int trafficLightId, int initialX, int initialY) {
-        if (this.listener != null) {
-            listener.spawnTrafficLight(isGreen, trafficLightId, initialX, initialY);
+        if (this.view != null) {
+            view.spawnTrafficLight(isGreen, trafficLightId, initialX, initialY);
         }
     }
 
     private void notifyTrafficLightUpdate(int trafficLightId, LightColor lightColor) {
-        if (this.listener != null) {
-            listener.updateTrafficLight(trafficLightId, lightColor);
+        if (this.view != null) {
+            view.updateTrafficLight(trafficLightId, lightColor);
         }
     }
 
     private void notifyCarSpawned(int carId, int posX, int posY) {
-        if (this.listener != null) {
-            listener.spawnCar(carId, posX, posY);
+        if (this.view != null) {
+            view.spawnCar(carId, posX, posY);
         }
     }
 
     private void notifyCarMoved(int carId, int posX, int posY, int dir) {
-        if (this.listener != null) {
-            listener.moveCar(carId, posX, posY, dir);
+        if (this.view != null) {
+            view.moveCar(carId, posX, posY, dir);
         }
     }
 
     private void notifyCarRemoved(int carId) {
-        if (this.listener != null) {
-            listener.removeCar(carId);
+        if (this.view != null) {
+            view.removeCar(carId);
         }
     }
 

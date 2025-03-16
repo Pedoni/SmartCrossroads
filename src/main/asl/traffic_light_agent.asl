@@ -1,8 +1,5 @@
 +!start(PosX, PosY) : type(T) <-
-    +tl_position(PosX, PosY);
     .my_name(Me);
-    +name(Me);
-    +is_green(T = 0);
     spawn_traffic_light(T = 0, PosX, PosY, Me);
     if (T = 0) { 
         .wait(2000);
@@ -30,14 +27,9 @@
         +position(PosX, PosY)[source(Other)];
     }.
 
-+direction(_)[source(Other)] : name(Me) & (Other \== self) <-
-    -direction(_)[source(Other)]. 
-
-+ask_position[source(Other)] : (Other \== self) <-
-    -ask_position[source(Other)].
++!ask_position.
 
 +!cycle(green) <-
-    -+is_green(true);
     .my_name(Me);
     update_traffic_light(green, Me);
     .count(position(_, _), N);
@@ -50,14 +42,12 @@
     }.
 
 +!cycle(yellow) <-
-    -+is_green(false);
     .my_name(Me);
     update_traffic_light(yellow, Me);
     .wait(500);
     !cycle(red).
 
 +!cycle(red) : number(N) <-
-    -+is_green(false);
     .my_name(Me);
     update_traffic_light(red, Me);
     .wait(1000);

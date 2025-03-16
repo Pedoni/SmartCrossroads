@@ -1,6 +1,3 @@
-cars(1).
-lights(0).
-
 !start_creation.
 
 +!start_creation <-
@@ -15,7 +12,7 @@ lights(0).
         .send(N, tell, number(L));
         .send(N, tell, type(TYPE));
         .send(N, achieve, start(PosX, PosY));
-        -+lights(L + 1);
+        next_light;
     };
     !create_next_car.
 
@@ -26,12 +23,11 @@ lights(0).
     .concat("car_", C, N);
     .create_agent(N, "car_agent.asl");
     .send(N, achieve, start(PosX, PosY, D));
-    -+cars(C + 1);
+    next_car;
     .wait(2000);
     !create_next_car.
 
-+ask_position[source(Other)] : (Other \== self) <-
-    -ask_position[source(Other)].
++!ask_position.
 
 +!share(_, _).
 
