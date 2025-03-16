@@ -17,6 +17,10 @@ public final class TrafficLightAgent extends TrafficAgent {
         this.name = name;
     }
 
+    public boolean isGreen() {
+        return isGreen;
+    }
+
     public void setGreen(boolean isGreen) {
         this.isGreen = isGreen;
     }

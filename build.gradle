@@ -1,3 +1,5 @@
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+
 plugins {
     id 'application'
     id 'org.openjfx.javafxplugin' version '0.1.0'
@@ -9,6 +11,8 @@ repositories {
 
 dependencies {
     implementation("io.github.jason-lang:interpreter:3.2.0")
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
 }
 
 javafx {
@@ -48,5 +52,13 @@ afterEvaluate {
     }
 }
 
-
+tasks.test {
+    useJUnitPlatform()
+    testLogging {
+        events 'passed', 'skipped', 'failed'
+        exceptionFormat = TestExceptionFormat.FULL
+        showStandardStreams = true
+    }
+    include '**/TrafficTest.class'
+}
 

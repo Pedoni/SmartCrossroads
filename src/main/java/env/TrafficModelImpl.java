@@ -15,9 +15,21 @@ public final class TrafficModelImpl implements TrafficModel {
     private final Map<String, TrafficAgent> agents = Collections.synchronizedMap(new HashMap<>());
 
     @Override
+    public Map<String, TrafficAgent> getAllAgents() {
+        return agents;
+    }
+
+    @Override
     public void insertAgent(String name, TrafficAgent agent) {
         synchronized (agents) {
             agents.putIfAbsent(name, agent);
+        }
+    }
+
+    @Override
+    public TrafficAgent getAgent(String name) {
+        synchronized (agents) {
+            return agents.get(name);
         }
     }
 
@@ -39,11 +51,11 @@ public final class TrafficModelImpl implements TrafficModel {
     }
 
     @Override
-    public void moveCar(String name, int x, int y, int dir) {
+    public void moveCar(String name, Pair<Integer, Integer> position, int dir) {
         synchronized (agents) {
             Direction direction = Direction.values()[dir];
             CarAgent agent = (CarAgent) agents.get(name);
-            agent.setPosition(new Pair<>(x, y));
+            agent.setPosition(position);
             agent.setDirection(direction);
         }
     }

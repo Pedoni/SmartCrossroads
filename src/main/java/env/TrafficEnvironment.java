@@ -102,7 +102,7 @@ public final class TrafficEnvironment extends Environment {
                 } catch (NoValueException e) {
                     e.printStackTrace();
                 }
-                this.model.moveCar(name, posX, posY, dire);
+                this.model.moveCar(name, new Pair<>(posX, posY), dire);
                 notifyCarMoved(counter, posX, posY, dire);
                 return true;
             case Actions.REMOVE_CAR:

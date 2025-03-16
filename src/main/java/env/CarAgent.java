@@ -41,8 +41,16 @@ public final class CarAgent extends TrafficAgent {
         }
     }
 
+    public Pair<Integer, Integer> getPosition() {
+        return position;
+    }
+
     public void setPosition(Pair<Integer, Integer> position) {
         this.position = position;
+    }
+
+    public Pair<Integer, Integer> getTarget() {
+        return target;
     }
 
     public void setTarget(Pair<Integer, Integer> target) {
