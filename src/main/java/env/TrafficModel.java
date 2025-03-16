@@ -13,12 +13,6 @@ public interface TrafficModel {
     /** removes an agent from the general map of agents */
     void removeAgent(String name);
 
-    /** checks if an agent is in the general map */
-    boolean containsAgent(String name);
-
-    /** returns all the agents in the general map */
-    Set<String> getAllAgents();
-
     /** get all the percepts of a specific agent */
     Set<Literal> getPercepts(String agent);
 

@@ -43,7 +43,7 @@ public final class TrafficEnvironment extends Environment {
         int posX = 0;
         int posY = 0;
         int counter = 0;
-        String color = "";
+        String color;
         String name = "";
         switch (actionName) {
             case Actions.NEXT_LIGHT:

@@ -128,7 +128,7 @@ public final class Launcher extends Application implements TrafficListener {
             logArea.getChildren().add(messageContainer);
 
             if (logArea.getChildren().size() > 50) {
-                logArea.getChildren().remove(0);
+                logArea.getChildren().removeFirst();
             }
 
             javafx.application.Platform.runLater(() -> scrollPane.setVvalue(1.0));

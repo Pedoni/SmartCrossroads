@@ -41,24 +41,12 @@ public final class CarAgent extends TrafficAgent {
         }
     }
 
-    public Pair<Integer, Integer> getPosition() {
-        return this.position;
-    }
-
     public void setPosition(Pair<Integer, Integer> position) {
         this.position = position;
     }
 
-    public Pair<Integer, Integer> getTarget() {
-        return this.target;
-    }
-
     public void setTarget(Pair<Integer, Integer> target) {
         this.target = target;
-    }
-
-    public Direction getDirection() {
-        return this.direction;
     }
 
     public void setDirection(Direction direction) {

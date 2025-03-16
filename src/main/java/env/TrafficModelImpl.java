@@ -29,20 +29,6 @@ public final class TrafficModelImpl implements TrafficModel {
     }
 
     @Override
-    public boolean containsAgent(String name) {
-        synchronized (agents) {
-            return agents.containsKey(name);
-        }
-    }
-
-    @Override
-    public Set<String> getAllAgents() {
-        synchronized (agents) {
-            return agents.keySet();
-        }
-    }
-
-    @Override
     public Set<Literal> getPercepts(String agent) {
         synchronized (agents) {
             if (!agents.containsKey(agent)) {

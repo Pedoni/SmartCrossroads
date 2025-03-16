@@ -16,22 +16,6 @@ public final class CreatorAgent extends TrafficAgent {
         this.trafficLights = trafficLights;
     }
 
-    public int getCars() {
-        return cars;
-    }
-
-    public void setCars(int cars) {
-        this.cars = cars;
-    }
-
-    public int getTrafficLights() {
-        return trafficLights;
-    }
-
-    public void setTrafficLights(int trafficLights) {
-        this.trafficLights = trafficLights;
-    }
-
     public void increaseTrafficLights() {
         this.trafficLights++;
     }
