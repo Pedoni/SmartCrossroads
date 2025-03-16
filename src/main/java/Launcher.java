@@ -244,8 +244,10 @@ public class Launcher extends Application implements TrafficListener {
         drawDashedLines(gc, WIDTH, HEIGHT);
         drawGrid(gc);
 
-        for (var tl : tiles) {
-            tl.draw(gc);
+        synchronized (tiles) {
+            for (var tl : tiles) {
+                tl.draw(gc);
+            }
         }
 
         synchronized (cars) {
@@ -258,59 +260,72 @@ public class Launcher extends Application implements TrafficListener {
 
     @Override
     public void spawnCar(int carId, int posX, int posY) {
-        int randomType = new Random().nextInt(3) + 1;
-        cars.add(new Car(carId, randomType, posX, posY));
-        logMessage("Car spawned", "Car " + carId + " spawned in (" + posX + ", " + posY + ")",
-                "car" + randomType);
+        synchronized (cars) {
+            int randomType = new Random().nextInt(3) + 1;
+            cars.add(new Car(carId, randomType, posX, posY));
+            logMessage("Car spawned", "Car " + carId + " spawned in (" + posX + ", " + posY + ")",
+                    "car" + randomType);
+        }
     }
 
     @Override
     public void moveCar(int carId, int posX, int posY, int dir) {
-        for (var car : cars) {
-            if (car.getId() == carId) {
-                logMessage("Car moving", "Car " + carId + " is mowing to (" + posX + ", " + posY + ")",
-                        "car" + car.getType());
-                ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
-                scheduler.scheduleAtFixedRate(() -> {
-                    boolean finished = car.move(posX, posY);
-                    if (finished) {
-                        environment.notifyAnimationFinished(carId, posX, posY, Direction.values()[dir]);
-                        car.setPosition(posX, posY);
-                        scheduler.shutdown();
-                    }
-                }, 0, 30, TimeUnit.MILLISECONDS);
-                break;
+        synchronized (cars) {
+            for (var car : cars) {
+                if (car.getId() == carId) {
+                    logMessage("Car moving", "Car " + carId + " is mowing to (" + posX + ", " + posY + ")",
+                            "car" + car.getType());
+                    ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
+                    scheduler.scheduleAtFixedRate(() -> {
+                        boolean finished = car.move(posX, posY);
+                        if (finished) {
+                            environment.notifyAnimationFinished(carId, posX, posY, Direction.values()[dir]);
+                            car.setPosition(posX, posY);
+                            scheduler.shutdown();
+                        }
+                    }, 0, 30, TimeUnit.MILLISECONDS);
+                    break;
+                }
             }
         }
+
     }
 
     @Override
     public void spawnTrafficLight(boolean isGreen, int trafficLightId, int posX, int posY) {
-        for (var tile : tiles) {
-            if (tile.getPosX() == posX && tile.getPosY() == posY) {
-                tile.setTrafficLightId(trafficLightId);
-                tile.setColor(isGreen ? LightColor.GREEN : LightColor.RED);
+        synchronized (tiles) {
+            for (var tile : tiles) {
+                if (tile.getPosX() == posX && tile.getPosY() == posY) {
+                    tile.setTrafficLightId(trafficLightId);
+                    tile.setColor(isGreen ? LightColor.GREEN : LightColor.RED);
+                }
             }
         }
+
     }
 
     @Override
     public void updateTrafficLight(int trafficLightId, LightColor color) {
-        for (var tile : tiles) {
-            if (tile.getTrafficLightId() != -1 && tile.getTrafficLightId() == trafficLightId) {
-                logMessage("Traffic light updating",
-                        "Traffic light " + trafficLightId + " changed to " + color,
-                        color.name());
-                tile.setColor(color);
+        synchronized (tiles) {
+            for (var tile : tiles) {
+                if (tile.getTrafficLightId() != -1 && tile.getTrafficLightId() == trafficLightId) {
+                    logMessage("Traffic light updating",
+                            "Traffic light " + trafficLightId + " changed to " + color,
+                            color.name());
+                    tile.setColor(color);
+                }
             }
         }
+
     }
 
     @Override
     public void removeCar(int carId) {
-        cars.removeIf(car -> car.getId() == carId);
-        logMessage("Car terminating", "Car " + carId + " ender his path",
-                "car1");
+        synchronized (cars) {
+            cars.removeIf(car -> car.getId() == carId);
+            logMessage("Car terminating", "Car " + carId + " ender his path",
+                    "car1");
+        }
     }
 
     public static void main(String[] args) {
