@@ -1,6 +1,5 @@
 package env;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -78,7 +77,6 @@ public class TrafficModelImpl implements TrafficModel {
 
     @Override
     public void removeTarget(String name) {
-        System.out.println("Removing target");
         CarAgent agent = (CarAgent) agents.get(name);
         agent.setTargetX(null);
         agent.setTargetY(null);

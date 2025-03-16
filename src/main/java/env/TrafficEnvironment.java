@@ -20,7 +20,6 @@ public class TrafficEnvironment extends Environment {
     }
 
     public void notifyAnimationFinished(int carId, int posX, int posY, Direction dir) {
-        System.out.println("Called notify");
         this.model.calculateTarget("car_" + carId);
         informAgsEnvironmentChanged();
     }
@@ -46,21 +45,6 @@ public class TrafficEnvironment extends Environment {
         String color = "";
         String name = "";
         switch (actionName) {
-            case "remove_target":
-                name = action.getTerm(0).toString();
-                this.model.removeTarget(name);
-                return true;
-            case "add_target":
-                try {
-                    posX = (int) ((NumberTerm) action.getTerm(0)).solve();
-                    posY = (int) ((NumberTerm) action.getTerm(1)).solve();
-                    name = action.getTerm(2).toString();
-                    counter = Integer.parseInt(name.substring(4));
-                } catch (NoValueException e) {
-                    e.printStackTrace();
-                }
-                this.model.addTarget(name, posX, posY);
-                return true;
             case Actions.NEXT_LIGHT:
                 this.model.nextLight();
                 return true;

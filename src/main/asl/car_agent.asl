@@ -15,8 +15,7 @@ tl(13, 6, 10).
 tl(14, 4, 9).
 tl(15, 7, 8).
 
-+target(PosX, PosY) <- 
-    .print("Called +target");
++target(PosX, PosY) <-
     !check_target(PosX, PosY).
 
 +!start(PosX, PosY, D) <-
@@ -48,7 +47,6 @@ tl(15, 7, 8).
     !check_target(PosX, PosY).
 
 +!go(PosX, PosY) : direction(D) & name(Me) <- 
-    remove_target(Me);
     .broadcast(achieve, share(PosX, PosY));
     move_car(PosX, PosY, Me, D).
 

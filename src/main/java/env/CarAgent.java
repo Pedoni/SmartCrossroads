@@ -42,7 +42,6 @@ public class CarAgent extends TrafficAgent {
             setTargetX(-1);
             setTargetY(-1);
         }
-        System.out.println("Nuovo target: (" + targetX + ", " + targetY + ")");
     }
 
     public int getX() {
