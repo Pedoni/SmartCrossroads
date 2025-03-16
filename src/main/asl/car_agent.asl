@@ -15,35 +15,28 @@ tl(13, 6, 10).
 tl(14, 4, 9).
 tl(15, 7, 8).
 
++target(PosX, PosY) <- 
+    .print("Called +target");
+    !check_target(PosX, PosY).
+
 +!start(PosX, PosY, D) <-
-    +direction(D);
-    +position(PosX, PosY);
     .my_name(Me);
-    +name(Me);
-    .broadcast(tell, ask_position);
-    spawn_car(PosX, PosY, Me);
-    +find_target(PosX, PosY, D).
+    .broadcast(achieve, ask_position);
+    spawn_car(PosX, PosY, Me, D).
 
-+find_target(PosX, PosY, D) <-
-    internal_actions.GetTargetPoint(PosX, PosY, D);
-    -find_target(PosX, PosY, D)[source(_)].
++!ask_position[source(Other)] : (Other \== percept) & position(X, Y)[source(percept)] <-
+    .send(Other, tell, position(X, Y)).
 
-+ask_position[source(Other)] : (Other \== self) & position(X, Y)[source(self)] <-
-    .send(Other, tell, position(X, Y));
-    -ask_position[source(Other)].
-
-+target(PosX, PosY) : PosX = -1 & PosY = -1 & position(X, Y)[source(self)] <-
++!check_target(PosX, PosY) : PosX = -1 & PosY = -1 & position(X, Y)[source(percept)] <-
     .broadcast(untell, position(X, Y));
     !terminate.
 
-+target(PosX, PosY) : not(position(PosX, PosY)[source(Other)]) & (Other \== self) & position(X, Y)[source(self)] <-
-    -target(_, _)[source(percept)];
-    -target(_, _)[source(self)];
++!check_target(PosX, PosY) : not(position(PosX, PosY)[source(Other)]) & (Other \== percept) & position(X, Y)[source(percept)] <-
     if (tl(S, X, Y)) {
         .concat("traffic_light_", S, TL);
         .send(TL, askOne, is_green(GREEN), is_green(GREEN));
         if (not(GREEN)) {
-            +target(PosX, PosY)[source(self)];
+            !check_target(PosX, PosY);
         } else {
             !go(PosX, PosY);
         }
@@ -51,18 +44,15 @@ tl(15, 7, 8).
         !go(PosX, PosY);
     }.
 
-+!go(PosX, PosY) : direction(D) & name(Me) <-
-    -direction(_)[source(percept)];
-    -target(_, _)[source(percept)];
-    -target(_, _)[source(self)];
-    -+position(PosX, PosY);
++!check_target(PosX, PosY) : position(PosX, PosY)[source(Other)] & (Other \== percept) <-
+    !check_target(PosX, PosY).
+
++!go(PosX, PosY) : direction(D) & name(Me) <- 
+    remove_target(Me);
     .broadcast(achieve, share(PosX, PosY));
     move_car(PosX, PosY, Me, D).
 
-+target(PosX, PosY) : position(PosX, PosY)[source(Other)] & (Other \== self) <-
-    -+target(PosX, PosY).
-
-+!share(PosX, PosY)[source(Other)] : (Other \== self) <-
++!share(PosX, PosY)[source(Other)] : (Other \== percept) <-
     -+position(PosX, PosY)[source(Other)].
 
 +!terminate : name(Me) <-
