@@ -87,22 +87,6 @@ public class TrafficModelImpl implements TrafficModel {
     }
 
     @Override
-    public void addTarget(String name, int posX, int posY) {
-        synchronized (agents) {
-            CarAgent agent = (CarAgent) agents.get(name);
-            agent.setTarget(new Pair<>(posX, posY));
-        }
-    }
-
-    @Override
-    public void removeTarget(String name) {
-        synchronized (agents) {
-            CarAgent agent = (CarAgent) agents.get(name);
-            agent.setTarget(null);
-        }
-    }
-
-    @Override
     public void calculateTarget(String name) {
         synchronized (agents) {
             CarAgent agent = (CarAgent) agents.get(name);

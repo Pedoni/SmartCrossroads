@@ -103,9 +103,9 @@ public final class Utils {
 	}
 
 	public static void loadCarImages() {
-		carImages.put(1, new Image("file:src/main/resources/it/unibo/smartcrossroads/car1_s.png"));
-		carImages.put(2, new Image("file:src/main/resources/it/unibo/smartcrossroads/car2_s.png"));
-		carImages.put(3, new Image("file:src/main/resources/it/unibo/smartcrossroads/car3_s.png"));
+		carImages.put(1, new Image("file:src/main/resources/car1_s.png"));
+		carImages.put(2, new Image("file:src/main/resources/car2_s.png"));
+		carImages.put(3, new Image("file:src/main/resources/car3_s.png"));
 	}
 
 	public static Map<Integer, Image> getCarImages() {

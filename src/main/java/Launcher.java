@@ -54,12 +54,12 @@ public class Launcher extends Application implements TrafficListener {
     @Override
     public void start(Stage primaryStage) {
         images = new HashMap<>();
-        images.put("car1", new Image("file:src/main/resources/it/unibo/smartcrossroads/car1_s.png"));
-        images.put("car2", new Image("file:src/main/resources/it/unibo/smartcrossroads/car2_s.png"));
-        images.put("car3", new Image("file:src/main/resources/it/unibo/smartcrossroads/car3_s.png"));
-        images.put("GREEN", new Image("file:src/main/resources/it/unibo/smartcrossroads/green.png"));
-        images.put("RED", new Image("file:src/main/resources/it/unibo/smartcrossroads/red.png"));
-        images.put("YELLOW", new Image("file:src/main/resources/it/unibo/smartcrossroads/yellow.png"));
+        images.put("car1", new Image("file:src/main/resources/car1_s.png"));
+        images.put("car2", new Image("file:src/main/resources/car2_s.png"));
+        images.put("car3", new Image("file:src/main/resources/car3_s.png"));
+        images.put("GREEN", new Image("file:src/main/resources/green.png"));
+        images.put("RED", new Image("file:src/main/resources/red.png"));
+        images.put("YELLOW", new Image("file:src/main/resources/yellow.png"));
 
         this.primaryStage = primaryStage;
 
