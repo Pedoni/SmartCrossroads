@@ -5,6 +5,7 @@ import jason.asSyntax.Literal;
 import jason.asSyntax.NumberTerm;
 import jason.asSyntax.Structure;
 import jason.environment.Environment;
+import jason.util.Pair;
 import utils.*;
 
 import java.util.*;
@@ -62,7 +63,7 @@ public class TrafficEnvironment extends Environment {
                 } catch (NoValueException e) {
                     e.printStackTrace();
                 }
-                this.model.insertAgent(name, new CarAgent(posX, posY, name, Direction.values()[direction]));
+                this.model.insertAgent(name, new CarAgent(new Pair<>(posX, posY), name, Direction.values()[direction]));
                 notifyCarSpawned(counter, posX, posY);
                 return true;
             case Actions.SPAWN_TRAFFIC_LIGHT:

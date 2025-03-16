@@ -11,22 +11,21 @@ import utils.Direction;
 import utils.Utils;
 
 public class CarAgent extends TrafficAgent {
-    private int x;
-    private int y;
-    private Integer targetX;
-    private Integer targetY;
+    private Pair<Integer, Integer> position;
+    private Pair<Integer, Integer> target;
     private Direction direction;
     private String name;
 
-    public CarAgent(int x, int y, String name, Direction direction) {
-        this.x = x;
-        this.y = y;
+    public CarAgent(Pair<Integer, Integer> position, String name, Direction direction) {
+        this.position = position;
         this.name = name;
         this.direction = direction;
         calculateTarget();
     }
 
     public void calculateTarget() {
+        final int x = position.getFirst();
+        final int y = position.getSecond();
         Tile tile = new Tile(x, y);
 
         var points = Utils.getDirections().get(new Pair<>(tile, this.direction));
@@ -36,44 +35,26 @@ public class CarAgent extends TrafficAgent {
             var target = tileDir.getFirst();
             var newDir = tileDir.getSecond();
             setDirection(newDir);
-            setTargetX(target.getPosX());
-            setTargetY(target.getPosY());
+            setTarget(new Pair<>(target.getPosX(), target.getPosY()));
         } else {
-            setTargetX(-1);
-            setTargetY(-1);
+            setTarget(new Pair<>(-1, -1));
         }
     }
 
-    public int getX() {
-        return this.x;
+    public Pair<Integer, Integer> getPosition() {
+        return this.position;
     }
 
-    public int getY() {
-        return this.y;
+    public void setPosition(Pair<Integer, Integer> position) {
+        this.position = position;
     }
 
-    public void setX(int x) {
-        this.x = x;
+    public Pair<Integer, Integer> getTarget() {
+        return this.target;
     }
 
-    public void setY(int y) {
-        this.y = y;
-    }
-
-    public int getTargetX() {
-        return this.targetX;
-    }
-
-    public int getTargetY() {
-        return this.targetY;
-    }
-
-    public void setTargetX(Integer x) {
-        this.targetX = x;
-    }
-
-    public void setTargetY(Integer y) {
-        this.targetY = y;
+    public void setTarget(Pair<Integer, Integer> target) {
+        this.target = target;
     }
 
     public Direction getDirection() {
@@ -87,12 +68,16 @@ public class CarAgent extends TrafficAgent {
     @Override
     public Set<Literal> getPercepts() {
         final Set<Literal> set = new HashSet<>();
+        final int x = position.getFirst();
+        final int y = position.getSecond();
         set.add(Literal.parseLiteral(String.format("position(%d, %d)", x, y)));
         set.add(Literal.parseLiteral(String.format("name(%s)", name)));
         if (direction != null) {
             set.add(Literal.parseLiteral(String.format("direction(%d)", direction.ordinal())));
         }
-        if (targetX != null && targetY != null) {
+        if (target != null) {
+            final int targetX = target.getFirst();
+            final int targetY = target.getSecond();
             set.add(Literal.parseLiteral(String.format("target(%d, %d)", targetX, targetY)));
         }
 

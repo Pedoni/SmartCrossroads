@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Set;
 
 import jason.asSyntax.Literal;
+import jason.util.Pair;
 import utils.Direction;
 import utils.LightColor;
 
@@ -14,78 +15,99 @@ public class TrafficModelImpl implements TrafficModel {
     private final Map<String, TrafficAgent> agents = Collections.synchronizedMap(new HashMap<>());
 
     @Override
-    public void insertAgent(String name, TrafficAgent agemt) {
-        agents.putIfAbsent(name, agemt);
+    public void insertAgent(String name, TrafficAgent agent) {
+        synchronized (agents) {
+            agents.putIfAbsent(name, agent);
+        }
     }
 
     @Override
     public void removeAgent(String name) {
-        agents.remove(name);
+        synchronized (agents) {
+            agents.remove(name);
+        }
     }
 
     @Override
     public boolean containsAgent(String name) {
-        return agents.containsKey(name);
+        synchronized (agents) {
+            return agents.containsKey(name);
+        }
     }
 
     @Override
     public Set<String> getAllAgents() {
-        return agents.keySet();
+        synchronized (agents) {
+            return agents.keySet();
+        }
     }
 
     @Override
     public Set<Literal> getPercepts(String agent) {
-        if (!agents.containsKey(agent)) {
-            return Collections.emptySet();
+        synchronized (agents) {
+            if (!agents.containsKey(agent)) {
+                return Collections.emptySet();
+            }
+            return agents.get(agent).getPercepts();
         }
-        return agents.get(agent).getPercepts();
     }
 
     @Override
     public void moveCar(String name, int x, int y, int dir) {
-        Direction direction = Direction.values()[dir];
-        CarAgent agent = (CarAgent) agents.get(name);
-        agent.setX(x);
-        agent.setY(y);
-        agent.setDirection(direction);
+        synchronized (agents) {
+            Direction direction = Direction.values()[dir];
+            CarAgent agent = (CarAgent) agents.get(name);
+            agent.setPosition(new Pair<>(x, y));
+            agent.setDirection(direction);
+        }
     }
 
     @Override
     public void updateTrafficLight(String name, LightColor color) {
-        TrafficLightAgent agent = (TrafficLightAgent) agents.get(name);
-        agent.setGreen(color.equals(LightColor.GREEN));
+        synchronized (agents) {
+            TrafficLightAgent agent = (TrafficLightAgent) agents.get(name);
+            agent.setGreen(color.equals(LightColor.GREEN));
+        }
     }
 
     @Override
     public void nextLight() {
-        CreatorAgent agent = (CreatorAgent) agents.get("creator");
-        agent.increaseTrafficLights();
+        synchronized (agents) {
+            CreatorAgent agent = (CreatorAgent) agents.get("creator");
+            agent.increaseTrafficLights();
+        }
     }
 
     @Override
     public void nextCar() {
-        CreatorAgent agent = (CreatorAgent) agents.get("creator");
-        agent.increaseCars();
+        synchronized (agents) {
+            CreatorAgent agent = (CreatorAgent) agents.get("creator");
+            agent.increaseCars();
+        }
     }
 
     @Override
     public void addTarget(String name, int posX, int posY) {
-        CarAgent agent = (CarAgent) agents.get(name);
-        agent.setTargetX(posX);
-        agent.setTargetY(posY);
+        synchronized (agents) {
+            CarAgent agent = (CarAgent) agents.get(name);
+            agent.setTarget(new Pair<>(posX, posY));
+        }
     }
 
     @Override
     public void removeTarget(String name) {
-        CarAgent agent = (CarAgent) agents.get(name);
-        agent.setTargetX(null);
-        agent.setTargetY(null);
+        synchronized (agents) {
+            CarAgent agent = (CarAgent) agents.get(name);
+            agent.setTarget(null);
+        }
     }
 
     @Override
     public void calculateTarget(String name) {
-        CarAgent agent = (CarAgent) agents.get(name);
-        agent.calculateTarget();
+        synchronized (agents) {
+            CarAgent agent = (CarAgent) agents.get(name);
+            agent.calculateTarget();
+        }
     }
 
 }
