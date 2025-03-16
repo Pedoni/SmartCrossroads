@@ -105,23 +105,19 @@ public class Launcher extends Application implements TrafficListener {
 
     private void logMessage(String title, String message, String type) {
         javafx.application.Platform.runLater(() -> {
-            // Carica l'icona
             ImageView icon = new ImageView(images.get(type));
             icon.setFitWidth(30);
             icon.setFitHeight(30);
 
-            // Crea titolo e descrizione
             Label titleLabel = new Label(title);
             titleLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 14px;");
 
             Label messageLabel = new Label(message);
             messageLabel.setStyle("-fx-font-size: 12px; -fx-text-fill: gray;");
 
-            // VBox per il testo
             VBox textBox = new VBox(titleLabel, messageLabel);
             textBox.setSpacing(2);
 
-            // Contenitore principale
             HBox messageContainer = new HBox(icon, textBox);
             messageContainer.setSpacing(10);
             messageContainer.setPadding(new Insets(5));
@@ -129,25 +125,15 @@ public class Launcher extends Application implements TrafficListener {
                     "-fx-background-color: #f0f0f0; -fx-border-color: #d0d0d0; -fx-border-radius: 5; -fx-padding: 5;");
             messageContainer.setAlignment(Pos.CENTER_LEFT);
 
-            // Aggiungi alla logArea
             logArea.getChildren().add(messageContainer);
 
             if (logArea.getChildren().size() > 50) {
                 logArea.getChildren().remove(0);
             }
 
-            // 🔹 Scorri sempre in basso
             javafx.application.Platform.runLater(() -> scrollPane.setVvalue(1.0));
         });
     }
-
-    /*
-     * private void logMessage(String message) {
-     * javafx.application.Platform.runLater(() -> {
-     * logArea.appendText(message + "\n");
-     * });
-     * }
-     */
 
     public void setupStage() {
         Canvas canvas = new Canvas(Configuration.GRAPHIC_WIDTH, Configuration.APP_HEIGHT);
