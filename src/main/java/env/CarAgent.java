@@ -10,7 +10,7 @@ import ui.Tile;
 import utils.Direction;
 import utils.Utils;
 
-public class CarAgent extends TrafficAgent {
+public final class CarAgent extends TrafficAgent {
     private Pair<Integer, Integer> position;
     private Pair<Integer, Integer> target;
     private Direction direction;

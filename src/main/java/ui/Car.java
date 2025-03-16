@@ -7,7 +7,7 @@ import utils.Configuration;
 import utils.Constants;
 import utils.Utils;
 
-public class Car {
+public final class Car {
     private final int id;
     private double x;
     private double y;

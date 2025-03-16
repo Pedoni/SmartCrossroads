@@ -10,7 +10,7 @@ import jason.util.Pair;
 import utils.Direction;
 import utils.LightColor;
 
-public class TrafficModelImpl implements TrafficModel {
+public final class TrafficModelImpl implements TrafficModel {
 
     private final Map<String, TrafficAgent> agents = Collections.synchronizedMap(new HashMap<>());
 

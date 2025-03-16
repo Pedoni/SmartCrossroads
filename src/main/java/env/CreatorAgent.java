@@ -5,7 +5,7 @@ import java.util.Set;
 
 import jason.asSyntax.Literal;
 
-public class CreatorAgent extends TrafficAgent {
+public final class CreatorAgent extends TrafficAgent {
 
     private int cars;
 

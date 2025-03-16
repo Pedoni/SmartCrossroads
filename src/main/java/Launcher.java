@@ -40,7 +40,7 @@ import interfaces.TrafficListener;
 import jason.infra.local.RunLocalMAS;
 import utils.*;
 
-public class Launcher extends Application implements TrafficListener {
+public final class Launcher extends Application implements TrafficListener {
 
     private final List<Car> cars = Collections.synchronizedList(new ArrayList<>());
     private final List<Tile> tiles = Collections.synchronizedList(new ArrayList<>());

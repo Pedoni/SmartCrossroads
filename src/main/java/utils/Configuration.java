@@ -1,6 +1,6 @@
 package utils;
 
-public class Configuration {
+public final class Configuration {
     public static int TILE_SIZE;
     public static int APP_WIDTH;
     public static int APP_HEIGHT;

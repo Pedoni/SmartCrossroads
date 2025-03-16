@@ -5,7 +5,7 @@ import java.util.Set;
 
 import jason.asSyntax.Literal;
 
-public class TrafficLightAgent extends TrafficAgent {
+public final class TrafficLightAgent extends TrafficAgent {
     private boolean isGreen;
     private int x;
     private int y;

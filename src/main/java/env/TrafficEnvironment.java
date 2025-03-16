@@ -12,7 +12,7 @@ import java.util.*;
 
 import interfaces.TrafficListener;
 
-public class TrafficEnvironment extends Environment {
+public final class TrafficEnvironment extends Environment {
     private TrafficListener view = null;
     private TrafficModel model;
 
