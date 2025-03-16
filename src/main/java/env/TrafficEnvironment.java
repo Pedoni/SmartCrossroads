@@ -76,7 +76,7 @@ public final class TrafficEnvironment extends Environment {
                 } catch (NoValueException e) {
                     e.printStackTrace();
                 }
-                this.model.insertAgent(name, new TrafficLightAgent(isGreen, posX, posY, name));
+                this.model.insertAgent(name, new TrafficLightAgent(isGreen, new Pair<>(posX, posY), name));
                 notifyTrafficLightSpawned(isGreen, counter, posX, posY);
                 return true;
             case Actions.UPDATE_TRAFFIC_LIGHT:

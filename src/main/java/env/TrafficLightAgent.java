@@ -4,17 +4,16 @@ import java.util.HashSet;
 import java.util.Set;
 
 import jason.asSyntax.Literal;
+import jason.util.Pair;
 
 public final class TrafficLightAgent extends TrafficAgent {
     private boolean isGreen;
-    private int x;
-    private int y;
+    private Pair<Integer, Integer> position;
     private String name;
 
-    public TrafficLightAgent(boolean isGreen, int x, int y, String name) {
+    public TrafficLightAgent(boolean isGreen, Pair<Integer, Integer> position, String name) {
         this.isGreen = isGreen;
-        this.x = x;
-        this.y = y;
+        this.position = position;
         this.name = name;
     }
 
@@ -25,6 +24,8 @@ public final class TrafficLightAgent extends TrafficAgent {
     @Override
     Set<Literal> getPercepts() {
         final Set<Literal> set = new HashSet<>();
+        final int x = position.getFirst();
+        final int y = position.getSecond();
         set.add(Literal.parseLiteral(String.format("tl_position(%d, %d)", x, y)));
         set.add(Literal.parseLiteral(String.format("name(%s)", name)));
         set.add(Literal.parseLiteral(String.format("is_green(%s)", isGreen)));
