@@ -14,7 +14,7 @@ public class CarAgent extends TrafficAgent {
     private Pair<Integer, Integer> position;
     private Pair<Integer, Integer> target;
     private Direction direction;
-    private String name;
+    private final String name;
 
     public CarAgent(Pair<Integer, Integer> position, String name, Direction direction) {
         this.position = position;
