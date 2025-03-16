@@ -24,7 +24,7 @@
     .create_agent(N, "car_agent.asl");
     .send(N, achieve, start(PosX, PosY, D));
     next_car;
-    .wait(50000);
+    .wait(2000);
     !create_next_car.
 
 +!ask_position.

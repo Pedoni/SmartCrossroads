@@ -22,6 +22,7 @@ public class TrafficEnvironment extends Environment {
     public void notifyAnimationFinished(int carId, int posX, int posY, Direction dir) {
         System.out.println("Called notify");
         this.model.calculateTarget("car_" + carId);
+        informAgsEnvironmentChanged();
     }
 
     @Override

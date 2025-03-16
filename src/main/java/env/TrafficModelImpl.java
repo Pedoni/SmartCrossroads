@@ -49,7 +49,6 @@ public class TrafficModelImpl implements TrafficModel {
         agent.setX(x);
         agent.setY(y);
         agent.setDirection(direction);
-        agent.calculateTarget();
     }
 
     @Override
