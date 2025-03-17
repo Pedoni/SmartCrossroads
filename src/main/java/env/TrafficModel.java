@@ -7,6 +7,7 @@ import jason.asSyntax.Literal;
 import jason.util.Pair;
 import utils.LightColor;
 
+//* Interface for the traffic model */
 public interface TrafficModel {
 
     /** Returns all the agents */
