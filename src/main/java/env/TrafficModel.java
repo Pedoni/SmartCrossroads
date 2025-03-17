@@ -31,12 +31,6 @@ public interface TrafficModel {
     /** Updates a specific traffic light */
     void updateTrafficLight(String name, LightColor color);
 
-    /** Updates the traffic light counter of the creator agent */
-    void nextLight();
-
-    /** Updates the car counter of the creator agent */
-    void nextCar();
-
     /** Calculates the next target for a specific car agent */
     void calculateTarget(String name);
 }

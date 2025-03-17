@@ -69,22 +69,6 @@ public final class TrafficModelImpl implements TrafficModel {
     }
 
     @Override
-    public void nextLight() {
-        synchronized (agents) {
-            CreatorAgent agent = (CreatorAgent) agents.get("creator");
-            agent.increaseTrafficLights();
-        }
-    }
-
-    @Override
-    public void nextCar() {
-        synchronized (agents) {
-            CreatorAgent agent = (CreatorAgent) agents.get("creator");
-            agent.increaseCars();
-        }
-    }
-
-    @Override
     public void calculateTarget(String name) {
         synchronized (agents) {
             CarAgent agent = (CarAgent) agents.get(name);

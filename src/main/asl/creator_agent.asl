@@ -1,3 +1,6 @@
+lights(0).
+cars(1).
+
 !start_creation.
 
 +!start_creation <-
@@ -12,7 +15,7 @@
         .send(N, tell, number(L));
         .send(N, tell, type(TYPE));
         .send(N, achieve, start(PosX, PosY));
-        next_light;
+        -+lights(L + 1);
     };
     !create_next_car.
 
@@ -23,7 +26,7 @@
     .concat("car_", C, N);
     .create_agent(N, "car_agent.asl");
     .send(N, achieve, start(PosX, PosY, D));
-    next_car;
+    -+cars(C + 1);
     .wait(2000);
     !create_next_car.
 

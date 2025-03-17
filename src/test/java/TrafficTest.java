@@ -1,6 +1,5 @@
 import org.junit.jupiter.api.Test;
 import env.CarAgent;
-import env.CreatorAgent;
 import env.TrafficLightAgent;
 import env.TrafficModel;
 import env.TrafficModelImpl;
@@ -23,13 +22,6 @@ public class TrafficTest {
     @Test
     public void testInitialSize() {
         assertEquals(0, model.getAllAgents().size());
-    }
-
-    @Test
-    public void testAddCreator() {
-        final String name = "creator";
-        model.insertAgent(name, new CreatorAgent(1, 0));
-        assertEquals(1, model.getAllAgents().size());
     }
 
     @Test

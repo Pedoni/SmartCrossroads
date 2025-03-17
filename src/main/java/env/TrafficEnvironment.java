@@ -28,7 +28,6 @@ public final class TrafficEnvironment extends Environment {
     @Override
     public void init(final String[] args) {
         model = new TrafficModelImpl();
-        model.insertAgent("creator", new CreatorAgent(1, 0));
     }
 
     @Override
@@ -46,12 +45,6 @@ public final class TrafficEnvironment extends Environment {
         String color;
         String name = "";
         switch (actionName) {
-            case Actions.NEXT_LIGHT:
-                this.model.nextLight();
-                return true;
-            case Actions.NEXT_CAR:
-                this.model.nextCar();
-                return true;
             case Actions.SPAWN_CAR:
                 int direction = 0;
                 try {
