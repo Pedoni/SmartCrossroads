@@ -1,6 +1,9 @@
 package env;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
@@ -15,11 +18,30 @@ public final class CarAgent extends TrafficAgent {
     private Pair<Integer, Integer> target;
     private Direction direction;
     private final String name;
+    private List<Pair<Integer, Integer>> trafficLights;
 
     public CarAgent(Pair<Integer, Integer> position, String name, Direction direction) {
         this.position = position;
         this.name = name;
         this.direction = direction;
+        this.trafficLights = Arrays.asList(
+            new Pair<>(5, 2),
+            new Pair<>(6, 5),
+            new Pair<>(4, 4),
+            new Pair<>(7, 3),
+            new Pair<>(10, 2),
+            new Pair<>(11, 5),
+            new Pair<>(9, 4),
+            new Pair<>(12, 3),
+            new Pair<>(10, 7),
+            new Pair<>(11, 10),
+            new Pair<>(9, 9),
+            new Pair<>(12, 8),
+            new Pair<>(5, 7),
+            new Pair<>(6, 10),
+            new Pair<>(4, 9),
+            new Pair<>(7, 8)
+        );
         calculateTarget();
     }
 
@@ -75,6 +97,11 @@ public final class CarAgent extends TrafficAgent {
             final int targetX = target.getFirst();
             final int targetY = target.getSecond();
             set.add(Literal.parseLiteral(String.format("target(%d, %d)", targetX, targetY)));
+        }
+
+        for (int i = 0; i < trafficLights.size(); i++) {
+            var tl = trafficLights.get(i);
+            set.add(Literal.parseLiteral(String.format("tl(%d, %d, %d)", i, tl.getFirst(), tl.getSecond())));
         }
 
         return set;
