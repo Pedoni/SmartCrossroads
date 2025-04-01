@@ -1,58 +1,64 @@
-plugins {
-    id 'java'
-    id 'application'
-    id 'org.javamodularity.moduleplugin' version '1.8.12'
-    id 'org.openjfx.javafxplugin' version '0.0.13'
-    id 'org.beryx.jlink' version '2.25.0'
-}
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 
-group 'it.unibo'
-version '1.0-SNAPSHOT'
+plugins {
+    id 'application'
+    id 'org.openjfx.javafxplugin' version '0.1.0'
+}
 
 repositories {
     mavenCentral()
 }
 
-ext {
-    junitVersion = '5.10.2'
-}
-
-sourceCompatibility = '22'
-targetCompatibility = '22'
-
-tasks.withType(JavaCompile) {
-    options.encoding = 'UTF-8'
-}
-
-application {
-    mainModule = 'it.unibo.smartcrossroads'
-    mainClass = 'it.unibo.smartcrossroads.HelloApplication'
+dependencies {
+    implementation("io.github.jason-lang:interpreter:3.2.0")
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
 }
 
 javafx {
-    version = '22.0.1'
-    modules = ['javafx.controls', 'javafx.fxml']
+    version = "23.0.2"
+    modules = [ "javafx.controls", "javafx.base", "javafx.graphics"]
 }
 
-dependencies {
-    implementation('org.controlsfx:controlsfx:11.2.1')
+mainClassName = 'Launcher'
 
-    testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
+tasks.withType(JavaCompile).configureEach {
+    options.compilerArgs += "--enable-preview"
 }
 
-test {
-    useJUnitPlatform()
+tasks.withType(JavaExec).configureEach {
+    jvmArgs += "--enable-preview"
 }
 
-jlink {
-    imageZip = project.file("${buildDir}/distributions/app-${javafx.platform.classifier}.zip")
-    options = ['--strip-debug', '--compress', '2', '--no-header-files', '--no-man-pages']
-    launcher {
-        name = 'app'
+afterEvaluate {
+    def mas2jDir = file("src/main") // Percorso corretto
+    def mas2jFiles = mas2jDir.listFiles()?.findAll { it.name.endsWith('.mas2j') } ?: []
+
+    println "File .mas2j trovati: ${mas2jFiles*.name}" // Debug
+
+    mas2jFiles.each { mas2jFile ->
+        def fileNameWithoutExtension = mas2jFile.name.replaceFirst(~/\.mas2j$/, "")
+        def taskName = "run${fileNameWithoutExtension.capitalize()}Mas"
+        println "Registrando task: $taskName"
+
+        tasks.register(taskName, JavaExec) {
+            group = "run"
+            classpath = sourceSets.main.runtimeClasspath
+            mainClass.set("jason.infra.centralised.RunCentralisedMAS")
+            args = [mas2jFile.path]
+            standardInput = System.in
+            javaLauncher.set(javaToolchains.launcherFor(java.toolchain))
+        }
     }
 }
 
-jlinkZip {
-    group = 'distribution'
+tasks.test {
+    useJUnitPlatform()
+    testLogging {
+        events 'passed', 'skipped', 'failed'
+        exceptionFormat = TestExceptionFormat.FULL
+        showStandardStreams = true
+    }
+    include '**/TrafficTest.class'
 }
+

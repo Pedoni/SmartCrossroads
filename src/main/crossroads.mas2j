@@ -1,0 +1,12 @@
+MAS crossroads {
+
+	infrastructure: Centralised
+
+	environment: env.TrafficEnvironment()
+
+	agents:
+		creator creator_agent;
+
+	aslSourcePath:
+		"src/main/asl";
+}
